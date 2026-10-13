@@ -1,0 +1,98 @@
+{
+  "q90": {
+    "threshold_cutoff": 0.1754,
+    "sample_metrics": {
+      "tp": 2828,
+      "fp": 113823,
+      "fn": 25483,
+      "tn": 1024401,
+      "precision": 0.0242,
+      "recall": 0.0999,
+      "f1": 0.039
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 65.58,
+      "total_fp_episodes": 631,
+      "fp_episodes_per_dev_week": 0.36
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 135,
+      "event_recall": 0.4066,
+      "mean_lead_time_hours": 16.11,
+      "median_lead_time_hours": 20.0
+    }
+  },
+  "q95": {
+    "threshold_cutoff": 0.4624,
+    "sample_metrics": {
+      "tp": 2407,
+      "fp": 56912,
+      "fn": 25904,
+      "tn": 1081312,
+      "precision": 0.0406,
+      "recall": 0.085,
+      "f1": 0.0549
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 32.79,
+      "total_fp_episodes": 1760,
+      "fp_episodes_per_dev_week": 1.01
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 120,
+      "event_recall": 0.3614,
+      "mean_lead_time_hours": 16.31,
+      "median_lead_time_hours": 19.38
+    }
+  },
+  "q98": {
+    "threshold_cutoff": 1.4171,
+    "sample_metrics": {
+      "tp": 1658,
+      "fp": 22765,
+      "fn": 26653,
+      "tn": 1115459,
+      "precision": 0.0679,
+      "recall": 0.0586,
+      "f1": 0.0629
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 13.12,
+      "total_fp_episodes": 1312,
+      "fp_episodes_per_dev_week": 0.76
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 50,
+      "event_recall": 0.1506,
+      "mean_lead_time_hours": 19.48,
+      "median_lead_time_hours": 24.0
+    }
+  },
+  "q99": {
+    "threshold_cutoff": 2.429,
+    "sample_metrics": {
+      "tp": 1415,
+      "fp": 11383,
+      "fn": 26896,
+      "tn": 1126841,
+      "precision": 0.1106,
+      "recall": 0.05,
+      "f1": 0.0688
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 6.56,
+      "total_fp_episodes": 1305,
+      "fp_episodes_per_dev_week": 0.75
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 50,
+      "event_recall": 0.1506,
+      "mean_lead_time_hours": 19.16,
+      "median_lead_time_hours": 24.0
+    }
+  }
+}

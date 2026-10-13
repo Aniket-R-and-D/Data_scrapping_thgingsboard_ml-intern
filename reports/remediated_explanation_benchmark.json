@@ -1,0 +1,256 @@
+{
+  "legacy_model_before_lora": {
+    "total_cases_evaluated": 100,
+    "raw_llm_pass_count": 39,
+    "raw_llm_pass_rate": 0.39,
+    "fallback_activation_count": 61,
+    "fallback_activation_rate": 0.61,
+    "final_delivered_faithfulness": 1.0,
+    "average_latency_seconds": 1.356,
+    "violation_category_counts": {
+      "ungrounded_numbers": 44,
+      "state_routing_violation": 21,
+      "mains_claim_violation": 9,
+      "battery_sensor_violation": 1,
+      "rule_hallucination": 0,
+      "risk_tier_mismatch": 0,
+      "empty_or_truncated": 0
+    },
+    "sample_cases": [
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: CANARA-CHETLA (CANARA)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 4.5%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Violations: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Proactive branch monitoring. Verify site AC line voltage stability over next 6 hours. Schedule inverter battery load test during off-peak hours if gap persists.",
+        "raw_generated_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported loss of communication.\n2. Sensor Integrity:\n   - Battery hardware is not installed. Calibration status is N/A.\n3. Risk Assessment:\n   - The risk tier evaluates to MEDIUM.\n   - Unacknowledged historical failures rate: 0.0%.\n4. Physical Triggerers:\n   - Checking AC voltage levels reaches 0.0 V.\n   - Historical record indicates recent downtime due to mains loss.\n</reasoning>\n\n### Operational Diagnosis: CANARA-CHETLA\n- **Device State**: ONLINE_OK\n- **Primary Risk Tier**: MEDIUM\n- **Physical Drivers**: Critical electrical failure detected; pending battery backup check.\n- **Predicted Outage Probability**: **POSITIVE (Imminent Outage / Severe Alarm Event)**\n\n#### Action Ticket\n- Issue high-priority detection ticket during standard operating hours.",
+        "is_faithful": false,
+        "violations": [
+          "Mains claim violation: Claimed mains failure or loss when mains is currently healthy and active."
+        ],
+        "fallback_used": true,
+        "latency_seconds": 1.382,
+        "case_id": 1,
+        "device_name": "CANARA-CHETLA",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "MEDIUM"
+      },
+      {
+        "explanation_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported electrical faults.\n2. Sensor Integrity:\n   - Battery hardware is acknowledged aspresent (true).\n   - Acoustic sensor detection value is 14.0 V.\n3. Risk Assessment:\n   - The risk tier evaluates to CRITICAL with defined probability of failure (0.0015).\n   - Unacknowledged historical alerts score to HIGH.\n4. Top Contributing Factors:\n   - No unacknowledged sensor alarms or electrical surges detected.\n   - Critical acoustic threshold reached: 14.0 V.\n</reasoning>\n\n### Operational Diagnosis: BOI-DOBSON\n- **Device State**: ONLINE_OK\n- **Sensor Integrity**: Acoustic sensor below critical limit (14.0 V).\n- **Risk Tier**: **CRITICAL** (Estimated Failure Probability: 0.00)\n- **Top Contributors**: Unknown (no pending electrical alarms or acoustic surge detections).\n- **Telemetry Analysis**: Current electrical balance: 2",
+        "raw_generated_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported electrical faults.\n2. Sensor Integrity:\n   - Battery hardware is acknowledged aspresent (true).\n   - Acoustic sensor detection value is 14.0 V.\n3. Risk Assessment:\n   - The risk tier evaluates to CRITICAL with defined probability of failure (0.0015).\n   - Unacknowledged historical alerts score to HIGH.\n4. Top Contributing Factors:\n   - No unacknowledged sensor alarms or electrical surges detected.\n   - Critical acoustic threshold reached: 14.0 V.\n</reasoning>\n\n### Operational Diagnosis: BOI-DOBSON\n- **Device State**: ONLINE_OK\n- **Sensor Integrity**: Acoustic sensor below critical limit (14.0 V).\n- **Risk Tier**: **CRITICAL** (Estimated Failure Probability: 0.00)\n- **Top Contributors**: Unknown (no pending electrical alarms or acoustic surge detections).\n- **Telemetry Analysis**: Current electrical balance: 2",
+        "is_faithful": true,
+        "violations": [],
+        "fallback_used": false,
+        "latency_seconds": 1.382,
+        "case_id": 2,
+        "device_name": "BOI-DOBSON",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "CRITICAL"
+      },
+      {
+        "explanation_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported loss of communication.\n2. Sensor Integrity:\n   - Battery hardware is acknowledged as PRESENT (14.0 V).\n3. Risk Assessment:\n   - The risk tier evaluates to LOW with defined probability of failure at 0.0015.\n</reasoning>\n\n### Operational Diagnostics: BOI-CHINSURAH\n- **Device State**: ONLINE_OK\n- **Sensor Evaluation**: Pre-positioning alert system detects normal electrical balance.\n- **Risk Tier**: **LOW** (Estimated Failure Probability: 0.0015)\n- **Primary Risk Drivers**: Unknown power disruption duration since mains supply stop.\n\n#### Action Ticket\n- Issue HIGH priority verification ticket during standard operating hours.",
+        "raw_generated_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported loss of communication.\n2. Sensor Integrity:\n   - Battery hardware is acknowledged as PRESENT (14.0 V).\n3. Risk Assessment:\n   - The risk tier evaluates to LOW with defined probability of failure at 0.0015.\n</reasoning>\n\n### Operational Diagnostics: BOI-CHINSURAH\n- **Device State**: ONLINE_OK\n- **Sensor Evaluation**: Pre-positioning alert system detects normal electrical balance.\n- **Risk Tier**: **LOW** (Estimated Failure Probability: 0.0015)\n- **Primary Risk Drivers**: Unknown power disruption duration since mains supply stop.\n\n#### Action Ticket\n- Issue HIGH priority verification ticket during standard operating hours.",
+        "is_faithful": true,
+        "violations": [],
+        "fallback_used": false,
+        "latency_seconds": 1.382,
+        "case_id": 3,
+        "device_name": "BOI-CHINSURAH",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "LOW"
+      },
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BALLYBAZAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 6.2%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: None\nKey Predictive Drivers: ac_voltage_slope_6h; time_since_mains_loss_hours\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 220.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 168.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+        "raw_generated_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported electrical faults.\n2. Sensor Integrity:\n   - Battery hardware is not installed. Sensor integrity score is N/A.\n3. Risk Assessment:\n   - Risk tier classification is HIGH.\n   - Unacknowledged historical power loss events count: 0.\n4. Telemetry Details:\n   - Acoustic voltage measurement: 220.0 V.\n   - Nominal battery voltage level: N/A.\n   - Time since last mains supply interruption: 168 hours.\n</reasoning>\n\n### Operational Diagnosis: BOI-BALLYBAZAR\n- **Device State**: ONLINE_OK\n- **Sensor Evaluation**: Nominal AC voltage: 220V; Battery status: N/A.\n- **Risk Assessment**: HIGH\n- **Telemetry Analysis**: Critical under-voltage detection detected; nominal battery capacity verified.\n\n#### Action Ticket\n- Issue high-priority verification ticket during standard operating hours.",
+        "is_faithful": false,
+        "violations": [
+          "Ungrounded numerical figures: [22.0]"
+        ],
+        "fallback_used": true,
+        "latency_seconds": 1.382,
+        "case_id": 4,
+        "device_name": "BOI-BALLYBAZAR",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "HIGH"
+      },
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: BOI-ISLAMPUR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 2.0%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Violations: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Proactive branch monitoring. Verify site AC line voltage stability over next 6 hours. Schedule inverter battery load test during off-peak hours if gap persists.",
+        "raw_generated_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported loss of communication.\n2. Sensor Integrity:\n   - Battery hardware is not installed. Calibration status is N/A.\n3. Risk Assessment:\n   - The risk tier evaluates to MEDIUM.\n   - Unacknowledged historical failures rate: 2.0%.\n4. Top Contributing Factors:\n   - Rule violation detected: RULE_AC_UNDER_50V (Electrical Status Below Critical Threshold).\n   - Factor contributing to failure probability: Unacknowledged historical losses.\n</reasoning>\n\n### Operational Diagnosis: BOI-ISLAMPUR\n- **Device State**: ONLINE_OK\n- **Sensor Evaluation**: Battery voltage below NVR rated limit; electrical analysis indicates NVR failure mode.\n- **Risk Assessment**: HIGH (Moderate Probability of Active Power Outage)\n- **Top Contributors**: Unacknowledged historical mains loss event\n\n#### Action Ticket\n- Issue high-priority field ticket to regional facility engineer for on-site power restoration.",
+        "is_faithful": false,
+        "violations": [
+          "Mains claim violation: Claimed mains failure or loss when mains is currently healthy and active."
+        ],
+        "fallback_used": true,
+        "latency_seconds": 1.382,
+        "case_id": 5,
+        "device_name": "BOI-ISLAMPUR",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "MEDIUM"
+      }
+    ],
+    "worst_failure_cases": [
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: CANARA-CHETLA (CANARA)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 4.5%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Violations: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Proactive branch monitoring. Verify site AC line voltage stability over next 6 hours. Schedule inverter battery load test during off-peak hours if gap persists.",
+        "raw_generated_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported loss of communication.\n2. Sensor Integrity:\n   - Battery hardware is not installed. Calibration status is N/A.\n3. Risk Assessment:\n   - The risk tier evaluates to MEDIUM.\n   - Unacknowledged historical failures rate: 0.0%.\n4. Physical Triggerers:\n   - Checking AC voltage levels reaches 0.0 V.\n   - Historical record indicates recent downtime due to mains loss.\n</reasoning>\n\n### Operational Diagnosis: CANARA-CHETLA\n- **Device State**: ONLINE_OK\n- **Primary Risk Tier**: MEDIUM\n- **Physical Drivers**: Critical electrical failure detected; pending battery backup check.\n- **Predicted Outage Probability**: **POSITIVE (Imminent Outage / Severe Alarm Event)**\n\n#### Action Ticket\n- Issue high-priority detection ticket during standard operating hours.",
+        "is_faithful": false,
+        "violations": [
+          "Mains claim violation: Claimed mains failure or loss when mains is currently healthy and active."
+        ],
+        "fallback_used": true,
+        "latency_seconds": 1.382,
+        "case_id": 1,
+        "device_name": "CANARA-CHETLA",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "MEDIUM"
+      },
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BALLYBAZAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 6.2%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: None\nKey Predictive Drivers: ac_voltage_slope_6h; time_since_mains_loss_hours\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 220.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 168.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+        "raw_generated_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported electrical faults.\n2. Sensor Integrity:\n   - Battery hardware is not installed. Sensor integrity score is N/A.\n3. Risk Assessment:\n   - Risk tier classification is HIGH.\n   - Unacknowledged historical power loss events count: 0.\n4. Telemetry Details:\n   - Acoustic voltage measurement: 220.0 V.\n   - Nominal battery voltage level: N/A.\n   - Time since last mains supply interruption: 168 hours.\n</reasoning>\n\n### Operational Diagnosis: BOI-BALLYBAZAR\n- **Device State**: ONLINE_OK\n- **Sensor Evaluation**: Nominal AC voltage: 220V; Battery status: N/A.\n- **Risk Assessment**: HIGH\n- **Telemetry Analysis**: Critical under-voltage detection detected; nominal battery capacity verified.\n\n#### Action Ticket\n- Issue high-priority verification ticket during standard operating hours.",
+        "is_faithful": false,
+        "violations": [
+          "Ungrounded numerical figures: [22.0]"
+        ],
+        "fallback_used": true,
+        "latency_seconds": 1.382,
+        "case_id": 4,
+        "device_name": "BOI-BALLYBAZAR",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "HIGH"
+      },
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: BOI-ISLAMPUR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 2.0%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Violations: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Proactive branch monitoring. Verify site AC line voltage stability over next 6 hours. Schedule inverter battery load test during off-peak hours if gap persists.",
+        "raw_generated_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported loss of communication.\n2. Sensor Integrity:\n   - Battery hardware is not installed. Calibration status is N/A.\n3. Risk Assessment:\n   - The risk tier evaluates to MEDIUM.\n   - Unacknowledged historical failures rate: 2.0%.\n4. Top Contributing Factors:\n   - Rule violation detected: RULE_AC_UNDER_50V (Electrical Status Below Critical Threshold).\n   - Factor contributing to failure probability: Unacknowledged historical losses.\n</reasoning>\n\n### Operational Diagnosis: BOI-ISLAMPUR\n- **Device State**: ONLINE_OK\n- **Sensor Evaluation**: Battery voltage below NVR rated limit; electrical analysis indicates NVR failure mode.\n- **Risk Assessment**: HIGH (Moderate Probability of Active Power Outage)\n- **Top Contributors**: Unacknowledged historical mains loss event\n\n#### Action Ticket\n- Issue high-priority field ticket to regional facility engineer for on-site power restoration.",
+        "is_faithful": false,
+        "violations": [
+          "Mains claim violation: Claimed mains failure or loss when mains is currently healthy and active."
+        ],
+        "fallback_used": true,
+        "latency_seconds": 1.382,
+        "case_id": 5,
+        "device_name": "BOI-ISLAMPUR",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "MEDIUM"
+      },
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-TELCO-TOWN (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.2%\nAssigned Risk Tier: LOW\nActive Physical Rule Violations: None\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 210.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 168.0 hours\n\nDISPATCH RECOMMENDATION: Normal branch operations. No field technician dispatch required. Continue automated telemetry polling.",
+        "raw_generated_text": "<ticket>\n  <fields>Device: BOI-TELCO-TOWN</fields>\n  <reason>Status: ONLINE_OK</reason>\n  <risk\u7ea7\u522b=\"LOW\" value=\"Normal Electrical Routine\"/></ticket>\n\n### Operational Diagnosis: BOI-TELCO-TOWN\n- **Device**: BOI-TELCO-TOWN\n- **Risk Tier**: LOW\n- **Primary Risk Factor**: N/A Battery Voltage: N/A\n- **Secondary Risk Factors**: Calibration Probability: 0.0019\n\n#### Physical & Technical Diagnostics\n- **Battery Health**: Sensor is not equipped. Electrician check confirms N/A battery level.\n- **Electrical Assessment**: Standard utility rating observed; no grid disruption signs.\n\n#### Ticket Investigation\n- **Immediate Action**: Issue high-priority verification ticket at bank branch office.\n- **Long-term Prediction Density**: **NEGATIVE** (Estimated failure probability: 10.0%)\n- **Reasoning**: Critical battery health indicator versus online availability.\n\n#### Active Power-Outage Dispatch Ticket\n- **\u7968\u8bc1\u7c7b\u578b**: \u6d88",
+        "is_faithful": false,
+        "violations": [
+          "Ungrounded numerical figures: [10.0]"
+        ],
+        "fallback_used": true,
+        "latency_seconds": 1.382,
+        "case_id": 7,
+        "device_name": "BOI-TELCO-TOWN",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "LOW"
+      },
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-CHANDANNAGAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.2%\nAssigned Risk Tier: LOW\nActive Physical Rule Violations: None\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 210.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 168.0 hours\n\nDISPATCH RECOMMENDATION: Normal branch operations. No field technician dispatch required. Continue automated telemetry polling.",
+        "raw_generated_text": "<reasoning>\n1. Device State & Connectivity:\n   - The device is currently ONLINE_OK with no reported loss of communication.\n2. Sensor Integrity:\n   - Battery hardware is not installed/exercising sensor mode.\n   - Electrical parameters check passes: AC voltage = 210V, Natural Power Profile = N/A.\n3. Risk Assessment:\n   - Risk tier classification evaluates to LOW.\n   - Grounded power profile confirmed throughout operational timeline.\n</reasoning>\n\n### Operational Diagnosis: BOI-CHANDANNAGAR\n- **Device State**: ONLINE_OK\n- **Sensor Integrity**: Battery remains unsensors due to absence of natural power delivery.\n- **Risk Tier**: **LOW** (Low Probability of Active Power Outage)\n- **Physical Factors**: Natural power profile verified against standard watt-hour curves.\n\n#### Action Ticket\n- Issue HIGH detection alert during upcoming scheduled branch audit.",
+        "is_faithful": false,
+        "violations": [
+          "Ungrounded numerical figures: [21.0]"
+        ],
+        "fallback_used": true,
+        "latency_seconds": 1.382,
+        "case_id": 8,
+        "device_name": "BOI-CHANDANNAGAR",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "LOW"
+      }
+    ]
+  },
+  "remediated_model_after_lora": {
+    "total_cases_evaluated": 100,
+    "raw_llm_pass_count": 99,
+    "raw_llm_pass_rate": 0.99,
+    "fallback_activation_count": 1,
+    "fallback_activation_rate": 0.01,
+    "final_delivered_faithfulness": 1.0,
+    "average_latency_seconds": 1.092,
+    "violation_category_counts": {
+      "ungrounded_numbers": 1,
+      "state_routing_violation": 0,
+      "mains_claim_violation": 0,
+      "battery_sensor_violation": 0,
+      "rule_hallucination": 0,
+      "risk_tier_mismatch": 0,
+      "empty_or_truncated": 0
+    },
+    "sample_cases": [
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: CANARA-CHETLA (CANARA)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 4.5%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Violations: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Proactive branch monitoring. Verify site AC line voltage stability over next 6 hours. Schedule inverter battery load test during off-peak hours if gap persists.",
+        "raw_generated_text": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: CANARA-CHETLA (CANARA)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 4.5%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Violations: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Proactive branch monitoring. Verify site AC line voltage stability over next 6 hours. Schedule inverter battery load test during off-peak hours if gap persists.",
+        "is_faithful": true,
+        "violations": [],
+        "fallback_used": false,
+        "latency_seconds": 1.056,
+        "case_id": 1,
+        "device_name": "CANARA-CHETLA",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "MEDIUM"
+      },
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - CRITICAL RISK]\nBranch Site: BOI-DOBSON (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: CRITICAL\nActive Physical Rule Violations: RULE_AC_SURGE_OVER_250V\nKey Predictive Drivers: ac_voltage_slope_6h; time_since_mains_loss_hours\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 270.0 V\n- Battery Voltage: 14.0 V\n- Time Since Mains Loss: 774.2 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+        "raw_generated_text": "[SYSTEM DIAGNOSTIC TICKET - CRITICAL RISK]\nBranch Site: BOI-DOBSON (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: CRITICAL\nActive Physical Rule Violations: RULE_AC_SURGE_OVER_250V\nKey Predictive Drivers: ac_voltage_slope_6h; time_since_mains_loss_hours\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 270.0 V\n- Battery Voltage: 14.0 V\n- Time Since Mains Loss: 774.2 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+        "is_faithful": true,
+        "violations": [],
+        "fallback_used": false,
+        "latency_seconds": 1.056,
+        "case_id": 2,
+        "device_name": "BOI-DOBSON",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "CRITICAL"
+      },
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-CHINSURAH (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violations: None\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 200.0 V\n- Battery Voltage: 14.0 V\n- Time Since Mains Loss: 168.0 hours\n\nDISPATCH RECOMMENDATION: Normal branch operations. No field technician dispatch required. Continue automated telemetry polling.",
+        "raw_generated_text": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-CHINSURAH (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violations: None\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 200.0 V\n- Battery Voltage: 14.0 V\n- Time Since Mains Loss: 168.0 hours\n\nDISPATCH RECOMMENDATION: Normal branch operations. No field technician dispatch required. Continue automated telemetry polling.",
+        "is_faithful": true,
+        "violations": [],
+        "fallback_used": false,
+        "latency_seconds": 1.056,
+        "case_id": 3,
+        "device_name": "BOI-CHINSURAH",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "LOW"
+      },
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BALLYBAZAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 6.2%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: None\nKey Predictive Drivers: ac_voltage_slope_6h; time_since_mains_loss_hours\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 220.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 168.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+        "raw_generated_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BALLYBAZAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 6.2%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: None\nKey Predictive Drivers: ac_voltage_slope_6h; time_since_mains_loss_hours\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 220.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 168.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+        "is_faithful": true,
+        "violations": [],
+        "fallback_used": false,
+        "latency_seconds": 1.056,
+        "case_id": 4,
+        "device_name": "BOI-BALLYBAZAR",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "HIGH"
+      },
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: BOI-ISLAMPUR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 2.0%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Violations: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Proactive branch monitoring. Verify site AC line voltage stability over next 6 hours. Schedule inverter battery load test during off-peak hours if gap persists.",
+        "raw_generated_text": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: BOI-ISLAMPUR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 2.0%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Violations: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\nKey Predictive Drivers: normal electrical baseline\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Proactive branch monitoring. Verify site AC line voltage stability over next 6 hours. Schedule inverter battery load test during off-peak hours if gap persists.",
+        "is_faithful": true,
+        "violations": [],
+        "fallback_used": false,
+        "latency_seconds": 1.056,
+        "case_id": 5,
+        "device_name": "BOI-ISLAMPUR",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "MEDIUM"
+      }
+    ],
+    "worst_failure_cases": [
+      {
+        "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-COOCHBEHAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 9.8%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\nKey Predictive Drivers: ac_voltage_slope_6h; time_since_mains_loss_hours\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+        "raw_generated_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-COOCHBEHAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 9.9%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\nKey Predictive Drivers: ac_voltage_slope_6h; time_since_mains_loss_hours\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: Not equipped (No battery voltage sensor present)\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+        "is_faithful": false,
+        "violations": [
+          "Ungrounded numerical figures: [9.9]"
+        ],
+        "fallback_used": true,
+        "latency_seconds": 1.078,
+        "case_id": 24,
+        "device_name": "BOI-COOCHBEHAR",
+        "device_state": "ONLINE_OK",
+        "risk_tier": "HIGH"
+      }
+    ]
+  }
+}

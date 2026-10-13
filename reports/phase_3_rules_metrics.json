@@ -1,0 +1,177 @@
+{
+  "rule_ac_zero": {
+    "sample_metrics": {
+      "tp": 5679,
+      "fp": 36570,
+      "fn": 22632,
+      "tn": 1101654,
+      "precision": 0.1344,
+      "recall": 0.2006,
+      "f1": 0.161,
+      "fire_rate": 0.0362,
+      "total_fires": 42249
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 21.07,
+      "total_fp_episodes": 1008,
+      "fp_episodes_per_dev_week": 0.58
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 332,
+      "event_recall": 1.0,
+      "mean_lead_time_hours": 10.96,
+      "median_lead_time_hours": 4.62
+    }
+  },
+  "rule_ac_surge": {
+    "sample_metrics": {
+      "tp": 1081,
+      "fp": 14867,
+      "fn": 27230,
+      "tn": 1123357,
+      "precision": 0.0678,
+      "recall": 0.0382,
+      "f1": 0.0488,
+      "fire_rate": 0.0137,
+      "total_fires": 15948
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 8.57,
+      "total_fp_episodes": 43,
+      "fp_episodes_per_dev_week": 0.02
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 39,
+      "event_recall": 0.1175,
+      "mean_lead_time_hours": 19.53,
+      "median_lead_time_hours": 24.0
+    }
+  },
+  "rule_battery_critical": {
+    "sample_metrics": {
+      "tp": 0,
+      "fp": 1425,
+      "fn": 28311,
+      "tn": 1136799,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "fire_rate": 0.0012,
+      "total_fires": 1425
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 0.82,
+      "total_fp_episodes": 272,
+      "fp_episodes_per_dev_week": 0.16
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 0,
+      "event_recall": 0.0,
+      "mean_lead_time_hours": 0.0,
+      "median_lead_time_hours": 0.0
+    }
+  },
+  "rule_mains_lost": {
+    "sample_metrics": {
+      "tp": 27134,
+      "fp": 1021708,
+      "fn": 1177,
+      "tn": 116516,
+      "precision": 0.0259,
+      "recall": 0.9584,
+      "f1": 0.0504,
+      "fire_rate": 0.8991,
+      "total_fires": 1048842
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 588.64,
+      "total_fp_episodes": 812,
+      "fp_episodes_per_dev_week": 0.47
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 332,
+      "event_recall": 1.0,
+      "mean_lead_time_hours": 23.62,
+      "median_lead_time_hours": 24.0
+    }
+  },
+  "rule_heartbeat_gap": {
+    "sample_metrics": {
+      "tp": 21254,
+      "fp": 986846,
+      "fn": 7057,
+      "tn": 151378,
+      "precision": 0.0211,
+      "recall": 0.7507,
+      "f1": 0.041,
+      "fire_rate": 0.8642,
+      "total_fires": 1008100
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 568.55,
+      "total_fp_episodes": 1303,
+      "fp_episodes_per_dev_week": 0.75
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 309,
+      "event_recall": 0.9307,
+      "mean_lead_time_hours": 20.97,
+      "median_lead_time_hours": 24.0
+    }
+  },
+  "rule_storage_fault": {
+    "sample_metrics": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 28311,
+      "tn": 1138224,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "fire_rate": 0.0,
+      "total_fires": 0
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 0.0,
+      "total_fp_episodes": 0,
+      "fp_episodes_per_dev_week": 0.0
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 0,
+      "event_recall": 0.0,
+      "mean_lead_time_hours": 0.0,
+      "median_lead_time_hours": 0.0
+    }
+  },
+  "rule_combined": {
+    "sample_metrics": {
+      "tp": 28108,
+      "fp": 1040046,
+      "fn": 203,
+      "tn": 98178,
+      "precision": 0.0263,
+      "recall": 0.9928,
+      "f1": 0.0513,
+      "fire_rate": 0.9157,
+      "total_fires": 1068154
+    },
+    "operational_metrics": {
+      "fp_steps_per_dev_week": 599.2,
+      "total_fp_episodes": 1360,
+      "fp_episodes_per_dev_week": 0.78
+    },
+    "incident_metrics": {
+      "total_events_in_range": 332,
+      "detected_events": 332,
+      "event_recall": 1.0,
+      "mean_lead_time_hours": 23.94,
+      "median_lead_time_hours": 24.0
+    }
+  }
+}

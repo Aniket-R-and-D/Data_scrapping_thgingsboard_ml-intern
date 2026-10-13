@@ -1,0 +1,30 @@
+{
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "fine_tuning_technique": "LoRA (PEFT)",
+  "lora_parameters": {
+    "r": 16,
+    "lora_alpha": 32,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "training_samples": 384,
+  "validation_samples": 99,
+  "epochs": 3,
+  "elapsed_seconds": 1119.2,
+  "final_train_loss": 0.0338,
+  "baseline_val_loss": 2.8623,
+  "final_val_loss": 0.0345,
+  "final_val_perplexity": 1.04,
+  "sample_inference_test": {
+    "device": "BOI-BAGULA",
+    "prompt": "Perform a 24-hour predictive outage and risk assessment for branch device 'BOI-BAGULA' (ID: 0bfa8fa0-c067-11f0-a562-d9639f025684).\nObserved Telemetry Snapshot:\n- AC Line Voltage: 228.4 V\n- Battery Bus Voltage: 10.9 V (State of Charge: 18%)\n- System Draw: 2.10 A\n- Primary Power State: MAINS DISCONNECTED / POWER LOSS\n- Surveillance NVR Status: OFFLINE (CCTV Stream Interrupted)\n- Fire Alarm System (FAS): NORMAL (Supervisory Clear)\n- Storage Health: HEALTHY (SMART Verified)\n- Alarm Profile: 106 Critical, 2 Major, 0 Warning, 1 Active Unacknowledged.\n\nProvide your step-by-step causal reasoning, root cause analysis, 24-hour outage prediction, and recommended dispatch actions.",
+    "generated_output": "<reasoning>\n1. Telemetry & Electrical Analysis:\n   - The mains supply state is 'MAINS DISCONNECTED / POWER LOSS' with recorded AC voltage at 228.4 V.\n   - The battery bus voltage is at 10.9 V (18%). DC bus remains within standard float charge limits.\n2. Surveillance & Communications Assessment:\n   - Surveillance NVR is currently OFFLINE (CCTV Stream Interrupted). Loss of NVR heartbeat confirms local power starvation or switch failure.\n   - Fire alarm system status is NORMAL (Supervisory Clear), while storage integrity indicates HEALTHY (SMART Verified).\n3. Outage Prediction & Root Cause:\n   - Primary driver: Local power disruption causing surveillance failure and NVR loss.\n   - Over the next 24 hours, the likelihood of an unrecoverable outage or critical alarm event is 94.3%, placing the branch in the CRITICAL tier.\n</reasoning>\n\n### Operational Diagnostic Findings: BOI-BAGULA\n- **Branch / Entity**: BOI-BAGULA \u2014 BOI-BAGULA\n- **Risk Classification**: **CRITICAL** (Outage Probability: 94.3%)\n- **24-Hour Outage Prediction**: **POSITIVE (Imminent Outage / Severe Alarm Event)**\n- **Primary Root Cause**: Secondary power source interruption leading to surveillance failure and local grid disruption.\n\n### Actionable Maintenance Dispatch Ticket\n- **Issue Type**: Critical Outage / Severe Alarm Event\n- **Ticket Description**: Branch device 'BOI-BAGULA' experiencing imminent total service disruption due to unexpected power failure.\n- **Dispatch Action**: Issue high-priority field ticket to regional facility engineer for on-site power restoration."
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "epochs": 3,
+  "train_samples": 405,
+  "val_samples": 45,
+  "elapsed_seconds": 625.0,
+  "initial_val_loss": 2.382,
+  "final_val_loss": 0.0008,
+  "initial_perplexity": 10.83,
+  "final_perplexity": 1.0,
+  "final_train_loss": 0.0007
+}

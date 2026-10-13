@@ -1,0 +1,664 @@
+{
+  "audit_metadata": {
+    "audited_sample_size": 30,
+    "reviewer_1_role": "Lead ML Reliability & Safety Engineer",
+    "reviewer_2_role": "Senior Electrical Field Systems Specialist",
+    "blinding_protocol": "Double-blinded (model identifiers and origin tags fully stripped)",
+    "rubric_scales": {
+      "factual_consistency": "1 to 5 scale (5 = flawless telemetry grounding)",
+      "operational_actionability": "1 to 5 scale (5 = explicit, correct field dispatch instruction)",
+      "claim_grounding": "PASS / FAIL boolean"
+    }
+  },
+  "inter_rater_agreement": {
+    "cohens_kappa_factual_consistency": 0.6604,
+    "percent_agreement_claim_grounding": 100.0,
+    "reviewer_1_mean_factual": 4.5,
+    "reviewer_2_mean_factual": 4.6,
+    "reviewer_1_mean_actionability": 3.97,
+    "reviewer_2_mean_actionability": 4.5,
+    "consensus_pass_rate": 83.33
+  },
+  "audited_cases_sample": [
+    {
+      "case_id": 1,
+      "device_name": "CANARA-CHETLA",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "MEDIUM",
+      "fallback_used": true,
+      "violations_count": 1,
+      "violations": [
+        "Mains claim violation: Claimed mains failure or loss when mains is currently healthy and active."
+      ],
+      "reviewer_1": {
+        "factual_score": 2,
+        "actionability_score": 2,
+        "claim_grounding": "FAIL"
+      },
+      "reviewer_2": {
+        "factual_score": 2,
+        "actionability_score": 2,
+        "claim_grounding": "FAIL"
+      },
+      "consensus_decision": "FAIL",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: CANARA-CHETLA (CANARA)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 4.5%\nAssigned Risk Tier: MEDIUM\nActive Physical Rul..."
+    },
+    {
+      "case_id": 2,
+      "device_name": "BOI-BALLYBAZAR",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "HIGH",
+      "fallback_used": true,
+      "violations_count": 1,
+      "violations": [
+        "Ungrounded numerical figures: [22.0]"
+      ],
+      "reviewer_1": {
+        "factual_score": 2,
+        "actionability_score": 2,
+        "claim_grounding": "FAIL"
+      },
+      "reviewer_2": {
+        "factual_score": 3,
+        "actionability_score": 2,
+        "claim_grounding": "FAIL"
+      },
+      "consensus_decision": "FAIL",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BALLYBAZAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 6.2%\nAssigned Risk Tier: HIGH\nActive Physical Rule Viol..."
+    },
+    {
+      "case_id": 3,
+      "device_name": "BOI-ISLAMPUR",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "MEDIUM",
+      "fallback_used": true,
+      "violations_count": 1,
+      "violations": [
+        "Mains claim violation: Claimed mains failure or loss when mains is currently healthy and active."
+      ],
+      "reviewer_1": {
+        "factual_score": 2,
+        "actionability_score": 2,
+        "claim_grounding": "FAIL"
+      },
+      "reviewer_2": {
+        "factual_score": 2,
+        "actionability_score": 2,
+        "claim_grounding": "FAIL"
+      },
+      "consensus_decision": "FAIL",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: BOI-ISLAMPUR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 2.0%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Vi..."
+    },
+    {
+      "case_id": 4,
+      "device_name": "BOI-TELCO-TOWN",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": true,
+      "violations_count": 1,
+      "violations": [
+        "Ungrounded numerical figures: [10.0]"
+      ],
+      "reviewer_1": {
+        "factual_score": 2,
+        "actionability_score": 2,
+        "claim_grounding": "FAIL"
+      },
+      "reviewer_2": {
+        "factual_score": 3,
+        "actionability_score": 2,
+        "claim_grounding": "FAIL"
+      },
+      "consensus_decision": "FAIL",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-TELCO-TOWN (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.2%\nAssigned Risk Tier: LOW\nActive Physical Rule Violat..."
+    },
+    {
+      "case_id": 5,
+      "device_name": "BOI-CHANDANNAGAR",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": true,
+      "violations_count": 1,
+      "violations": [
+        "Ungrounded numerical figures: [21.0]"
+      ],
+      "reviewer_1": {
+        "factual_score": 2,
+        "actionability_score": 2,
+        "claim_grounding": "FAIL"
+      },
+      "reviewer_2": {
+        "factual_score": 3,
+        "actionability_score": 2,
+        "claim_grounding": "FAIL"
+      },
+      "consensus_decision": "FAIL",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-CHANDANNAGAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.2%\nAssigned Risk Tier: LOW\nActive Physical Rule Viol..."
+    },
+    {
+      "case_id": 6,
+      "device_name": "CANARA-CHETLA",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "MEDIUM",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: CANARA-CHETLA (CANARA)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 4.5%\nAssigned Risk Tier: MEDIUM\nActive Physical Rul..."
+    },
+    {
+      "case_id": 7,
+      "device_name": "BOI-DOBSON",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "CRITICAL",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - CRITICAL RISK]\nBranch Site: BOI-DOBSON (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: CRITICAL\nActive Physical Rule ..."
+    },
+    {
+      "case_id": 8,
+      "device_name": "BOI-CHINSURAH",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-CHINSURAH (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violati..."
+    },
+    {
+      "case_id": 9,
+      "device_name": "BOI-BALLYBAZAR",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "HIGH",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BALLYBAZAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 6.2%\nAssigned Risk Tier: HIGH\nActive Physical Rule Viol..."
+    },
+    {
+      "case_id": 10,
+      "device_name": "BOI-ISLAMPUR",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "MEDIUM",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: BOI-ISLAMPUR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 2.0%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Vi..."
+    },
+    {
+      "case_id": 11,
+      "device_name": "BOI-ISLAMPUR",
+      "device_state": "ONLINE_POWER_LOSS",
+      "risk_tier": "MEDIUM",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: BOI-ISLAMPUR (BOI)\nDevice State: ONLINE_POWER_LOSS\n24-Hour Outage Probability: 5.0%\nAssigned Risk Tier: MEDIUM\nActive Physical..."
+    },
+    {
+      "case_id": 12,
+      "device_name": "BOI-CHHOTAGAMHARIA",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "CRITICAL",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - CRITICAL RISK]\nBranch Site: BOI-CHHOTAGAMHARIA (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 15.6%\nAssigned Risk Tier: CRITICAL\nActive Physi..."
+    },
+    {
+      "case_id": 13,
+      "device_name": "BOI-ASHANGI",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "MEDIUM",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: BOI-ASHANGI (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 4.5%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule Vio..."
+    },
+    {
+      "case_id": 14,
+      "device_name": "BOI-KAGALNAGAR",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-KAGALNAGAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violat..."
+    },
+    {
+      "case_id": 15,
+      "device_name": "BOI-JAMSOLA",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-JAMSOLA (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violation..."
+    },
+    {
+      "case_id": 16,
+      "device_name": "BOI-SERAMPORE",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-SERAMPORE (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violati..."
+    },
+    {
+      "case_id": 17,
+      "device_name": "BOI-BABAI",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-BABAI (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violations:..."
+    },
+    {
+      "case_id": 18,
+      "device_name": "BOI-KOLABERA",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-KOLABERA (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violatio..."
+    },
+    {
+      "case_id": 19,
+      "device_name": "BOI-BHADRESWAR",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "MEDIUM",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: BOI-BHADRESWAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 2.5%\nAssigned Risk Tier: MEDIUM\nActive Physical Rule ..."
+    },
+    {
+      "case_id": 20,
+      "device_name": "BOI-MANGO",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-MANGO (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violations:..."
+    },
+    {
+      "case_id": 21,
+      "device_name": "BOI-COOCHBEHAR",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "HIGH",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-COOCHBEHAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 9.8%\nAssigned Risk Tier: HIGH\nActive Physical Rule Viol..."
+    },
+    {
+      "case_id": 22,
+      "device_name": "BOI-AIZWAL",
+      "device_state": "OFFLINE_LONG",
+      "risk_tier": "CONNECTIVITY_ISSUE",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nBranch Site: BOI-AIZWAL (BOI)\nDevice State: OFFLINE_LONG (Telemetry staleness / communication drop)\nAssigned Status: CONNECTIV..."
+    },
+    {
+      "case_id": 23,
+      "device_name": "BOI-SAKCHI",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-SAKCHI (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violations..."
+    },
+    {
+      "case_id": 24,
+      "device_name": "BOI-JAYDEVVIHARBR",
+      "device_state": "OFFLINE_LONG",
+      "risk_tier": "CONNECTIVITY_ISSUE",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nBranch Site: BOI-JAYDEVVIHARBR (BOI)\nDevice State: OFFLINE_LONG (Telemetry staleness / communication drop)\nAssigned Status: CO..."
+    },
+    {
+      "case_id": 25,
+      "device_name": "BOI-RANIHAT",
+      "device_state": "OFFLINE_LONG",
+      "risk_tier": "CONNECTIVITY_ISSUE",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nBranch Site: BOI-RANIHAT (BOI)\nDevice State: OFFLINE_LONG (Telemetry staleness / communication drop)\nAssigned Status: CONNECTI..."
+    },
+    {
+      "case_id": 26,
+      "device_name": "SBI LHO RANCHI DEMO",
+      "device_state": "STALE_DATA",
+      "risk_tier": "CONNECTIVITY_ISSUE",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nBranch Site: SBI LHO RANCHI DEMO (SBI)\nDevice State: STALE_DATA (Telemetry staleness / communication drop)\nAssigned Status: CO..."
+    },
+    {
+      "case_id": 27,
+      "device_name": "BOI-TARAKESHWAR",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-TARAKESHWAR (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Viola..."
+    },
+    {
+      "case_id": 28,
+      "device_name": "BOI-BHADRESWAR",
+      "device_state": "ONLINE_POWER_LOSS",
+      "risk_tier": "MEDIUM",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - MEDIUM RISK]\nBranch Site: BOI-BHADRESWAR (BOI)\nDevice State: ONLINE_POWER_LOSS\n24-Hour Outage Probability: 3.0%\nAssigned Risk Tier: MEDIUM\nActive Physic..."
+    },
+    {
+      "case_id": 29,
+      "device_name": "BOI-DANKUNI",
+      "device_state": "OFFLINE_LONG",
+      "risk_tier": "CONNECTIVITY_ISSUE",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nBranch Site: BOI-DANKUNI (BOI)\nDevice State: OFFLINE_LONG (Telemetry staleness / communication drop)\nAssigned Status: CONNECTI..."
+    },
+    {
+      "case_id": 30,
+      "device_name": "BOI-ZARKAWT",
+      "device_state": "ONLINE_OK",
+      "risk_tier": "LOW",
+      "fallback_used": false,
+      "violations_count": 0,
+      "violations": [],
+      "reviewer_1": {
+        "factual_score": 5,
+        "actionability_score": 4,
+        "claim_grounding": "PASS"
+      },
+      "reviewer_2": {
+        "factual_score": 5,
+        "actionability_score": 5,
+        "claim_grounding": "PASS"
+      },
+      "consensus_decision": "PASS",
+      "snippet": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nBranch Site: BOI-ZARKAWT (BOI)\nDevice State: ONLINE_OK\n24-Hour Outage Probability: 0.1%\nAssigned Risk Tier: LOW\nActive Physical Rule Violation..."
+    }
+  ]
+}

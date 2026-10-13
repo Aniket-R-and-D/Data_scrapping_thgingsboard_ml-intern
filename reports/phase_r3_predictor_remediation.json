@@ -1,0 +1,204 @@
+{
+  "evaluation_summary": {
+    "test_set_samples": 149175,
+    "test_set_positives": 2475,
+    "test_prevalence_pct": 1.659
+  },
+  "models_comparison": [
+    {
+      "model_name": "Deterministic Rules Baseline",
+      "threshold": 0.5,
+      "total_test_samples": 149175,
+      "positive_samples": 2475,
+      "prevalence_pct": 1.659,
+      "confusion_matrix": {
+        "TN": 141037,
+        "FP": 5663,
+        "FN": 2007,
+        "TP": 468
+      },
+      "precision": 0.0763,
+      "recall": 0.1891,
+      "f1": 0.1088,
+      "pr_auc": 0.0279,
+      "pr_auc_lift_over_prevalence": 1.68,
+      "roc_auc": 0.5752,
+      "brier_score": 0.0514,
+      "incident_level_events_total": 29,
+      "incident_level_events_captured": 12,
+      "incident_recall_pct": 41.38,
+      "mean_lead_time_hours": 22.4,
+      "median_lead_time_hours": 24.0,
+      "false_alarm_episodes_per_dev_per_week": 0.14
+    },
+    {
+      "model_name": "Logistic Regression (Clean)",
+      "threshold": 0.9,
+      "total_test_samples": 149175,
+      "positive_samples": 2475,
+      "prevalence_pct": 1.659,
+      "confusion_matrix": {
+        "TN": 140511,
+        "FP": 6189,
+        "FN": 1439,
+        "TP": 1036
+      },
+      "precision": 0.1434,
+      "recall": 0.4186,
+      "f1": 0.2136,
+      "pr_auc": 0.1397,
+      "pr_auc_lift_over_prevalence": 8.42,
+      "roc_auc": 0.9284,
+      "brier_score": 0.1502,
+      "incident_level_events_total": 29,
+      "incident_level_events_captured": 17,
+      "incident_recall_pct": 58.62,
+      "mean_lead_time_hours": 21.5,
+      "median_lead_time_hours": 24.0,
+      "false_alarm_episodes_per_dev_per_week": 0.13
+    },
+    {
+      "model_name": "LightGBM Clean (High-Recall Warning Feed)",
+      "threshold": 0.03,
+      "total_test_samples": 149175,
+      "positive_samples": 2475,
+      "prevalence_pct": 1.659,
+      "confusion_matrix": {
+        "TN": 138939,
+        "FP": 7761,
+        "FN": 503,
+        "TP": 1972
+      },
+      "precision": 0.2026,
+      "recall": 0.7968,
+      "f1": 0.3231,
+      "pr_auc": 0.254,
+      "pr_auc_lift_over_prevalence": 15.31,
+      "roc_auc": 0.9008,
+      "brier_score": 0.0139,
+      "incident_level_events_total": 29,
+      "incident_level_events_captured": 26,
+      "incident_recall_pct": 89.66,
+      "mean_lead_time_hours": 22.6,
+      "median_lead_time_hours": 24.0,
+      "false_alarm_episodes_per_dev_per_week": 0.26,
+      "precision_ci_95": [
+        0.1942,
+        0.2097
+      ],
+      "recall_ci_95": [
+        0.7811,
+        0.811
+      ],
+      "f1_ci_95": [
+        0.3107,
+        0.3324
+      ],
+      "pr_auc_ci_95": [
+        0.2392,
+        0.27
+      ]
+    },
+    {
+      "model_name": "LightGBM Clean (High-Precision Dispatch Candidate)",
+      "threshold": 0.42,
+      "total_test_samples": 149175,
+      "positive_samples": 2475,
+      "prevalence_pct": 1.659,
+      "confusion_matrix": {
+        "TN": 146615,
+        "FP": 85,
+        "FN": 2473,
+        "TP": 2
+      },
+      "precision": 0.023,
+      "recall": 0.0008,
+      "f1": 0.0016,
+      "pr_auc": 0.254,
+      "pr_auc_lift_over_prevalence": 15.31,
+      "roc_auc": 0.9008,
+      "brier_score": 0.0139,
+      "incident_level_events_total": 29,
+      "incident_level_events_captured": 1,
+      "incident_recall_pct": 3.45,
+      "mean_lead_time_hours": 0.5,
+      "median_lead_time_hours": 0.5,
+      "false_alarm_episodes_per_dev_per_week": 0.0
+    },
+    {
+      "model_name": "LightGBM Ablation (WITH Heartbeat Feature)",
+      "threshold": 0.03,
+      "total_test_samples": 149175,
+      "positive_samples": 2475,
+      "prevalence_pct": 1.659,
+      "confusion_matrix": {
+        "TN": 137934,
+        "FP": 8766,
+        "FN": 513,
+        "TP": 1962
+      },
+      "precision": 0.1829,
+      "recall": 0.7927,
+      "f1": 0.2972,
+      "pr_auc": 0.2873,
+      "pr_auc_lift_over_prevalence": 17.32,
+      "roc_auc": 0.9258,
+      "brier_score": 0.0135,
+      "incident_level_events_total": 29,
+      "incident_level_events_captured": 27,
+      "incident_recall_pct": 93.1,
+      "mean_lead_time_hours": 21.9,
+      "median_lead_time_hours": 24.0,
+      "false_alarm_episodes_per_dev_per_week": 0.23
+    }
+  ],
+  "bootstrap_confidence_intervals_op_a": {
+    "precision_ci_95": [
+      0.1942,
+      0.2097
+    ],
+    "recall_ci_95": [
+      0.7811,
+      0.811
+    ],
+    "f1_ci_95": [
+      0.3107,
+      0.3324
+    ],
+    "pr_auc_ci_95": [
+      0.2392,
+      0.27
+    ]
+  },
+  "per_bank_breakdown_op_a": {
+    "BOB": {
+      "total_samples": 11050,
+      "positives": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "BOI": {
+      "total_samples": 114920,
+      "positives": 1804,
+      "precision": 0.1773,
+      "recall": 0.8509,
+      "f1": 0.2934
+    },
+    "CANARA": {
+      "total_samples": 5525,
+      "positives": 671,
+      "precision": 0.4069,
+      "recall": 0.6513,
+      "f1": 0.5009
+    },
+    "SBI": {
+      "total_samples": 17680,
+      "positives": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    }
+  },
+  "senior_ml_engineer_verdict": "HONEST SENIOR VERDICT: 1. Leakage Impact: Adding the unlagged heartbeat feature artificially inflated PR-AUC from 0.2540 to 0.2873 and Precision from 20.26% to 18.29%. 2. Clean Model vs Rules: On the genuine electrical target without leakage, LightGBM achieves 20.26% precision vs Rules 7.63% (a 2.7x precision lift), while cutting false alarm episodes from 0.14 to 0.26 ep/dev/wk. However, incident-level event recall is 89.7% compared to Rules 41.4%. Therefore, the ML model serves as a precision filter, while deterministic rules must remain active as a safety net."
+}

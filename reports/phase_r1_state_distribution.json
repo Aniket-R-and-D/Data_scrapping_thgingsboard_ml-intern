@@ -1,0 +1,174 @@
+{
+  "total_rows_evaluated": 1166535,
+  "global_state_distribution": {
+    "counts": {
+      "STALE_DATA": 524103,
+      "OFFLINE_LONG": 481710,
+      "ONLINE_OK": 113955,
+      "ONLINE_POWER_LOSS": 46767
+    },
+    "percentages": {
+      "STALE_DATA": 44.93,
+      "OFFLINE_LONG": 41.29,
+      "ONLINE_OK": 9.77,
+      "ONLINE_POWER_LOSS": 4.01
+    }
+  },
+  "fleet_bank_breakdown": {
+    "BOB": {
+      "total_rows": 86410,
+      "counts": {
+        "STALE_DATA": 86410
+      },
+      "percentages": {
+        "ONLINE_OK": 0.0,
+        "ONLINE_POWER_LOSS": 0.0,
+        "STALE_DATA": 100.0,
+        "OFFLINE_LONG": 0.0
+      }
+    },
+    "BOI": {
+      "total_rows": 898664,
+      "counts": {
+        "OFFLINE_LONG": 470648,
+        "STALE_DATA": 284030,
+        "ONLINE_OK": 100125,
+        "ONLINE_POWER_LOSS": 43861
+      },
+      "percentages": {
+        "ONLINE_OK": 11.14,
+        "ONLINE_POWER_LOSS": 4.88,
+        "STALE_DATA": 31.61,
+        "OFFLINE_LONG": 52.37
+      }
+    },
+    "CANARA": {
+      "total_rows": 43205,
+      "counts": {
+        "STALE_DATA": 15407,
+        "ONLINE_OK": 13830,
+        "OFFLINE_LONG": 11062,
+        "ONLINE_POWER_LOSS": 2906
+      },
+      "percentages": {
+        "ONLINE_OK": 32.01,
+        "ONLINE_POWER_LOSS": 6.73,
+        "STALE_DATA": 35.66,
+        "OFFLINE_LONG": 25.6
+      }
+    },
+    "SBI": {
+      "total_rows": 138256,
+      "counts": {
+        "STALE_DATA": 138256
+      },
+      "percentages": {
+        "ONLINE_OK": 0.0,
+        "ONLINE_POWER_LOSS": 0.0,
+        "STALE_DATA": 100.0,
+        "OFFLINE_LONG": 0.0
+      }
+    }
+  },
+  "legacy_label_audit": {
+    "total_legacy_positive_labels": 28311,
+    "legacy_prevalence_pct": 2.43,
+    "positives_by_state_counts": {
+      "OFFLINE_LONG": 10727,
+      "STALE_DATA": 10159,
+      "ONLINE_POWER_LOSS": 6272,
+      "ONLINE_OK": 1153
+    },
+    "positives_by_state_percentages": {
+      "OFFLINE_LONG": 37.89,
+      "STALE_DATA": 35.88,
+      "ONLINE_POWER_LOSS": 22.15,
+      "ONLINE_OK": 4.07
+    },
+    "stale_or_offline_positives_count": 20886,
+    "stale_or_offline_positives_percentage": 73.77,
+    "verdict": "73.77% of past positive 'outage' labels occurred when the device was in STALE_DATA or OFFLINE_LONG state, proving that the old model was largely trained to predict communication blackouts rather than real utility power failures."
+  },
+  "state_examples": {
+    "ONLINE_OK": [
+      {
+        "device_name": "BOI-ADITYAPUR",
+        "bank": "BOI",
+        "timestamp": "2026-08-27T12:00:00+00:00",
+        "heartbeat_gap_seconds": 0.0,
+        "ac_voltage": 192.5,
+        "battery_voltage": 13.0,
+        "legacy_y_outage_24h": 0
+      },
+      {
+        "device_name": "BOI-ADITYAPUR",
+        "bank": "BOI",
+        "timestamp": "2026-08-27T12:15:00+00:00",
+        "heartbeat_gap_seconds": 0.0,
+        "ac_voltage": 195.0,
+        "battery_voltage": 13.0,
+        "legacy_y_outage_24h": 0
+      }
+    ],
+    "ONLINE_POWER_LOSS": [
+      {
+        "device_name": "BOI-ADITYAPUR",
+        "bank": "BOI",
+        "timestamp": "2026-08-07T12:30:00+00:00",
+        "heartbeat_gap_seconds": 0.0,
+        "ac_voltage": 0.0,
+        "battery_voltage": 0.0,
+        "legacy_y_outage_24h": 0
+      },
+      {
+        "device_name": "BOI-ADITYAPUR",
+        "bank": "BOI",
+        "timestamp": "2026-08-07T12:45:00+00:00",
+        "heartbeat_gap_seconds": 900.0,
+        "ac_voltage": 0.0,
+        "battery_voltage": 0.0,
+        "legacy_y_outage_24h": 0
+      }
+    ],
+    "STALE_DATA": [
+      {
+        "device_name": "BOB-AIRPORT",
+        "bank": "BOB",
+        "timestamp": "2026-07-15T10:00:00+00:00",
+        "heartbeat_gap_seconds": 86400.0,
+        "ac_voltage": 0.0,
+        "battery_voltage": 0.0,
+        "legacy_y_outage_24h": 0
+      },
+      {
+        "device_name": "BOB-AIRPORT",
+        "bank": "BOB",
+        "timestamp": "2026-07-15T10:15:00+00:00",
+        "heartbeat_gap_seconds": 86400.0,
+        "ac_voltage": 0.0,
+        "battery_voltage": 0.0,
+        "legacy_y_outage_24h": 0
+      }
+    ],
+    "OFFLINE_LONG": [
+      {
+        "device_name": "BOI-ADITYAPUR",
+        "bank": "BOI",
+        "timestamp": "2026-08-08T12:45:00+00:00",
+        "heartbeat_gap_seconds": 87300.0,
+        "ac_voltage": 0.0,
+        "battery_voltage": 0.0,
+        "legacy_y_outage_24h": 0
+      },
+      {
+        "device_name": "BOI-ADITYAPUR",
+        "bank": "BOI",
+        "timestamp": "2026-08-08T13:00:00+00:00",
+        "heartbeat_gap_seconds": 88200.0,
+        "ac_voltage": 0.0,
+        "battery_voltage": 0.0,
+        "legacy_y_outage_24h": 0
+      }
+    ]
+  }
+}

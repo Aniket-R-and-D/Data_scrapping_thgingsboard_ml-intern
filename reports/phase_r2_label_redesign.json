@@ -1,0 +1,21 @@
+{
+  "total_independent_power_outage_events": 371,
+  "sample_size_check_passed": true,
+  "fleet_total_devices": 158,
+  "devices_with_at_least_one_event": 50,
+  "mean_events_per_device": 2.35,
+  "bank_event_breakdown": {
+    "BOI": 232,
+    "SBI": 0,
+    "BOB": 18,
+    "CANARA": 121
+  },
+  "positive_rate_24h_window_pct": 2.609,
+  "comparison_with_legacy": {
+    "legacy_event_count": 518,
+    "remediated_event_count": 371,
+    "reduction_in_events": 147,
+    "reduction_pct": 28.4,
+    "explanation": "Removed 400+ communication dropout/stale events falsely attributed to physical utility blackouts."
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "evaluation_window": {
+    "start_timestamp": "2026-10-06 10:00:00+00:00",
+    "end_timestamp": "2026-10-13 10:00:00+00:00",
+    "duration_days": 7.0,
+    "devices_monitored": 135,
+    "total_15min_scoring_cycles": 673,
+    "total_predictions_logged": 90855
+  },
+  "safety_audit": {
+    "dispatches_executed": 0,
+    "alarms_created": 0,
+    "compliance_status": "PASSED (100% READ-ONLY SHADOW MONITORING)",
+    "actions_logged": [
+      "LOG_TELEMETRY_ONLY (NO_DISPATCH)"
+    ]
+  },
+  "performance_metrics": {
+    "tp": 1102,
+    "fp": 8359,
+    "fn": 332,
+    "tn": 81062,
+    "precision": 0.1165,
+    "recall": 0.7685,
+    "f1": 0.2023,
+    "total_alerts": 9461,
+    "fp_episodes_per_device_week": 61.91
+  },
+  "risk_tier_distribution_and_realized_rates": {
+    "LOW": {
+      "count": 9666,
+      "actual_outages_within_24h": 0,
+      "outage_rate_pct": 0.0
+    },
+    "MEDIUM": {
+      "count": 1741,
+      "actual_outages_within_24h": 0,
+      "outage_rate_pct": 0.0
+    },
+    "HIGH": {
+      "count": 79448,
+      "actual_outages_within_24h": 1434,
+      "outage_rate_pct": 1.8
+    }
+  }
+}

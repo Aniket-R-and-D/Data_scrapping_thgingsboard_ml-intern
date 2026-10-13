@@ -1,0 +1,449 @@
+{
+  "evaluation_summary": {
+    "total_cases_evaluated": 100,
+    "borderline_cases": 40,
+    "high_risk_cases": 30,
+    "low_risk_noisy_cases": 30,
+    "faithfulness_rate": 0.28,
+    "hallucination_rate": 0.72,
+    "fallback_activation_rate": 0.72,
+    "average_latency_seconds": 5.611,
+    "note_on_legacy_report": "Labeled as 'format and smoke test only'. Legacy 90% keyword figure discarded per senior ML engineer principle."
+  },
+  "human_reviewed_sample_30": [
+    {
+      "case_id": 1,
+      "device_name": "BOI-MURARISHACHOWMATHA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.1756,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-MURARISHACHOWMATHA (BOI)\n24-Hour Outage Probability: 17.6%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heart..."
+    },
+    {
+      "case_id": 2,
+      "device_name": "BOI-ISLAMPUR",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2325,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 3,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-ISLAMPUR (BOI)\n24-Hour Outage Probability: 23.2%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nK..."
+    },
+    {
+      "case_id": 3,
+      "device_name": "BOI-COOCHBEHAR",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2371,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-COOCHBEHAR (BOI)\n24-Hour Outage Probability: 23.7%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_ac_zero, rule_mains_lost\nKey P..."
+    },
+    {
+      "case_id": 4,
+      "device_name": "BOI-ASHANGI",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2654,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-ASHANGI (BOI)\n24-Hour Outage Probability: 26.5%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_ac_zero, rule_mains_lost\nKey Pred..."
+    },
+    {
+      "case_id": 5,
+      "device_name": "BOI-BAGUIHATI",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.1015,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BAGUIHATI (BOI)\n24-Hour Outage Probability: 10.2%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\n..."
+    },
+    {
+      "case_id": 6,
+      "device_name": "BOI-RAIGANJ",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.1646,
+      "factual_consistency_score_out_of_5": 5,
+      "actionability_score_out_of_5": 4,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 0,
+      "fallback_used": false,
+      "sample_snippet": "### Operational Ticket: BOI-RAIGANJ\n- **Branch / Entity**: BOI-RAIGANJ\n- **Risk Tier**: **HIGH**\n- **Probability Assessment**: **16.5% (NEGATIVE (Nominal Operation Expected))**\n- **Physical Telemetry ..."
+    },
+    {
+      "case_id": 7,
+      "device_name": "BOI-BALURGHAT",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2457,
+      "factual_consistency_score_out_of_5": 5,
+      "actionability_score_out_of_5": 4,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 0,
+      "fallback_used": false,
+      "sample_snippet": "### Operational Ticket: BOI-BALURGHAT\n- **Branch / Entity**: BOI-BALURGHAT \u2014 BOI Banking Branch\n- **Risk Tier**: **HIGH**\n- **Probability of Outage Interruption**: **24.6%**\n- **Physical Telemetry Eva..."
+    },
+    {
+      "case_id": 8,
+      "device_name": "CANARA-CHETLA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2529,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 2,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: CANARA-CHETLA (CANARA)\n24-Hour Outage Probability: 25.3%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_ac_zero, rule_mains_lost\nKey..."
+    },
+    {
+      "case_id": 9,
+      "device_name": "BOI-RAIGANJ",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.098,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 2,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-RAIGANJ (BOI)\n24-Hour Outage Probability: 9.8%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nKey..."
+    },
+    {
+      "case_id": 10,
+      "device_name": "BOI-CHAPRA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2379,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-CHAPRA (BOI)\n24-Hour Outage Probability: 23.8%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nKey..."
+    },
+    {
+      "case_id": 11,
+      "device_name": "BOI-COOCHBEHAR",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2445,
+      "factual_consistency_score_out_of_5": 5,
+      "actionability_score_out_of_5": 4,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 0,
+      "fallback_used": false,
+      "sample_snippet": "### Operational Ticket: BOI-COOCHBEHAR\n- **Risk Tier**: **HIGH** (Estimated Failure Probability: 24.4%)\n- **Physical Telemetry Assessment**: **Rule Violations**: `rule_ac_zero`, `rule_mains_lost`\n- **..."
+    },
+    {
+      "case_id": 12,
+      "device_name": "BOI-BASTA-CC",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2687,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 3,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BASTA-CC (BOI)\n24-Hour Outage Probability: 26.9%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nK..."
+    },
+    {
+      "case_id": 13,
+      "device_name": "BOI-CHHOTAGAMHARIA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2654,
+      "factual_consistency_score_out_of_5": 5,
+      "actionability_score_out_of_5": 4,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 0,
+      "fallback_used": false,
+      "sample_snippet": "### Operational Ticket: BOI-CHHOTAGAMHARIA\n- **Branch / Entity**: BOI-CHHOTAGAMHARIA\n- **Risk Tier**: **HIGH**\n- **Probability Assessment**: **26.5% (NEGATIVE (Nominal Operation Expected))**\n- **Physi..."
+    },
+    {
+      "case_id": 14,
+      "device_name": "BOI-GANGTOK",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2286,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-GANGTOK (BOI)\n24-Hour Outage Probability: 22.9%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_ac_zero, rule_mains_lost\nKey Pred..."
+    },
+    {
+      "case_id": 15,
+      "device_name": "BOI-MURARISHACHOWMATHA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2673,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 4,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-MURARISHACHOWMATHA (BOI)\n24-Hour Outage Probability: 26.7%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost\nKey Predict..."
+    },
+    {
+      "case_id": 16,
+      "device_name": "BOI-GANGTOK",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2105,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 2,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-GANGTOK (BOI)\n24-Hour Outage Probability: 21.1%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nKe..."
+    },
+    {
+      "case_id": 17,
+      "device_name": "BOI-GANGTOK",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2483,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-GANGTOK (BOI)\n24-Hour Outage Probability: 24.8%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_ac_zero, rule_mains_lost\nKey Pred..."
+    },
+    {
+      "case_id": 18,
+      "device_name": "BOI-BHADRESWAR",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.1783,
+      "factual_consistency_score_out_of_5": 5,
+      "actionability_score_out_of_5": 4,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 0,
+      "fallback_used": false,
+      "sample_snippet": "### Operational Ticket: BOI-BHADRESWAR\n- **Branch / Entity**: BHADRESWAR \u2014 BOI-BHADRESWAR\n- **Risk Tier**: **HIGH**\n- **Probability Assessment**: **17.8% (NEGATIVE (Nominal Operation Expected))**\n- **..."
+    },
+    {
+      "case_id": 19,
+      "device_name": "BOI-CHAPRA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.0914,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 4,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-CHAPRA (BOI)\n24-Hour Outage Probability: 9.1%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nKey ..."
+    },
+    {
+      "case_id": 20,
+      "device_name": "CANARA-CHETLA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.303,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: CANARA-CHETLA (CANARA)\n24-Hour Outage Probability: 30.3%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_g..."
+    },
+    {
+      "case_id": 21,
+      "device_name": "BOI-BHADRESWAR",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.265,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BHADRESWAR (BOI)\n24-Hour Outage Probability: 26.5%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap..."
+    },
+    {
+      "case_id": 22,
+      "device_name": "BOI-ASHANGI",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2519,
+      "factual_consistency_score_out_of_5": 5,
+      "actionability_score_out_of_5": 4,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 0,
+      "fallback_used": false,
+      "sample_snippet": "---\n\n### Operational Ticket: BOI-ASHANGI\n- **Branch / Entity**: BOI-ASHANGI\n- **Risk Tier**: **HIGH**\n- **Probability of Outage Interruption**: **25.2%**\n- **Physical Telemetry Evaluation**: **rule_ac..."
+    },
+    {
+      "case_id": 23,
+      "device_name": "CANARA-CHETLA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.3179,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: CANARA-CHETLA (CANARA)\n24-Hour Outage Probability: 31.8%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_g..."
+    },
+    {
+      "case_id": 24,
+      "device_name": "BOI-BALLYBAZAR",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2519,
+      "factual_consistency_score_out_of_5": 5,
+      "actionability_score_out_of_5": 4,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 0,
+      "fallback_used": false,
+      "sample_snippet": "---\nTicket: BOI-BALLYBAZAR - BOI-BALLYBAZAR\n severity: HIGH\n probability_target: 25.2%\n riskTier: HIGH\n operationalTicketDescription: The electrical state of your branch is critically degraded with ze..."
+    },
+    {
+      "case_id": 25,
+      "device_name": "BOI-CHHOTAGAMHARIA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2166,
+      "factual_consistency_score_out_of_5": 5,
+      "actionability_score_out_of_5": 4,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 0,
+      "fallback_used": false,
+      "sample_snippet": "### Operational Ticket: BOI-CHHOTAGAMHARIA\n- **Branch / Entity**: BOI-CHHOTAGAMHARIA\n- **Risk Tier**: **HIGH**\n- **Probability Assessment**: **21.7% (NEGATIVE (Nominal Operation Expected))**\n- **Physi..."
+    },
+    {
+      "case_id": 26,
+      "device_name": "CANARA-CHETLA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2166,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: CANARA-CHETLA (CANARA)\n24-Hour Outage Probability: 21.7%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_ac_zero, rule_mains_lost\nKey..."
+    },
+    {
+      "case_id": 27,
+      "device_name": "CANARA-CHETLA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2429,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: CANARA-CHETLA (CANARA)\n24-Hour Outage Probability: 24.3%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_g..."
+    },
+    {
+      "case_id": 28,
+      "device_name": "BOI-BHADRESWAR",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2286,
+      "factual_consistency_score_out_of_5": 5,
+      "actionability_score_out_of_5": 4,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 0,
+      "fallback_used": false,
+      "sample_snippet": "### Operational Ticket: BOI-BHADRESWAR\n- **Risk Tier**: **HIGH** (Estimated Failure Probability: 22.9%)\n- **Physical Telemetry Assessment**: **Rule Violations**: `rule_ac_zero`, `rule_batt_low`\n- **Cr..."
+    },
+    {
+      "case_id": 29,
+      "device_name": "BOI-BAGUIHATI",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.0967,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 3,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BAGUIHATI (BOI)\n24-Hour Outage Probability: 9.7%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nK..."
+    },
+    {
+      "case_id": 30,
+      "device_name": "BOI-CHAPRA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.0892,
+      "factual_consistency_score_out_of_5": 4,
+      "actionability_score_out_of_5": 5,
+      "format_integrity": "PASS",
+      "hallucinated_figures_count": 1,
+      "fallback_used": true,
+      "sample_snippet": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-CHAPRA (BOI)\n24-Hour Outage Probability: 8.9%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nKey ..."
+    }
+  ],
+  "sample_full_cases": [
+    {
+      "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-MURARISHACHOWMATHA (BOI)\n24-Hour Outage Probability: 17.6%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nKey Predictive Drivers: N/A\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: 0.0 V\n- Heartbeat Gap: 87300.0 seconds\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+      "raw_generated_text": "### Operational Ticket: BOI-MURARISHACHOWMATHA\n- **Branch / Entity**: BOI-MURARISHACHOWMATHA\n- **Risk Tier**: **HIGH**\n- **Probability Assessment**: **17.6% (NEGATIVE (Nominal Operation Expected))**\n- **Physical Telemetry Rules Violation**: **rule_heartbeat_gap** \u2014 Current gap score: 87300.0 seconds; Normal operational limit is 1800 seconds.\n- **Critical Electrical Assessment**: **rule_mains_lost** \u2014 Active power loss detected: Zero volts; Critical voltage drop detected: NVR stream interruption expected.\n\n#### Operational Ticket Details\n- **Risk Tier**: HIGH\n- **Probability Assessment**: NEGATIVE (Nominal Operation Expected)\n- **Electrical Evaluation**: Critical heartbeating detection indicating pending branch outage.\n- **Telemetry Integrity**: Zero voltage levels observed; critical battery depletion detected at 0.0 V.\n\n#### Action Recommendation\n- **Immediate Action (Tier 1)**: Dispatch field electrical technician to inspect mains",
+      "is_faithful": false,
+      "violations": [
+        1800.0
+      ],
+      "fallback_used": true,
+      "latency_seconds": 8.147,
+      "case_id": 1,
+      "device_name": "BOI-MURARISHACHOWMATHA",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.1756
+    },
+    {
+      "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-ISLAMPUR (BOI)\n24-Hour Outage Probability: 23.2%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nKey Predictive Drivers: N/A\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: 0.0 V\n- Heartbeat Gap: 7200.0 seconds\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+      "raw_generated_text": "### Operational Ticket: BOI-ISLAMPUR\n- **Branch / Entity**: BOI-ISLAMPUR\n- **Risk Tier**: **HIGH**\n- **Probability of Outage Interruption**: **23.2%**\n- **Physical Telemetry Evaluation**: **Heartbeat Gap:** 7200.0 seconds; Normal Operational Range (0 - 6000 seconds)\n- **Machine Learning Prediction**: **High Probability of Outage Interruption (P=89.5%)**\n- **Recommendational Action**: **Immediate Field Dispatch Issue Detection\u201d\n\n### Reasoning\n- **Heartbeat Integrity**: The heartbeat gap measurement evaluates to 7200.0 seconds, placing the branch in the HIGH risk tier.\n- **Electrical Assessment**: Zero detectable power loss events detected during the 24h assessment period.\n- **Machine Learning Validation**: The predictive model confirms a high likelihood of total branch outage within 14 days.\n\n### Action Ticket\n- **Customer / Entity**: BOI-ISLAMPUR\n- **Action Required",
+      "is_faithful": false,
+      "violations": [
+        6000.0,
+        89.5,
+        14.0
+      ],
+      "fallback_used": true,
+      "latency_seconds": 7.407,
+      "case_id": 2,
+      "device_name": "BOI-ISLAMPUR",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2325
+    },
+    {
+      "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-COOCHBEHAR (BOI)\n24-Hour Outage Probability: 23.7%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_ac_zero, rule_mains_lost\nKey Predictive Drivers: N/A\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: 0.0 V\n- Heartbeat Gap: 0.0 seconds\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+      "raw_generated_text": "---\nTicket: BOI-COOCHBEHAR \u2014 BOI-COOCHBEHAR Branch\n severity: HIGH\n probability_target: 23.7%\n riskTier: HIGH\n operational_ticket_details:\n - Actionable Reason: rule_ac_zero\n - Why? : Active customer notification system checks pass.\n - Target Probability: 98.5%\n - Critical Value: battery_low\n - Potential Impact: Normal electrical flow detected.\n-\n\u2022 Electrical Assessment: Zero grid voltage detected at mains supply point.\n\u2022 Card reader inspection passes standard electrical test criteria.\n\u2022 Heartbeat latency equals 0.0 seconds.\n-\n\u2022 Risk Classification: **HIGH** (Risk Tier)\n\u2022 Probability of total service disruption in 24 hours: **23.7%**\n\u2022 Physical telemetry rules violation count: **0**\n\u2014 Technical Diagnosis Completed.",
+      "is_faithful": false,
+      "violations": [
+        98.5
+      ],
+      "fallback_used": true,
+      "latency_seconds": 5.79,
+      "case_id": 3,
+      "device_name": "BOI-COOCHBEHAR",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2371
+    },
+    {
+      "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-ASHANGI (BOI)\n24-Hour Outage Probability: 26.5%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_ac_zero, rule_mains_lost\nKey Predictive Drivers: N/A\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: 0.0 V\n- Heartbeat Gap: 0.0 seconds\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+      "raw_generated_text": "---\n\n### Operational Ticket: BOI-ASHANGI\n- **Branch / Entity**: BOI-ASHANGI\n- **Risk Tier**: **HIGH**\n- **Probability of Outage Interruption**: **26.5%**\n- **Physical Telemetry Evaluation**: **rule_ac_zero** (Automatic Circuit Breaker Activation = False)\n- **Electrical Assessment**: **battery_low || ac_nominal = Offline (Zero Voltage)**\n- **Machine Learning Prediction**: **probability_low = True</reasoning>\n- **Recommendation**: Replace mains battery cell and test automatic circuit breaker.\n\n### Operational Ticket Details\n- **Customer**: Unknown customer named ASHANGI.\n- **Ticket Number**: B00123456789\n- **Issue Description**: Loss of mains power causing imminent branch outage.\n- **Risk Tier Classification**: **HIGH** (Critical Event)\n- **Primary Risk Drivers**: Zero AC voltage and Nominal battery flow.\n- **Secondary Risk Drivers**: Natural disasters predicted within 30 days.\n\n### Preventative Action Ticket",
+      "is_faithful": false,
+      "violations": [
+        123456789.0
+      ],
+      "fallback_used": true,
+      "latency_seconds": 7.717,
+      "case_id": 4,
+      "device_name": "BOI-ASHANGI",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.2654
+    },
+    {
+      "explanation_text": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nBranch Site: BOI-BAGUIHATI (BOI)\n24-Hour Outage Probability: 10.2%\nAssigned Risk Tier: HIGH\nActive Physical Rule Violations: rule_mains_lost, rule_heartbeat_gap\nKey Predictive Drivers: N/A\n\nObserved Physical Telemetry Snapshot:\n- AC Line Voltage: 0.0 V\n- Battery Voltage: 0.0 V\n- Heartbeat Gap: 221400.0 seconds\n- Time Since Mains Loss: 0.0 hours\n\nDISPATCH RECOMMENDATION: Urgent electrical maintenance required. Inspect site utility power distribution board, UPS battery bank health, and primary line inverter. Verify mains contactor and physical breaker positions.",
+      "raw_generated_text": "### Operational Ticket: BOI-BAGUIHATI\n- **Branch / Entity**: BOI-BAGUIHATI\n- **Risk Tier**: **HIGH**\n- **Probability Assessment**: **10.2% (NEGATIVE (Nominal Operation Expected))**\n- **Physical Telemetry Rules Violation**: **rule_heartbeat_gap** \u2014 Active heartbeat detection threshold verified at 85 Hz.\n- **Critical Electrical Assessment**: **rule_mains_lost** \u2014 Loss of mains supply confirmed at 0.0 V.\n- **Technical Diagnosis Result**: **NEGATIVE (Nominal Operation Expected)**\n\n### Action Required\n- Replace failing battery cell and test automatic phase-changeover switch.",
+      "is_faithful": false,
+      "violations": [
+        85.0
+      ],
+      "fallback_used": true,
+      "latency_seconds": 4.818,
+      "case_id": 5,
+      "device_name": "BOI-BAGUIHATI",
+      "risk_tier": "HIGH",
+      "calibrated_prob": 0.1015
+    }
+  ]
+}

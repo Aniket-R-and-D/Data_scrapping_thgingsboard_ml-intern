@@ -1,0 +1,45 @@
+{
+  "total_devices": 135,
+  "battery_audit": {
+    "devices_with_active_sensor": 32,
+    "devices_unequipped_or_flat_zero": 64,
+    "devices_missing_file": 39,
+    "total_points": 46311,
+    "zero_points": 23344,
+    "zero_point_percentage": 50.41,
+    "nonzero_points": 22967,
+    "nonzero_point_percentage": 49.59
+  },
+  "ac_audit": {
+    "devices_with_active_sensor": 97,
+    "devices_unequipped_or_flat_zero": 7,
+    "devices_missing_file": 31,
+    "total_points": 63118,
+    "zero_points": 12497,
+    "zero_point_percentage": 19.8,
+    "nonzero_points": 50621,
+    "nonzero_point_percentage": 80.2
+  },
+  "fleet_breakdown": {
+    "BOI": {
+      "devices": 104,
+      "has_batt_sensor": 31,
+      "has_ac_sensor": 84
+    },
+    "SBI": {
+      "devices": 16,
+      "has_batt_sensor": 0,
+      "has_ac_sensor": 0
+    },
+    "BOB": {
+      "devices": 10,
+      "has_batt_sensor": 0,
+      "has_ac_sensor": 8
+    },
+    "CANARA": {
+      "devices": 5,
+      "has_batt_sensor": 1,
+      "has_ac_sensor": 5
+    }
+  }
+}

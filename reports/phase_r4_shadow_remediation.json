@@ -1,0 +1,75 @@
+{
+  "execution_audit": {
+    "run_type": "BACKTEST",
+    "model_version": "v2.0-remediated-lightgbm-clean",
+    "total_cycles_evaluated": 149175,
+    "devices_monitored": 135,
+    "mathematical_consistency": "100% VERIFIED PASS (TP+FP+FN+TN == Total Cycles == Sum of Tiers)"
+  },
+  "risk_tier_distribution": {
+    "tier_summary": {
+      "CRITICAL": {
+        "cycle_count": 4161,
+        "share_of_cycles_pct": 2.79,
+        "realized_outages": 257,
+        "realized_outage_rate_pct": 6.176
+      },
+      "HIGH": {
+        "cycle_count": 1618,
+        "share_of_cycles_pct": 1.08,
+        "realized_outages": 157,
+        "realized_outage_rate_pct": 9.703
+      },
+      "MEDIUM": {
+        "cycle_count": 837,
+        "share_of_cycles_pct": 0.56,
+        "realized_outages": 13,
+        "realized_outage_rate_pct": 1.553
+      },
+      "LOW": {
+        "cycle_count": 19990,
+        "share_of_cycles_pct": 13.4,
+        "realized_outages": 95,
+        "realized_outage_rate_pct": 0.475
+      },
+      "CONNECTIVITY_ISSUE": {
+        "cycle_count": 122569,
+        "share_of_cycles_pct": 82.16,
+        "realized_outages": 1953,
+        "realized_outage_rate_pct": 1.593
+      }
+    },
+    "high_plus_critical_volume_pct": 3.87,
+    "volume_constraint_under_10_pct_passed": true
+  },
+  "confusion_matrix_summary": {
+    "TN": 141335,
+    "FP": 5365,
+    "FN": 2061,
+    "TP": 414,
+    "precision": 0.0716,
+    "recall": 0.1673,
+    "f1": 0.1003
+  },
+  "incident_level_performance": {
+    "total_test_events": 29,
+    "events_captured_prior_to_onset": 19,
+    "event_recall_pct": 65.52,
+    "mean_lead_time_hours": 12.2,
+    "false_alarm_episodes_per_dev_per_week": 0.16
+  },
+  "rule_firing_rates": {
+    "RULE_AC_UNDER_50V": {
+      "count": 5339,
+      "firing_rate_pct": 3.579
+    },
+    "RULE_MAINS_LOSS_RECENT": {
+      "count": 6001,
+      "firing_rate_pct": 4.023
+    },
+    "RULE_AC_SURGE_OVER_250V": {
+      "count": 1554,
+      "firing_rate_pct": 1.042
+    }
+  }
+}

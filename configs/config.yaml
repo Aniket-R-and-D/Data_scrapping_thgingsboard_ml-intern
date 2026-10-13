@@ -1,0 +1,149 @@
+# ==============================================================================
+# ThingsBoard Telemetry Anomaly Detection & 24h Outage Prediction Configuration
+# Fleet: SBI, BOI, BOB, Canara Bank Branches
+# ==============================================================================
+
+project:
+  name: "bank-branch-outage-predictor"
+  version: "1.0.0"
+  random_seed: 42
+
+paths:
+  data_raw: "data/raw"
+  data_raw_telemetry: "data/raw/telemetry"
+  data_raw_alarms: "data/raw/alarms"
+  data_raw_registry: "data/raw/registry"
+  data_processed: "data/processed"
+  models_dir: "models"
+  reports_dir: "reports"
+  explanation_model_dir: "models/qwen_reasoning_outage_predictor/final_model"
+
+ingest:
+  host_env: "TB_HOST"
+  email_env: "TB_EMAIL"
+  password_env: "TB_PASSWORD"
+  verify_tls: false
+  lookback_days: 90
+  request_delay_s: 0.04
+  max_retries: 5
+  page_size: 1000
+
+fleet:
+  target_banks:
+    - "BOI"
+    - "SBI"
+    - "BOB"
+    - "CANARA"
+  excluded_name_patterns:
+    - "TEST"
+    - "playback"
+    - "TestGateway"
+    - "dfsgfdc"
+    - "kafka"
+    - "Recording"
+    - "SEPLe"
+    - "siri"
+    - "RND"
+
+signals:
+  ac_voltage_keys:
+    - "ac_voltage"
+    - "ac_result"
+  ac_status_keys:
+    - "ac_status"
+    - "statusbox_mains_on"
+  battery_voltage_keys:
+    - "battery_voltage"
+  battery_status_keys:
+    - "battery_status"
+    - "statusbox_battery_low"
+    - "statusbox_battery_reverse"
+  mains_keys:
+    - "statusbox_mains_on"
+    - "power_off_last"
+    - "ac_status"
+  nvr_keys:
+    - "Nvr_DVR_last"
+    - "dvr_nvr_off"
+    - "Hikvision_NVR_Heartbeat"
+    - "DahuaNVR_Heartbeat"
+    - "heartBeatCCTV"
+    - "heartbeat_CCTV"
+  fas_keys:
+    - "fasLastHour"
+    - "fasUptime"
+    - "fire_alarm_off_last"
+    - "fire_alarm_activate_last"
+    - "fire_alarm_fault_last"
+    - "FASfaultCOUNT"
+    - "FASinactiveCOUNT"
+    - "iasBasFasStatus"
+  storage_keys:
+    - "hdd_error_last"
+    - "disk"
+    - "hddError"
+  heartbeat_keys:
+    - "uptimeHeartbeat"
+    - "gatewayUptime"
+    - "heartbeat"
+    - "lastActivityTime"
+    - "dailyHeartbeatCounts"
+
+outage_label:
+  # Primary Target: y_power_outage_24h (Electrical Evidence ONLY)
+  power_outage_definition: "mains_lost (AC < 50V or mains_on == 0) AND (battery_voltage < 10.8V where equipped, or verified POWER OFF / BATTERY LOW alarm) for >= 15 min"
+  sustained_minutes: 15
+  prediction_window_hours: 24
+  battery_critical_volts: 10.8
+  ac_outage_volts: 50.0
+  electrical_alarm_types:
+    - "POWER OFF"
+    - "BATTERY LOW"
+    - "BATTERY REVERSE"
+
+  # Secondary Target: y_connectivity_loss_24h (Communication silence)
+  connectivity_loss_definition: "telemetry_age_seconds >= 3600 (no telemetry received for >= 60 min)"
+  connectivity_threshold_seconds: 3600
+  connectivity_prediction_window_hours: 24
+
+  # Legacy definition preserved for reference only
+  legacy_definition: "mains_lost AND (battery_voltage < 10.8 V OR nvr_offline == 1 OR heartbeat_gap_s >= 900) for >= 15 min"
+
+features:
+  resample_interval: "15min"
+  rolling_windows_hours:
+    - 1
+    - 6
+    - 24
+  mains_loss_lookback_days: 7
+  max_forward_fill_hours: 2.0
+  per_device_zscore: true
+
+rules:
+  ac_zero_volts: 0.0
+  ac_surge_volts: 250.0
+  battery_critical_volts: 10.8
+  heartbeat_timeout_seconds: 1800
+  storage_error_threshold: 1
+
+anomaly_model:
+  contamination: 0.05
+  n_estimators: 100
+  random_state: 42
+
+prediction_model:
+  type: "lightgbm"
+  test_size: 0.15
+  val_size: 0.15
+  n_estimators: 150
+  learning_rate: 0.05
+  max_depth: 5
+  class_weight: "balanced"
+  random_state: 42
+
+explanation:
+  model_dir: "models/qwen_reasoning_outage_predictor/final_model"
+  device: "cuda"
+  max_new_tokens: 256
+  temperature: 0.1
+  strict_validation: true

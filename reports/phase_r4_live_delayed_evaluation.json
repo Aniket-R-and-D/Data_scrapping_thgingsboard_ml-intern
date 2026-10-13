@@ -1,0 +1,7 @@
+{
+  "evaluation_time_utc": "2026-10-13T12:07:48.258570+00:00",
+  "total_live_predictions": 474,
+  "matured_predictions_count": 0,
+  "unscored_pending_count": 474,
+  "maturation_guard": "Predictions under 24 hours old are strictly excluded from accuracy scoring."
+}
