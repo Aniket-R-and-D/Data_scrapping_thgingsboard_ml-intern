@@ -9,7 +9,7 @@
 
 Tag name: `v0.1.0-deterministic-default` (annotated)
 
-Tag target: the commit that adds **this file** (the commit after `9cbeec1`).
+Tag target: the latest commit that edits **this file** (after `9cbeec1`).
 A report cannot contain its own commit hash; resolve with
 `git rev-list -n 1 v0.1.0-deterministic-default`.
 
@@ -21,7 +21,9 @@ v0.1.0-deterministic-default
 - Deterministic renderer is the sole operational ticket path.
 - LLM explanation layer is experimental and disabled by default
   (EXPERIMENTAL_LLM_ENABLED=false).
-- Dispatch, ThingsBoard alarm creation, and notifications are disabled.
+- Dispatch, ThingsBoard alarm creation, and notifications are disabled
+  per configs/release.yaml and the src/ release path; see
+  reports/release_v0.1.0.md section 5 for known gaps L1-L7.
 - Human review is pending (0 completed review forms).
 - Independent semantic accuracy is not measured.
 ```
@@ -70,6 +72,12 @@ python -c "import sys,pathlib,verify_r5_evidence as v; v.OUT_FILE=pathlib.Path('
 `src/eval/run_stage_e_comparison.py` was **not** executed (its `__main__` regenerates
 the Stage E raw results, review forms and blinding key). Stage E verification is the
 stored-artifact test suite above, not a re-run.
+
+**Fresh-clone caveat:** these results were produced in the release workspace, which
+holds files git does not track (model weights untracked in `db4ac51`; `data/eval/`
+and `data/processed/` ignored). A clean clone of the tag will FAIL the startup check
+and the data/model-dependent tests until those artifacts are restored and match the
+hashes in section 4. "245 passed" is a property of the workspace, not the tagged tree.
 
 Artifact immutability: SHA-256 of all 97 files under `reports/`, `data/eval/`,
 `models/`, `configs/` taken before and after all checks — **no differences**.
@@ -129,6 +137,13 @@ listed for reference and intentionally differ.
 | Human review | PENDING | 0 completed forms; blank pack only |
 | Semantic accuracy | NOT MEASURED | `reports/phase_r5_stage_e_llm_value_assessment.md` |
 
+### Correction to earlier report
+
+`reports/final_claims_audit.md` claim 6 labels Stage E aggregates as "REPRODUCED".
+`tests/test_stage_e_comparison.py` only reads stored JSON; Stage E was not re-run.
+Correct status: **STORED (consistency-checked), not reproduced.** The earlier report
+is left unedited per the no-modification rule.
+
 ### Known limitations (found in G1 audit; not fixed in this stage)
 
 - **L1 (HIGH)** — The startup check is not invoked by the scheduled nightly chain
@@ -149,6 +164,10 @@ listed for reference and intentionally differ.
   write-back guarded only by `WRITE_BACK = False`.
 - **L7 (MEDIUM)** — ThingsBoard TLS verification is disabled in the nightly pull
   (`nightly_risk_chain.py:72`, `src/ingest/pull_data.py:43`).
+
+Text-file hashes above are of the LF working copies; a checkout with
+`core.autocrlf=true` may produce different hashes for text files (weights and data
+files are unaffected).
 
 ## 6. Repository hygiene and push blockers
 
