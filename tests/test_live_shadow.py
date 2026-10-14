@@ -219,3 +219,37 @@ def test_outcome_maturity_rules(live_dir):
     df["pt"] = pd.to_datetime(df["prediction_time"], utc=True)
     out = outcomes.assign_outcomes(df, now).set_index("device_id")["outcome_status"]
     assert out.to_dict() == {"pending": "PENDING", "incomplete": "INCOMPLETE", "mature": "MATURE"}
+
+
+def test_stale_ticket_shows_last_raw_reading_not_imputation(tmp_path):
+    cutoff = datetime(2026, 11, 1, 12, 0, tzinfo=timezone.utc)
+    dev = tmp_path / "dev"
+    dev.mkdir()
+    last = int((cutoff - timedelta(hours=3)).timestamp() * 1000)
+    pd.DataFrame({"ts": [last - 60000, last], "value": ["231", "0"]}).to_parquet(dev / "ac_voltage.parquet")
+    row = {"device_id": "d1", "device_name": "SITE-1", "bank": "BOI", "device_state": "STALE_DATA",
+           "risk_tier": "CONNECTIVITY_ISSUE", "calibrated_prob": 0.01, "rules_triggered_json": "[]",
+           "model_version": sr.MODEL_VERSION, "is_ac_sensor_present": 1, "is_battery_sensor_present": 0,
+           "ac_voltage_mean_1h": 220.0, "battery_voltage_mean_1h": 13.5, "time_since_mains_loss_hours": 168.0}
+    ti = sr.build_ticket(row, dev, cutoff + timedelta(minutes=1))
+    ac = ti.measurement("ac_voltage")
+    assert (ac.value, ac.freshness) == (0.0, "STALE")
+    assert ti.measurement("time_since_mains_loss").freshness == "UNAVAILABLE"
+    assert ti.measurement("battery_voltage").freshness == "UNAVAILABLE"
+    text = sr.render_connectivity_ticket_without_probability(ti).text
+    assert "220" not in text and "168" not in text and "13.5" not in text
+
+
+@needs_data
+@needs_models
+def test_alarm_fetch_failure_marks_cycle_degraded(live_dir, monkeypatch, sample_devices):
+    _fleet(monkeypatch, sample_devices[:1])
+
+    class BadAlarms(ReplaySource):
+        def fetch_alarms(self, *a):
+            raise RuntimeError("GET failed: /api/alarm")
+
+    s = sr.run_cycle(BadAlarms(), now=NOW)
+    assert s["status"] == "DEGRADED" and s["alarm_fetch_failures"] == 1 and s["complete_input_devices"] == 0
+    rec = json.loads(sr.LOG_JSONL.read_text().splitlines()[0])
+    assert rec["input_complete"] is False

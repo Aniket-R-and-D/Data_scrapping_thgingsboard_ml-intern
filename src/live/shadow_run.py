@@ -101,6 +101,7 @@ FEATURE_KEYS = (
 )
 AC_KEYS = ("ac_voltage", "ac_result", "ac_status")
 BATT_KEYS = ("battery_voltage", "battery_status")
+JSON_NUM_PATTERN = r"{key}[\"':\s]+([0-9.]+)"  # same as build_remediated_features.read_ts_series
 ALARM_COLUMNS = ["device_id", "alarm_type", "severity", "status", "start", "end", "clear"]
 
 
@@ -171,19 +172,25 @@ class ThingsBoardReadOnly:
         backwards from its oldest returned timestamp.
         """
         keys = list(keys)
-        out: List[Tuple[str, int, str]] = []
         base = f"{self.host}/api/plugins/telemetry/DEVICE/{device_id}/values/timeseries"
         data = self._get(f"{base}?keys={','.join(keys)}&startTs={start_ms}&endTs={end_ms}"
                          f"&limit={PAGE_LIMIT}&agg=NONE&orderBy=DESC") or {}
-        for key, pts in data.items():
+        sizes = [len(v) for v in data.values()]
+        if sizes and (max(sizes) >= PAGE_LIMIT or sum(sizes) >= PAGE_LIMIT):
+            # Possibly truncated (whether `limit` is per key or global): page each key alone.
+            return [pt for k in keys for pt in self._fetch_key(base, k, start_ms, end_ms)]
+        return [(k, int(p["ts"]), str(p.get("value"))) for k, pts in data.items() for p in pts]
+
+    def _fetch_key(self, base: str, key: str, start_ms: int, end_ms: int) -> List[Tuple[str, int, str]]:
+        out: List[Tuple[str, int, str]] = []
+        cursor_end = end_ms
+        while cursor_end >= start_ms:
+            pts = (self._get(f"{base}?keys={key}&startTs={start_ms}&endTs={cursor_end}"
+                             f"&limit={PAGE_LIMIT}&agg=NONE&orderBy=DESC") or {}).get(key, [])
             out.extend((key, int(p["ts"]), str(p.get("value"))) for p in pts)
-            cursor_end = min((int(p["ts"]) for p in pts), default=start_ms) - 1
-            while len(pts) >= PAGE_LIMIT and cursor_end >= start_ms:
-                page = self._get(f"{base}?keys={key}&startTs={start_ms}&endTs={cursor_end}"
-                                 f"&limit={PAGE_LIMIT}&agg=NONE&orderBy=DESC") or {}
-                pts = page.get(key, [])
-                out.extend((key, int(p["ts"]), str(p.get("value"))) for p in pts)
-                cursor_end = min((int(p["ts"]) for p in pts), default=start_ms) - 1
+            if len(pts) < PAGE_LIMIT:
+                break
+            cursor_end = min(int(p["ts"]) for p in pts) - 1
         return out
 
     def fetch_alarms(self, device_id: str, start_ms: int, end_ms: int) -> List[Dict[str, Any]]:
@@ -344,6 +351,44 @@ def _last_obs_ms(dev_dir: Path, keys: Iterable[str]) -> Optional[int]:
     return best
 
 
+def _last_raw(dev_dir: Path, keys: Iterable[str], json_key: str) -> Tuple[Optional[float], Optional[int]]:
+    """Most recent parseable numeric reading (value, ts) across keys.
+
+    JSON status keys are parsed with the feature builder's regex.
+    """
+    best: Tuple[Optional[float], Optional[int]] = (None, None)
+    for k in keys:
+        p = dev_dir / f"{k}.parquet"
+        if not p.exists():
+            continue
+        df = pd.read_parquet(p, columns=["ts", "value"])
+        if k.endswith("_status"):
+            v = df["value"].astype(str).str.strip().str.lower()
+            num = pd.to_numeric(v.str.extract(JSON_NUM_PATTERN.format(key=json_key), expand=False), errors="coerce")
+        else:
+            num = pd.to_numeric(df["value"], errors="coerce")
+        ok = df[num.notna()]
+        if len(ok):
+            i = ok["ts"].idxmax()
+            if best[1] is None or int(ok.at[i, "ts"]) > best[1]:
+                best = (float(num[i]), int(ok.at[i, "ts"]))
+    return best
+
+
+def _display(mean_1h: float, raw: Tuple[Optional[float], Optional[int]], pred_ts: datetime,
+             decimals: int) -> Tuple[Optional[float], Optional[int]]:
+    """CURRENT readings show the 1h mean; STALE readings show the last raw value.
+
+    Never shows the builder's nominal imputations (220 V / 13.5 V) as a measurement.
+    """
+    value, ts = raw
+    if ts is None:
+        return None, None
+    age = pred_ts - datetime.fromtimestamp(ts / 1000.0, tz=timezone.utc)
+    shown = mean_1h if age <= FRESHNESS_CURRENT_MAX_AGE else value
+    return round(float(shown), decimals), ts
+
+
 def _measurement(fld: str, value: Optional[float], unit: str, obs_ms: Optional[int], pred_ts: datetime) -> Measurement:
     if value is None or obs_ms is None or not np.isfinite(value):
         return Measurement(fld, None, None, None, "UNAVAILABLE")
@@ -359,14 +404,30 @@ def build_ticket(row: Dict[str, Any], dev_dir: Path, pred_ts: datetime) -> Ticke
     measurements are rebuilt from the last observation actually in the cache.
     Unequipped or never-observed sensors are UNAVAILABLE, never imputed values.
     """
-    base = _row_to_ticket_input(pd.Series({**row, "timestamp": pred_ts.isoformat()}))
-    ac_obs = _last_obs_ms(dev_dir, AC_KEYS) if row["is_ac_sensor_present"] else None
-    batt_obs = _last_obs_ms(dev_dir, BATT_KEYS) if row["is_battery_sensor_present"] else None
-    elec_obs = max([t for t in (ac_obs, batt_obs, _last_obs_ms(dev_dir, ("statusbox_mains_on", "power_off_last"))) if t] or [0]) or None
+    ac_val, ac_obs = (_display(row["ac_voltage_mean_1h"], _last_raw(dev_dir, AC_KEYS, "ac_voltage"), pred_ts, 1)
+                      if row["is_ac_sensor_present"] else (None, None))
+    b_val, b_obs = (_display(row["battery_voltage_mean_1h"], _last_raw(dev_dir, BATT_KEYS, "battery_voltage"), pred_ts, 2)
+                    if row["is_battery_sensor_present"] else (None, None))
+    if b_val is not None and b_val <= 0.5:  # R1 sentinel: unequipped/idle channel reads ~0 V
+        b_val, b_obs = None, None
+    elec_obs = max([t for t in (ac_obs, b_obs, _last_obs_ms(dev_dir, ("statusbox_mains_on", "power_off_last"))) if t]
+                   or [0]) or None
+    mains_h: Optional[float] = round(float(row["time_since_mains_loss_hours"]), 1)
+    # ponytail: 168.0 h is the builder's "no mains loss in window" fill, not a measurement.
+    if mains_h == 168.0:
+        mains_h, elec_obs = None, None
+    shown = {**row, "timestamp": pred_ts.isoformat()}
+    if ac_val is not None:
+        shown["ac_voltage_mean_1h"] = ac_val          # facts line must cite the displayed value
+    if b_val is not None:
+        shown["battery_voltage_mean_1h"] = b_val
+    if mains_h is not None:
+        shown["time_since_mains_loss_hours"] = mains_h
+    base = _row_to_ticket_input(pd.Series(shown))
     measurements = [
-        _measurement("ac_voltage", round(float(row["ac_voltage_mean_1h"]), 1), "V", ac_obs, pred_ts),
-        _measurement("battery_voltage", round(float(row["battery_voltage_mean_1h"]), 2), "V", batt_obs, pred_ts),
-        _measurement("time_since_mains_loss", round(float(row["time_since_mains_loss_hours"]), 1), "hours", elec_obs, pred_ts),
+        _measurement("ac_voltage", ac_val, "V", ac_obs, pred_ts),
+        _measurement("battery_voltage", b_val, "V", b_obs, pred_ts),
+        _measurement("time_since_mains_loss", mains_h, "hours", elec_obs, pred_ts),
     ]
     fields = {k: getattr(base, k) for k in base.__dataclass_fields__}
     fields["measurements"] = measurements
@@ -521,23 +582,31 @@ def run_cycle(source, now: Optional[datetime] = None) -> Dict[str, Any]:
     state = _load_state()
     _seed_alarms(floor.isoformat())
 
-    fetch_fail = 0
+    fetch_fail = alarm_fail = 0
+    fail_msgs: List[str] = []
     new_alarms: List[Dict[str, Any]] = []
     complete: Dict[str, bool] = {}
     for dev in fleet:
         did = dev["device_id"]
         if did not in state:
             state[did] = _seed_device(did, floor_ms)
+        complete[did] = False
         try:
             pts = source.fetch_timeseries(did, FEATURE_KEYS, state[did] + 1, cutoff_ms - 1)
             _append_points(did, pts, floor_ms)
-            new_alarms += source.fetch_alarms(did, cutoff_ms - int(ALARM_REFETCH.total_seconds() * 1000), cutoff_ms - 1)
             state[did] = cutoff_ms - 1
-            complete[did] = True
         except Exception as e:  # device-level fetch failure: logged, scored as incomplete
-            LOG.warning("fetch failed for %s: %s", did, type(e).__name__)
+            LOG.warning("telemetry fetch failed for %s: %s: %s", did, type(e).__name__, str(e)[:200])
             fetch_fail += 1
-            complete[did] = False
+            fail_msgs.append(f"telemetry {type(e).__name__}: {str(e)[:120]}")
+            continue
+        try:
+            new_alarms += source.fetch_alarms(did, cutoff_ms - int(ALARM_REFETCH.total_seconds() * 1000), cutoff_ms - 1)
+            complete[did] = True
+        except Exception as e:
+            LOG.warning("alarm fetch failed for %s: %s: %s", did, type(e).__name__, str(e)[:200])
+            alarm_fail += 1
+            fail_msgs.append(f"alarms {type(e).__name__}: {str(e)[:120]}")
     _upsert_alarms(new_alarms)
     _save_state(state)
 
@@ -577,8 +646,12 @@ def run_cycle(source, now: Optional[datetime] = None) -> Dict[str, Any]:
                                 "rendered_ticket": None, "validator_violations": None})
     append_records(records)
     tiers = pd.Series([r["risk_tier"] for r in records]).value_counts(dropna=False).to_dict()
+    degraded = fetch_fail or alarm_fail or errors
     summary.update({
-        "status": "OK", "devices": len(fleet), "fetch_failures": fetch_fail, "scoring_errors": errors,
+        "status": "DEGRADED" if degraded else "OK", "devices": len(fleet),
+        "fetch_failures": fetch_fail, "alarm_fetch_failures": alarm_fail,
+        "complete_input_devices": sum(complete.values()),
+        "failure_samples": sorted(set(fail_msgs))[:5], "scoring_errors": errors,
         "validator_failures": sum(1 for r in records if r.get("validator_valid") is False),
         "tiers": {str(k): int(v) for k, v in tiers.items()}, "llm_used": 0, "alarms_created": 0,
         "dispatches": 0, "notifications": 0, "finished": datetime.now(timezone.utc).isoformat(),
@@ -621,7 +694,9 @@ def run_once(source_factory=ThingsBoardReadOnly.from_env) -> int:
         with open(CYCLES_JSONL, "a", encoding="utf-8") as f:
             f.write(json.dumps(summary, sort_keys=True) + "\n")
         LOG.info("cycle %s", json.dumps(summary, sort_keys=True))
-        return 0 if summary.get("status") in ("OK", "SKIPPED_ALREADY_LOGGED", "STOP_FILE_PRESENT") else 1
+        if summary.get("status") == "DEGRADED" and summary.get("complete_input_devices", 0) == 0:
+            return 1  # every device failed: not a usable cycle
+        return 0 if summary.get("status") in ("OK", "DEGRADED", "SKIPPED_ALREADY_LOGGED", "STOP_FILE_PRESENT") else 1
     finally:
         LOCK_FILE.unlink(missing_ok=True)
 

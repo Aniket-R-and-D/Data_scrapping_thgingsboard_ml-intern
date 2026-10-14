@@ -25,12 +25,24 @@ The person running the launch triggers the first cycle and creates the scheduled
 The first cycle backfills telemetry from the end of the historical harvest to now.
 
 ```
-REM one manual cycle (confirms credentials and connectivity)
+REM 1) one manual cycle (confirms credentials and connectivity)
 .venv\Scripts\python.exe -X utf8 -m src.live.shadow_run --once
 
-REM every 15 minutes, while the user is logged on
-schtasks /Create /TN "TB_LiveShadow_G2" /TR "\"C:\workspace\Data_scrapping_thgingsboard_ml-intern\run_live_shadow.bat\"" /SC MINUTE /MO 15 /F
+REM 2) inspect it: status must be "OK" with fetch_failures 0, alarm_fetch_failures 0,
+REM    scoring_errors 0. Do NOT register the task on DEGRADED/FAILED; read failure_samples.
+powershell -c "Get-Content data\live\cycles.jsonl -Tail 1"
 ```
+
+```powershell
+# 3) every 15 minutes for 20 days. Runs on battery, does not stop on battery, no overlap.
+$a = New-ScheduledTaskAction -Execute "C:\workspace\Data_scrapping_thgingsboard_ml-intern\run_live_shadow.bat"
+$t = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 15) -RepetitionDuration (New-TimeSpan -Days 20)
+$s = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Minutes 14)
+Register-ScheduledTask -TaskName "TB_LiveShadow_G2" -Action $a -Trigger $t -Settings $s
+```
+
+Also disable system sleep for the run (`powercfg /change standby-timeout-ac 0`). Otherwise
+`cycle_coverage` drops without any error being raised.
 
 Foreground alternative (no scheduled task): `.venv\Scripts\python.exe -m src.live.shadow_run --loop`.
 
@@ -92,8 +104,8 @@ Every record includes these fields:
 ```
 REM last 5 cycle summaries
 powershell -c "Get-Content data\live\cycles.jsonl -Tail 5"
-REM tier counts per cycle
-sqlite3 data\live\shadow_predictions.db "SELECT cycle_id, risk_tier, COUNT(*) FROM predictions GROUP BY 1,2 ORDER BY 1 DESC LIMIT 20;"
+REM tier counts for the last 3 cycles (no sqlite3 CLI needed)
+.venv\Scripts\python.exe -c "import sqlite3;c=sqlite3.connect('data/live/shadow_predictions.db');[print(r) for r in c.execute('SELECT cycle_id,risk_tier,COUNT(*) FROM predictions WHERE cycle_id IN (SELECT DISTINCT cycle_id FROM predictions ORDER BY cycle_id DESC LIMIT 3) GROUP BY 1,2 ORDER BY 1 DESC')]"
 REM interim reports (aggregate only, safe for reports/)
 .venv\Scripts\python.exe -m src.live.outcomes --report day1
 ```
@@ -124,6 +136,12 @@ plus the 24 h outcome wait:
   than 30 minutes is treated as stale and removed.
 - **Idempotent:** if a cycle whose `cycle_id` is already in the database is re-run, it exits with
   `SKIPPED_ALREADY_LOGGED`.
+- **Cycle status** is one of:
+  - `OK`.
+  - `DEGRADED`: some telemetry fetch, alarm fetch or scoring failed. The exit code is 0, except
+    when no device had complete input, in which case it is 1. `failure_samples` carries the
+    error messages.
+  - `FAILED`.
 - **Device fetch failure:**
   - The device is still scored from cached data, but its row gets `input_complete=false`.
   - The evaluator excludes those rows.
@@ -137,9 +155,9 @@ plus the 24 h outcome wait:
 
 ```
 type nul > data\live\STOP                       REM cycles exit without scoring (status STOP_FILE_PRESENT)
-schtasks /Change /TN "TB_LiveShadow_G2" /DISABLE
+powershell -c "Disable-ScheduledTask -TaskName TB_LiveShadow_G2"
 REM optional, after the outcome window closes:
-schtasks /Delete /TN "TB_LiveShadow_G2" /F
+powershell -c "Unregister-ScheduledTask -TaskName TB_LiveShadow_G2 -Confirm:$false"
 ```
 
 Never delete or edit the prediction logs. To resume, delete `data\live\STOP` and re-enable the task.
@@ -163,6 +181,11 @@ Never delete or edit the prediction logs. To resume, delete `data\live\STOP` and
   fixed origin. Two unbounded forward-fill features (`time_since_mains_loss_hours` and the
   telemetry age) can differ when a device's last event lies just outside one window but inside
   the other. Parity is exact when the origins match (tested).
+- **Ticket display values:**
+  - CURRENT readings show the 1 h mean; STALE readings show the last raw reading.
+  - These are shown as UNAVAILABLE, never as measurements:
+    - battery readings of 0.5 V or less (the sentinel for an unequipped channel);
+    - the 168 h value the builder fills in when the window has no mains loss.
 - **Ticket narrative:** it comes from the Stage D template. When an AC sensor has no observation
   (UNAVAILABLE), the facts line can still cite an AC value. The validator flags such rows, and
   they are counted as `validator_failures`.

@@ -128,6 +128,8 @@ def load_predictions() -> pd.DataFrame:
     df = pd.DataFrame(rows)
     if df.empty:
         return df
+    # A crash between the JSONL and SQLite writes can re-run a cycle: keep the first record.
+    df = df.drop_duplicates(["cycle_id", "device_id"], keep="first").reset_index(drop=True)
     df["pt"] = pd.to_datetime(df["prediction_time"], utc=True)
     return df
 
