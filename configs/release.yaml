@@ -30,6 +30,21 @@ model_versions:
     path: "models/outage_predictor/remediated_platt_calibrator.joblib"
     sha256: "0958ce80bb3407cca838d87c2c3e28efb83aad601e21cb4c18de463bd6eddbed"
     role: "probability calibration"
+  # Nightly alarm-event risk scorer (score_daily_risk.py). Different label
+  # (any non-camera alarm event within 24h) and tiers from the ticket policy;
+  # never feeds the ticket path. Pinned so the nightly chain fails closed (L2).
+  nightly_gbm_alarm_event_model:
+    path: "models/gbm_outage_oct2026/model.joblib"
+    sha256: "ca9fc5784db01a2b39129b119a9bbaa59f956b6766c028880949401aca55d1b2"
+    role: "nightly alarm-event risk ranking (not the ticket path)"
+  nightly_gbm_feature_names:
+    path: "models/gbm_outage_oct2026/feature_names.json"
+    sha256: "191e7595258bbbb6cf24ed8981e811467e79caa08f6b74daaf2df7931c2ca01b"
+    role: "feature order for nightly_gbm_alarm_event_model"
+  nightly_gbm_metadata:
+    path: "models/gbm_outage_oct2026/metadata.json"
+    sha256: "7d9af88ff1747531059c47b91b1e09b98af5535b0a1f05c9bca8160798039fda"
+    role: "training metadata for nightly_gbm_alarm_event_model"
   # Experimental only — recorded for traceability, never loaded by default.
   remediated_qwen_merged:
     path: "models/qwen_reasoning_outage_predictor/remediated_final_model/model.safetensors"

@@ -172,6 +172,33 @@ def run_startup_check(
     return StartupCheckResult(passed=not errors, errors=errors, warnings=warnings, checked=checked)
 
 
+class UnpinnedArtifactError(RuntimeError):
+    """Raised when code tries to load an artifact not pinned in release.yaml."""
+
+
+def require_pinned_artifact(path: Path, config_path: Path = DEFAULT_RELEASE_CONFIG) -> str:
+    """Fail closed unless ``path`` is listed in model_versions with a matching SHA-256.
+
+    Call immediately before loading any model artifact. Returns the verified hash.
+    """
+    with open(config_path, encoding="utf-8") as f:
+        cfg = yaml.safe_load(f) or {}
+    try:
+        rel = Path(path).resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        raise UnpinnedArtifactError(f"Artifact outside repository is not pinned: {path}.")
+    pinned = {
+        (spec or {}).get("path"): str((spec or {}).get("sha256", "")).lower()
+        for spec in (cfg.get("model_versions") or {}).values()
+    }
+    if rel not in pinned:
+        raise UnpinnedArtifactError(f"Artifact not pinned in {config_path}: {rel}.")
+    actual = _sha256_file(ROOT / rel)
+    if actual != pinned[rel]:
+        raise UnpinnedArtifactError(f"Artifact hash mismatch vs release config: {rel}.")
+    return actual
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     args = argv if argv is not None else sys.argv[1:]
     override = "--allow-unsafe-override" in args

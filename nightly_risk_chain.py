@@ -30,7 +30,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-PY = ROOT / ".venv" / "Scripts" / "python.exe"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from src.tickets.startup_check import run_startup_check
+
+PY =ROOT / ".venv" / "Scripts" / "python.exe"
 PRUNE_DAYS = 3
 
 logging.basicConfig(
@@ -70,7 +74,17 @@ def main() -> int:
     ap.add_argument("--telemetry-days", type=int, default=10)
     args = ap.parse_args()
 
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    # L1: fail closed before any pull/score if the release config or pinned
+    # artifacts do not verify.
+    check = run_startup_check()
+    if not check.passed:
+        for e in check.errors:
+            LOG.error("startup check: %s", e)
+        LOG.error("release startup check FAILED; chain refused (fail-closed)")
+        return 1
+    LOG.info("release startup check PASS")
+
+    stamp =datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     run_id = f"nightly_risk_{stamp}"
     run_dir = ROOT / "data_harvest" / "runs" / run_id
     feat_dir = ROOT / "training_data" / "nightly" / run_id

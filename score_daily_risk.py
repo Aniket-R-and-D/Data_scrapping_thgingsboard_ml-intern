@@ -29,6 +29,11 @@ import pandas as pd
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 
 ROOT = Path(__file__).resolve().parent
+import sys
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from src.tickets.startup_check import require_pinned_artifact, run_startup_check
+
 DEFAULT_MODEL_DIR = ROOT / "models/gbm_outage_oct2026"
 DEFAULT_OUT_DIR = ROOT / "audit_reports"
 
@@ -40,6 +45,10 @@ def load_model_bundle(model_dir: Path):
 
     if not model_path.is_file():
         raise FileNotFoundError(f"Missing model file: {model_path}")
+
+    # L2: refuse any bundle file not pinned (with matching SHA-256) in configs/release.yaml.
+    for p in (model_path, feat_path, meta_path):
+        require_pinned_artifact(p)
 
     model = joblib.load(model_path)
     with open(feat_path, "r") as f:
@@ -92,6 +101,11 @@ def main():
     p.add_argument("--model-dir", default=str(DEFAULT_MODEL_DIR), type=Path)
     p.add_argument("--out", type=Path, default=None)
     args = p.parse_args()
+
+    check = run_startup_check()
+    if not check.passed:
+        logging.error(f"Release startup check FAILED; refusing to score: {check.errors}")
+        raise SystemExit(1)
 
     logging.info(f"Loading production model bundle from {args.model_dir}...")
     model, feature_names, metadata = load_model_bundle(args.model_dir)
