@@ -89,7 +89,9 @@ MODEL_VERSION = "v2.0-remediated-lightgbm-clean"
 SLOT = timedelta(minutes=15)
 LOOKBACK = timedelta(days=90)          # same window as the training matrix
 ALARM_REFETCH = timedelta(hours=26)    # re-read recent alarms so clear times update
-LOCK_STALE_AFTER = timedelta(minutes=30)
+# A killed cycle (console closed, Ctrl+C) leaves its lock behind. Cycles take ~1-5 min and the
+# scheduled task's execution limit is 14 min, so an older lock is never a live cycle.
+LOCK_STALE_AFTER = timedelta(minutes=14)
 PAGE_LIMIT = 1000
 
 # Every telemetry key read by build_remediated_device_features (file stem == TB key).
@@ -706,12 +708,18 @@ def run_once(source_factory=ThingsBoardReadOnly.from_env) -> int:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--once", action="store_true")
     g.add_argument("--loop", action="store_true")
+    ap.add_argument("--log-file", type=Path, default=None,
+                    help="append logs here (use with pythonw.exe: no console window to close)")
     args = ap.parse_args(argv)
+    handlers: List[logging.Handler] = [logging.FileHandler(args.log_file, encoding="utf-8")] if args.log_file else []
+    if sys.stdout is not None:
+        handlers.append(logging.StreamHandler(sys.stdout))
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
+                        handlers=handlers or None)
     if args.once:
         return run_once()
     while not STOP_FILE.exists():

@@ -1,7 +1,16 @@
 # G2 Status and Live-Shadow Launch Checklist
 
-Status date (UTC): 2026-10-14
-**G2 gate: NOT APPROVED. No scheduler is running and no day-1 report exists.**
+Status date (UTC): 2026-10-14 (updated 12:25Z)
+**Live shadow operation has begun. G2 is not complete: day-1 and day-14 reports are outstanding,
+and Gate A (formal owner authorization) is still PENDING.** Current detail: `reports/g2_live_shadow_status.md`.
+
+| Gate | Status |
+|---|---|
+| A. Owner approval for production reads | PENDING (no approver name/role or date recorded) |
+| B. Manual single-cycle validation | PASSED: cycle 2026-10-14T11:30:00Z, status OK |
+| C. Scheduler registration + scheduled cycle | PASSED (scheduler start): cycle 2026-10-14T12:00:00Z, status OK |
+| D. Day-1 operational report | PENDING (due >= 2026-10-15T11:32Z) |
+| E. Day-14 outcome evaluation | PENDING |
 
 ## 1. Current status
 
@@ -9,14 +18,14 @@ Status date (UTC): 2026-10-14
 |---|---|---|
 | L1: startup check enforced in nightly chain | FIXED | `0bdfc74`; `tests/test_release_guards_l1_l2.py` |
 | L2: nightly GBM bundle pinned and hash-enforced | FIXED | `0bdfc74`; `configs/release.yaml` `nightly_gbm_*` |
-| Live shadow scorer (`src/live/shadow_run.py`) | IMPLEMENTED, OFFLINE-TESTED ONLY | `d1a6b1b`, `b44a775`; `tests/test_live_shadow.py` |
-| Outcome evaluator (`src/live/outcomes.py`) | IMPLEMENTED, OFFLINE-TESTED ONLY | R2 label replication test; maturity-rule test |
+| Live shadow scorer (`src/live/shadow_run.py`) | IMPLEMENTED; OFFLINE-TESTED; RUNNING LIVE since 2026-10-14T11:30Z | `d1a6b1b`, `b44a775`; `tests/test_live_shadow.py` |
+| Outcome evaluator (`src/live/outcomes.py`) | IMPLEMENTED, OFFLINE-TESTED; no outcome window closed yet | R2 label replication test; maturity-rule test |
 | POSSIBLE_CAUSE payload-support fix | FIXED | `src/tickets/causes.py`; `tests/test_ticket_causes.py` |
 | Prior R4 "live shadow" (`src/shadow/live_shadow_job.py`, `data/processed/live_shadow_predictions.*`) | **SIMULATED: NOT EVIDENCE** | States and probabilities were drawn from `np.random`. Earlier reports are left unedited. |
-| Production telemetry reads | **NOT AUTHORIZED** in the agent session | The permission classifier blocked the ThingsBoard login attempt; it was not worked around |
-| Live scheduler | **NOT RUNNING** | No scheduled task registered |
-| Any live cycle | **NONE COMPLETED** | `data/live/cycles.jsonl` does not exist |
-| Day-1 operational report | **NOT GENERATED** | — |
+| Production telemetry reads | Run by the owner, outside the agent session; **formal Gate A record PENDING** | The agent's own ThingsBoard access stays blocked by the permission classifier and was not worked around |
+| Live scheduler | **RUNNING**, with reliability issue | `TB_LiveShadow_G2` registered. Slot 11:45Z missing; run at 12:18Z killed (0xC000013A); see `g2_live_shadow_status.md` §3 |
+| Live cycles | **2 completed, status OK** | 2026-10-14T11:30:00Z (manual), 2026-10-14T12:00:00Z (scheduled), in `data/live/cycles.jsonl` |
+| Day-1 operational report | **NOT YET DUE** | — |
 
 ### Offline verification (historical replay, slot 2026-10-12 22:45 UTC)
 
@@ -56,7 +65,25 @@ startup check still passes).
 Complete the steps in order. Each step has an exit criterion. Do not start a step until the
 previous one is met.
 
-### A. Owner approval for production telemetry reads
+### A. Owner approval for production telemetry reads (STATUS: PENDING)
+
+Gate A is **not** formally approved until every field below is filled in by the tenant owner or
+their delegate. The run that has already started does not count as authorization.
+
+| Field | Value |
+|---|---|
+| Approver name or role | ____________________ (PENDING) |
+| Approval date | ____________________ (PENDING) |
+| Approved scope | Read-only polling of telemetry (20 feature keys) and alarm history for the 158 registry-eligible devices, every 15 min, for at least 14 days plus the outcome wait. HTTP GET only, plus the login POST. |
+| Explicit prohibitions | No ThingsBoard alarm creation, acknowledgement or clearing; no dispatch; no notifications (Slack, email, SMS or other); no telemetry or attribute writes; no LLM use. Enforced in code by `ReadOnlySession` and the startup check. |
+| Retention | Prediction logs (`data/live/shadow_predictions.*`, `cycles.jsonl`) are append-only and kept through G2–G5 review, at least until the G5 incident register is reviewed. The telemetry cache is a rolling ~91 days. Proposed deletion: delete `data/live/` 90 days after G5 sign-off unless the owner extends it. ____ (owner to confirm) |
+| Redaction | Committed `reports/` contain aggregates or pseudonyms only. Per-device detail stays in gitignored `data/live/analysis/`. |
+| Identifiers in local logs | Device IDs: yes. Branch names: yes. IP addresses: none are collected. ____ (owner to confirm) |
+| Identifiers in committed reports | Device IDs: no (pseudonyms). Branch names: no. IP addresses: no. ____ (owner to confirm) |
+
+Note: the repository remote is public, and earlier commits already contain device IDs and branch
+names (G1 owner decision). Review before any push.
+
 - [ ] The tenant owner approves read-only API polling of the eligible fleet every 15 minutes
       for at least 14 days. That is roughly 2 GETs per device per cycle, plus a one-time
       backfill from the last harvest to now.

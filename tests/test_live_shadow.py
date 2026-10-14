@@ -253,3 +253,20 @@ def test_alarm_fetch_failure_marks_cycle_degraded(live_dir, monkeypatch, sample_
     assert s["status"] == "DEGRADED" and s["alarm_fetch_failures"] == 1 and s["complete_input_devices"] == 0
     rec = json.loads(sr.LOG_JSONL.read_text().splitlines()[0])
     assert rec["input_complete"] is False
+
+
+def test_day1_report_is_operational_only(live_dir, monkeypatch, tmp_path):
+    monkeypatch.setattr(outcomes, "REPORTS", tmp_path / "reports")
+    now = datetime(2026, 11, 2, 12, 0, tzinfo=timezone.utc)
+    sr.CYCLES_JSONL.write_text(json.dumps({"cycle_id": "2026-11-01T10:00:00+00:00", "status": "OK"}) + "\n")
+    rec = {"cycle_id": "2026-11-01T10:00:00+00:00", "prediction_time": "2026-11-01T10:01:00+00:00",
+           "device_id": "d1", "input_complete": True, "scoring_error": None, "risk_tier": "HIGH",
+           "device_state": "ONLINE_OK", "in_training_fleet": True, "validator_valid": True, "llm_used": False,
+           "action_taken": "LOG_ONLY_NO_DISPATCH", "git_commit": "abc1234", "telemetry_age_seconds": 60.0,
+           "last_telemetry_ts": "2026-11-01T09:59:00+00:00"}
+    sr.LOG_JSONL.write_text(json.dumps(rec) + "\n")
+    sr.FETCH_STATE.write_text(json.dumps({"d1": int(now.timestamp() * 1000)}))
+    text = outcomes.write_report("day1", now=now).read_text(encoding="utf-8")   # this row IS mature
+    assert "WITHHELD" in text
+    for banned in ("precision", "recall", "lead_time", "'overall'", "trailing_7d:"):
+        assert banned not in text.lower().replace("no precision, recall, lead time", ""), banned

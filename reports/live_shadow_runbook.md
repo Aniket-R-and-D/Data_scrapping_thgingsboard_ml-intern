@@ -35,7 +35,11 @@ powershell -c "Get-Content data\live\cycles.jsonl -Tail 1"
 
 ```powershell
 # 3) every 15 minutes for 20 days. Runs on battery, does not stop on battery, no overlap.
-$a = New-ScheduledTaskAction -Execute "C:\workspace\Data_scrapping_thgingsboard_ml-intern\run_live_shadow.bat"
+# Windowless (pythonw): an interactive console window can be closed by accident, which kills the
+# cycle (0xC000013A) and leaves a lock. run_live_shadow.bat remains for manual use.
+$a = New-ScheduledTaskAction -Execute "C:\workspace\Data_scrapping_thgingsboard_ml-intern\.venv\Scripts\pythonw.exe" `
+     -Argument "-X utf8 -m src.live.shadow_run --once --log-file data\live\shadow_run.log" `
+     -WorkingDirectory "C:\workspace\Data_scrapping_thgingsboard_ml-intern"
 $t = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 15) -RepetitionDuration (New-TimeSpan -Days 20)
 $s = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Minutes 14)
 Register-ScheduledTask -TaskName "TB_LiveShadow_G2" -Action $a -Trigger $t -Settings $s

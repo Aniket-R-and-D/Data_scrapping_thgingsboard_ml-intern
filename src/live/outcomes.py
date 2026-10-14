@@ -197,8 +197,23 @@ def summarize(now: Optional[datetime] = None) -> Dict[str, Any]:
     cycles = ([json.loads(l) for l in sr.CYCLES_JSONL.read_text(encoding="utf-8").splitlines() if l.strip()]
               if sr.CYCLES_JSONL.exists() else [])
     preds = load_predictions()
-    out: Dict[str, Any] = {"generated_utc": now.isoformat(), "cycles_logged": len(cycles),
-                           "cycle_status_counts": pd.Series([c.get("status") for c in cycles]).value_counts().to_dict()}
+    status = pd.Series([c.get("status") for c in cycles], dtype=object)
+    scored_ids = sorted({c["cycle_id"] for c in cycles if c.get("status") in ("OK", "DEGRADED")})
+    missing: List[str] = []
+    if scored_ids:
+        slots = pd.date_range(scored_ids[0], scored_ids[-1], freq="15min")
+        missing = [s.isoformat() for s in slots if s.isoformat() not in set(scored_ids)]
+    out: Dict[str, Any] = {
+        "generated_utc": now.isoformat(), "cycles_logged": len(cycles),
+        "cycle_status_counts": status.value_counts().to_dict(),
+        "cycles_attempted": len(cycles),
+        "cycles_succeeded": int(status.isin(["OK"]).sum()),
+        "cycles_degraded": int((status == "DEGRADED").sum()),
+        "fetch_failures_total": int(sum(c.get("fetch_failures", 0) for c in cycles)),
+        "alarm_fetch_failures_total": int(sum(c.get("alarm_fetch_failures", 0) for c in cycles)),
+        "scheduler_missing_slots": missing,
+        "scheduler_gap_count": len(missing),
+    }
     if preds.empty:
         out["prediction_rows"] = 0
         return out
@@ -216,6 +231,16 @@ def summarize(now: Optional[datetime] = None) -> Dict[str, Any]:
         "tier_counts": {str(k): int(v) for k, v in df["risk_tier"].value_counts(dropna=False).items()},
         "state_counts": {str(k): int(v) for k, v in df["device_state"].value_counts(dropna=False).items()},
         "validator_failures": int((df["validator_valid"] == False).sum()),  # noqa: E712
+        "validator_failures_by_git_commit": {str(k)[:7]: int(v) for k, v in
+                                             df[df["validator_valid"] == False].groupby("git_commit").size().items()},  # noqa: E712
+        "git_commits": sorted(str(c)[:7] for c in df["git_commit"].dropna().unique()),
+        "telemetry_age_distribution": {str(k): int(v) for k, v in pd.cut(
+            df["telemetry_age_seconds"].astype(float) / 3600, [-1, 1, 6, 24, 168, 720, 1e9],
+            labels=["<=1h", "1-6h", "6-24h", "1-7d", "7-30d", ">30d"]).value_counts(sort=False).items()},
+        "telemetry_never_seen_rows": int(df["last_telemetry_ts"].isna().sum()),
+        "connectivity_alert_rows": int((df["risk_tier"] == "CONNECTIVITY_ISSUE").sum()),
+        "power_alert_rows_by_tier": {t: int((df["risk_tier"] == t).sum()) for t in ("CRITICAL", "HIGH", "MEDIUM", "LOW")},
+        "mean_connectivity_alerts_per_cycle": round(float((df["risk_tier"] == "CONNECTIVITY_ISSUE").sum() / max(1, df["cycle_id"].nunique())), 1),
         "scoring_errors": int(df["scoring_error"].notna().sum()),
         "incomplete_input_rows": int((~df["input_complete"].fillna(False).astype(bool)).sum()),
         "llm_used_rows": int(df["llm_used"].astype(bool).sum()),
@@ -233,24 +258,39 @@ def summarize(now: Optional[datetime] = None) -> Dict[str, Any]:
     return out
 
 
-def write_report(label: str, now: Optional[datetime] = None) -> Path:
+OPERATIONAL_ONLY_LABELS = ("day1",)  # no 24h outcome window can have closed meaningfully
+
+
+def write_report(label: str, now: Optional[datetime] = None, operational_only: Optional[bool] = None) -> Path:
+    if operational_only is None:
+        operational_only = label in OPERATIONAL_ONLY_LABELS
     s = summarize(now)
+    if operational_only:
+        for k in ("overall", "weekly", "trailing_7d"):
+            s.pop(k, None)
+        s["outcome_metrics"] = "WITHHELD (operational-only report)"
     REPORTS.mkdir(exist_ok=True)
     (REPORTS / f"live_shadow_interim_{label}.json").write_text(json.dumps(s, indent=2, default=str))
     lines = [f"# Live shadow interim report — {label}", "",
              f"Generated (UTC): {s['generated_utc']}", "",
              "Aggregate only; no device identifiers. Mode: read-only, LOG_ONLY_NO_DISPATCH.", "",
              "## Operational status", ""]
-    for k in ("first_prediction_utc", "last_prediction_utc", "cycles_logged", "cycle_status_counts",
-              "expected_cycles_since_first", "scored_cycles", "cycle_coverage", "devices",
-              "devices_in_training_fleet", "prediction_rows", "tier_counts", "state_counts",
-              "validator_failures", "scoring_errors", "incomplete_input_rows", "llm_used_rows",
-              "action_taken_values"):
+    for k in ("first_prediction_utc", "last_prediction_utc", "cycles_attempted", "cycles_succeeded",
+              "cycles_degraded", "cycle_status_counts", "expected_cycles_since_first", "scored_cycles",
+              "cycle_coverage", "scheduler_gap_count", "scheduler_missing_slots", "fetch_failures_total",
+              "alarm_fetch_failures_total", "devices", "devices_in_training_fleet", "prediction_rows",
+              "tier_counts", "state_counts", "connectivity_alert_rows", "mean_connectivity_alerts_per_cycle",
+              "power_alert_rows_by_tier", "telemetry_age_distribution", "telemetry_never_seen_rows",
+              "validator_failures", "validator_failures_by_git_commit", "git_commits", "scoring_errors",
+              "incomplete_input_rows", "llm_used_rows", "action_taken_values"):
         if k in s:
             lines.append(f"- {k}: {s[k]}")
     lines += ["", "## Outcomes (24h window + 1h settle; complete follow-up only)", ""]
     lines.append(f"- outcome_status_counts: {s.get('outcome_status_counts', {})}")
-    if s.get("mature_rows"):
+    if operational_only:
+        lines.append("- Outcome metrics WITHHELD: operational-only report. No precision, recall, lead time "
+                     "or alert-quality figures are reported at this stage.")
+    elif s.get("mature_rows"):
         lines.append(f"- overall: {s['overall']}")
         lines.append(f"- trailing_7d: {s['trailing_7d']}")
         for w, v in s["weekly"].items():
