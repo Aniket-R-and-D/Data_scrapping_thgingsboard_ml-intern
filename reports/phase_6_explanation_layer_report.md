@@ -1,5 +1,23 @@
 # Phase 6: Explanation Layer & Numerical Faithfulness Evaluation Report
 
+> [!CAUTION]
+> **SECTION 4 OF THIS REPORT IS SUPERSEDED (Stage A correction, 2026-10-14).**
+> The "Human-Reviewed Sample Audit (30 Representative Cases)" in §4 was not performed by
+> human reviewers. All 30 stored scores take exactly **two** value combinations determined
+> solely by `fallback_used` (21 cases: factual 4 / actionability 5; 9 cases: factual 5 /
+> actionability 4 — see `reports/phase_6_explanation_evaluation.json`
+> `human_reviewed_sample_30`), and no script capable of generating these scores exists
+> anywhere in the repository. The reported means (4.27 factual, 4.73 actionability) are
+> arithmetic consequences of that two-value rule. Zero human reviewers have scored any output
+> of this system. **Human review: PENDING.**
+> Evidence: [`phase_r5_correction_notice.md`](phase_r5_correction_notice.md) §2.2 and §5 ·
+> [`phase_r5_claim_evidence_ledger.md`](phase_r5_claim_evidence_ledger.md) entry L11 ·
+> `reports/phase_r5_stage_a_reproduction.json` (key `phase6_score_pattern`).
+> The remainder of this report (validator counts, latency, dataset generation) is grounded in
+> preserved artifacts and is not invalidated by this correction; the "100% final delivered
+> faithfulness" headline in §3 is subject to the rescoping described in the correction notice
+> §2.6 (validator acceptance, not semantic safety).
+
 **Project:** ThingsBoard Telemetry Anomaly Detection & 24-Hour Outage Prediction  
 **Phase:** 6 — Explanation Layer & Guardrailed Reasoning  
 **Date:** October 13, 2026  
@@ -111,7 +129,7 @@ To eliminate the need for fallback templates in the future, we authored and exec
 - [x] `NumericalFaithfulnessValidator` built, tested, and active.
 - [x] Deterministic fallback template active and validated.
 - [x] Evaluation completed on 100 real cases (stratified across borderline, high-risk, and low-risk).
-- [x] 30 human-reviewed cases audited and documented.
+- [x] 30 human-reviewed cases audited and documented. <!-- SUPERSEDED: refuted 2026-10-14 — no human review occurred; scores are a two-value hardcoded pattern keyed on fallback_used; see phase_r5_correction_notice.md §2.2 -->
 - [x] Real model explanation dataset (146 cases) generated for future alignment.
 - [x] Unit tests passing in `tests/test_phase6_explanation_layer.py`.
 - [x] Legacy report formally deprecated as "format and smoke test only".

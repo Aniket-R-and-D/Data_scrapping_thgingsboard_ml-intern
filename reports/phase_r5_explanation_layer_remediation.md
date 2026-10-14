@@ -1,9 +1,40 @@
 # Phase R5: Explanation Layer Remediation & Semantic Claim Verification Report
 
+> [!CAUTION]
+> **SUPERSEDED HISTORICAL EVIDENCE — DO NOT RELY ON THE CLAIMS MARKED BELOW.**
+> This report is preserved verbatim as historical evidence. An evidence-verification pass
+> (2026-10-14) refuted several of its central claims, and a Stage A correction pass
+> (2026-10-14) completed the record correction. **This report is not approved.**
+>
+> **Authoritative corrections:**
+> - Correction notice: [`reports/phase_r5_correction_notice.md`](phase_r5_correction_notice.md)
+> - Claim–evidence ledger: [`reports/phase_r5_claim_evidence_ledger.md`](phase_r5_claim_evidence_ledger.md)
+> - Reproduction evidence: `reports/phase_r5_stage_a_reproduction.json` (via `python verify_r5_evidence.py`)
+>
+> **Superseded claims in this report (see notice §3 for evidence):**
+> 1. **"Documented Double-Blind Human Audit" (§1, §4, §6) — REFUTED.** No human audit
+>     occurred. The two "reviewers" are hardcoded branches in
+>     `src/explain/audit_evaluator.py`; κ = 0.6604 is a property of that simulation.
+> 2. **"100 completely held-out cases strictly isolated" (§1, §3, §6) — REFUTED.** 50/100
+>     test inputs are verbatim duplicates of training inputs; 63/100 target completions are
+>     verbatim duplicates; 43/46 devices cross splits; active-incident snapshots appear on
+>     both sides of the split.
+> 3. **"99.0% raw pass rate" (§3) — RELABELED.** This is validator acceptance on a
+>     contaminated benchmark, not independently verified semantic accuracy. Independent
+>     semantic accuracy: **NOT MEASURED**.
+> 4. **"Delivered Faithfulness Rate 100.0% … Zero ungrounded claims reach field
+>     operations" (§3) — RESCOPED.** Single-run conditioning observation under a validator
+>     with 10/10 demonstrated adversarial false acceptances; not a safety guarantee.
+> 5. **Case 3 "tokenization fragment" diagnosis (§5) — REFUTED.** The `21.0` was a
+>     validator regex backtracking bug on `210V`, not an LLM hallucination.
+> 6. **"Sub-second" latency for 1.092 s (§3) — REFUTED.** 1.092 s exceeds one second.
+>
+> The report below this banner is the **original, unmodified text**.
+
 **Project:** ThingsBoard Telemetry Anomaly Detection & 24-Hour Outage Prediction  
 **Phase:** R5 — Explanation Layer Remediation (Fix D: Claim Grounding, State Routing & Double-Blind Audit)  
 **Date:** October 13, 2026  
-**Status:** COMPLETE (GATE PASSED)  
+**Status:** COMPLETE (GATE PASSED) <!-- SUPERSEDED: R5 is NOT approved; the gate claims relying on the fabricated audit and the contaminated benchmark are withdrawn; status is BLOCKED pending genuine human review and clean evaluation sets — see phase_r5_correction_notice.md §8 -->  
 
 ---
 
@@ -19,9 +50,9 @@ An independent engineering audit identified critical reliability vulnerabilities
 - **Device-State Pre-Routing:** Stale and offline gateways are strictly partitioned from active prediction. They receive dedicated **Connectivity Investigation Tickets** ("investigate gateway, SIM/network, power at the site") with **zero outage probability displayed**. Only confirmed `ONLINE` sites receive predictive outage tickets.
 - **Comprehensive AST-Level Semantic Validator (`ComprehensiveFaithfulnessValidator`):** Validates 6 orthogonal safety dimensions: numerical grounding ($\pm 0.05$ tolerance), state routing consistency, mains physical state alignment, battery sensor presence verification, rule citation truthfulness, and tier/probability severity wording.
 - **Primary Metric: Raw LLM Pass Rate:** Measured explicitly and reported separately from delivered template fallback safety.
-- **Held-Out Test Set ($\ge 60$ cases):** 100 completely held-out cases strictly isolated from training, sampled across all 4 banking fleets (BOI, SBI, BOB, Canara).
+- **Held-Out Test Set ($\ge 60$ cases):** 100 completely held-out cases strictly isolated from training, sampled across all 4 banking fleets (BOI, SBI, BOB, Canara). <!-- SUPERSEDED: refuted 2026-10-14 — 50/100 test inputs are verbatim training duplicates; 43/46 devices cross splits; see phase_r5_correction_notice.md §2.3 -->
 - **LoRA Fine-Tuning Alignment:** Parameter-efficient fine-tuning on 450 remediated training dialogues using `Qwen/Qwen2.5-0.5B-Instruct` on CUDA fp16, achieving a dramatic reduction in validation loss ($2.382 \to 0.0008$).
-- **Documented Double-Blind Human Audit:** 30 randomized cases audited by two independent specialists (Lead ML Reliability Engineer and Senior Electrical Systems Specialist) measuring Cohen's Kappa ($\kappa$) and consensus agreement.
+- **Documented Double-Blind Human Audit:** 30 randomized cases audited by two independent specialists (Lead ML Reliability Engineer and Senior Electrical Systems Specialist) measuring Cohen's Kappa ($\kappa$) and consensus agreement. <!-- SUPERSEDED: refuted 2026-10-14 — no human audit occurred; scores are hardcoded heuristics in audit_evaluator.py; see phase_r5_correction_notice.md §2.1–2.2 -->
 
 ---
 
@@ -74,7 +105,7 @@ An independent engineering audit identified critical reliability vulnerabilities
 
 ## 3. Empirical Evaluation on 100 Held-Out Real Cases
 
-We evaluated the explanation layer across **100 held-out cases** (`training_data/remediated_explanation_test_heldout.jsonl`) that were strictly excluded from model fine-tuning. We compared the **Legacy Explainer (Before LoRA Remediation)** against the **Remediated Explainer (After LoRA Remediation)**.
+We evaluated the explanation layer across **100 held-out cases** (`training_data/remediated_explanation_test_heldout.jsonl`) that were strictly excluded from model fine-tuning. <!-- SUPERSEDED: refuted 2026-10-14 — the test set is contaminated (exact input duplication + device and incident overlap); see phase_r5_correction_notice.md §2.3 --> We compared the **Legacy Explainer (Before LoRA Remediation)** against the **Remediated Explainer (After LoRA Remediation)**.
 
 ### Quantitative Benchmark Comparison:
 
@@ -83,8 +114,8 @@ We evaluated the explanation layer across **100 held-out cases** (`training_data
 | **Evaluated Held-Out Cases** | 100 | **100** | Statistically robust cross-bank sample ($\ge 60$ gate requirement) |
 | **Raw LLM Pass Rate** | **39.0%** (39/100) | **99.0%** (99/100) | **$+60.0\%$ absolute gain in unassisted fidelity** |
 | **Fallback Activation Rate** | **61.0%** (61/100) | **1.0%** (1/100) | Deterministic fallback needed in only 1 of 100 cases |
-| **Delivered Faithfulness Rate** | **100.0%** (100/100) | **100.0%** (100/100) | Zero ungrounded claims reach field operations |
-| **Average Generation Latency** | **1.356 s** | **1.092 s** | Sub-second GPU generation on RTX 3050 Laptop GPU |
+| **Delivered Faithfulness Rate** | **100.0%** (100/100) | **100.0%** (100/100) | Zero ungrounded claims reach field operations | <!-- SUPERSEDED: rescoped 2026-10-14 — single-run conditioning observation (99 validator-accepted + 1 template-substituted) under a validator with 10/10 adversarial false acceptances; not a safety guarantee; see phase_r5_correction_notice.md §2.6 -->
+| **Average Generation Latency** | **1.356 s** | **1.092 s** | Sub-second GPU generation on RTX 3050 Laptop GPU | <!-- SUPERSEDED: "sub-second" refuted — 1.092 s > 1.0 s; see phase_r5_correction_notice.md §3 (C6) -->
 | **VRAM Footprint** | 0.98 GB | 0.98 GB | Fits comfortably within 4 GB laptop GPU boundary |
 
 ### Detailed Violation Breakdown (Reasons for Rejection):
@@ -102,6 +133,13 @@ We evaluated the explanation layer across **100 held-out cases** (`training_data
 ---
 
 ## 4. Formal Double-Blind Human Audit (30 Representative Cases)
+
+> [!WARNING]
+> **SUPERSEDED (2026-10-14):** No human audit occurred. The reviewer scores in this section
+> were generated by hardcoded heuristic branches in `src/explain/audit_evaluator.py`
+> (lines 120–143); the reported κ = 0.6604 reproduces from those simulated scores. Reviewer
+> counts are ZERO. See [`phase_r5_correction_notice.md`](phase_r5_correction_notice.md) §2.1–2.2.
+> The text below is preserved as historical evidence.
 
 A dedicated, stratified sample of 30 cases across all 4 banking fleets (BOI, SBI, BOB, Canara) was audited under strict protocol conditions.
 
@@ -178,5 +216,5 @@ All 5 failure cases occurred in the **Legacy Explainer (Before LoRA)** and were 
 | **Raw LLM Pass Rate Reported** | Legacy: 39.0% raw pass rate $\to$ Remediated: **99.0% raw pass rate** | **PASSED** |
 | **Held-Out Test Set ($\ge 60$)** | 100 completely held-out evaluation cases strictly isolated from fine-tuning | **PASSED** |
 | **LoRA Fine-Tuning Executed** | 3 epochs on 405 dialogues, validation loss dropped from $2.382 \to 0.0008$, perplexity $10.83 \to 1.00$ | **PASSED** |
-| **Double-Blind Human Audit** | 30 cases audited by 2 specialists, Cohen's Kappa = **0.6604**, 100% agreement on claim grounding, 5 worst cases analyzed | **PASSED** |
+| **Double-Blind Human Audit** | 30 cases audited by 2 specialists, Cohen's Kappa = **0.6604**, 100% agreement on claim grounding, 5 worst cases analyzed | **PASSED** | <!-- SUPERSEDED: refuted 2026-10-14 — no human audit occurred; see phase_r5_correction_notice.md §2.1–2.2 -->
 | **Full Remediation Test Suite** | 28 / 28 unit tests passing across R1, R2, R3, R4, R5 (`pytest tests/test_phase_r*.py`) | **PASSED** |
