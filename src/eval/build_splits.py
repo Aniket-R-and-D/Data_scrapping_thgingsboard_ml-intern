@@ -54,6 +54,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
+from src.tickets.causes import derive_possible_causes
 from src.tickets.field_validator import validate_candidate
 from src.tickets.policy import POLICY_VERSION, format_probability
 from src.tickets.renderer import canonical_payload_hash, render_ticket
@@ -183,6 +184,12 @@ def _row_to_ticket_input(row: pd.Series) -> TicketInput:
         ]
         causes = ["No abnormal condition suspected; routine monitoring applies."]
         actions = ["continue-automated-telemetry-polling"]
+
+    # Causes must be payload-supported (src/tickets/causes.py): healthy mains never
+    # yields a mains-loss cause; stale/unknown mains is marked UNKNOWN. The frozen
+    # Stage D splits in data/eval/ were built with the earlier hard-coded causes and
+    # are intentionally not regenerated.
+    causes = derive_possible_causes(state, tier, measurements, rules)
 
     return TicketInput.build(
         device_id=str(row["device_id"]),

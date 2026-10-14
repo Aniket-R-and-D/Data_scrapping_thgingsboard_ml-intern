@@ -54,6 +54,7 @@ from src.features.build_remediated_features import build_remediated_device_featu
 from src.predict.train_remediated_predictor import CLEAN_FEATURES
 from src.shadow.run_shadow_remediation import assign_risk_tier
 from src.tickets import llm_bridge
+from src.tickets.causes import derive_possible_causes
 from src.tickets.field_validator import validate_candidate
 from src.tickets.policy import FRESHNESS_CURRENT_MAX_AGE, POLICY_VERSION, STALE_STATES
 from src.tickets.renderer import render_connectivity_ticket_without_probability, render_ticket
@@ -431,6 +432,9 @@ def build_ticket(row: Dict[str, Any], dev_dir: Path, pred_ts: datetime) -> Ticke
     ]
     fields = {k: getattr(base, k) for k in base.__dataclass_fields__}
     fields["measurements"] = measurements
+    # Re-derive causes from the REAL measurements (the base used fabricated freshness).
+    fields["possible_causes"] = derive_possible_causes(
+        base.device_state, base.risk_tier, measurements, base.triggered_rules)
     return TicketInput.build(**fields)
 
 
