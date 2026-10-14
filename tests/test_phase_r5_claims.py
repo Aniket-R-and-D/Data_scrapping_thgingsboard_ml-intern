@@ -142,3 +142,59 @@ def test_rejects_numerical_hallucination(validator, sample_online_payload):
     is_valid, violations = validator.validate(bad_text, sample_online_payload)
     assert is_valid is False
     assert any("Ungrounded numerical figures" in v for v in violations)
+
+
+def test_handles_units_without_truncation_false_rejection(validator, sample_online_payload):
+    # Attached units like 230.5V, 12.6V, 4.5% must not be truncated or backtracked
+    text = (
+        "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\n"
+        "Branch Site: BOI-KALYAN (BOI)\n"
+        "Device State: ONLINE_OK\n"
+        "24-Hour Outage Probability: 4.5%\n"
+        "Assigned Risk Tier: LOW\n"
+        "Active Physical Rule Violations: None\n"
+        "Key Predictive Drivers: normal baseline\n\n"
+        "Observed Physical Telemetry Snapshot:\n"
+        "- AC Line Voltage: 230.5V\n"
+        "- Battery Voltage: 12.6V\n"
+        "- Time Since Mains Loss: 0.0h\n\n"
+        "DISPATCH RECOMMENDATION: Normal branch operations. No field technician dispatch required."
+    )
+    is_valid, violations = validator.validate(text, sample_online_payload)
+    assert is_valid is True, f"Failed validation: {violations}"
+    assert len(violations) == 0
+
+
+def test_case_3_voltage_210v_passes_when_voltage_is_210(validator, sample_online_payload):
+    payload = dict(sample_online_payload)
+    payload["telemetry_snapshot"] = dict(sample_online_payload["telemetry_snapshot"])
+    payload["telemetry_snapshot"]["ac_voltage"] = 210.0
+
+    text = (
+        "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\n"
+        "Branch Site: BOI-KALYAN (BOI)\n"
+        "Device State: ONLINE_OK\n"
+        "24-Hour Outage Probability: 4.5%\n"
+        "Electrical parameters check passes: AC voltage = 210V, Natural Power Profile = N/A.\n"
+        "DISPATCH RECOMMENDATION: Normal branch operations."
+    )
+    is_valid, violations = validator.validate(text, payload)
+    assert is_valid is True, f"Case 3 210V failed: {violations}"
+    assert len(violations) == 0
+
+
+def test_case_42_hallucinated_54v_rejected_not_truncated_to_5(validator, sample_online_payload):
+    # In legacy case 42, 54V was backtracked to 5, which slipped through because 5 was whitelisted!
+    # The fixed validator must extract 54.0 and reject it.
+    text = (
+        "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\n"
+        "Branch Site: BOI-KALYAN (BOI)\n"
+        "Device State: ONLINE_OK\n"
+        "24-Hour Outage Probability: 4.5%\n"
+        "Estimated AC Voltage Below 54V\n"
+        "DISPATCH RECOMMENDATION: Normal branch operations."
+    )
+    is_valid, violations = validator.validate(text, sample_online_payload)
+    assert is_valid is False
+    assert any("Ungrounded numerical figures: [54.0]" in v for v in violations)
+
