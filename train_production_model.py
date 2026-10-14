@@ -26,8 +26,13 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 
 ROOT = Path(__file__).resolve().parent
-DEFAULT_FEATS = ROOT / "training_data/anomaly_20261005_041300_v2/anomaly_features.parquet"
-DEFAULT_LABELS = ROOT / "training_data/supervised_outage_oct2026.parquet"
+AUG_FEATS = ROOT / "training_data/anomaly_features_augmented_oct2026.parquet"
+AUG_LABELS = ROOT / "training_data/supervised_outage_augmented_oct2026.parquet"
+LEGACY_FEATS = ROOT / "training_data/anomaly_20261005_041300_v2/anomaly_features.parquet"
+LEGACY_LABELS = ROOT / "training_data/supervised_outage_oct2026.parquet"
+
+DEFAULT_FEATS = AUG_FEATS if AUG_FEATS.exists() else LEGACY_FEATS
+DEFAULT_LABELS = AUG_LABELS if AUG_LABELS.exists() else LEGACY_LABELS
 DEFAULT_OUT = ROOT / "models/gbm_outage_oct2026"
 
 META_COLS = {

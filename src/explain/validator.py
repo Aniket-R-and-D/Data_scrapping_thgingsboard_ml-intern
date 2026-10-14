@@ -29,13 +29,17 @@ class NumericalFaithfulnessValidator:
 
     @staticmethod
     def extract_numbers_from_text(text: str) -> List[float]:
-        """Extract floating-point and integer numbers from text, ignoring dates/identifiers."""
-        tokens = re.findall(r"(?<![a-zA-Z_\-])[-+]?\d*\.?\d+(?![a-zA-Z_\-])", text)
+        """Extract floating-point and integer numbers from text, ignoring dates/identifiers.
+        
+        Properly handles numbers followed by units (e.g. 210V, 220V, 50Hz, 4.5%)
+        without greedy backtracking truncation.
+        """
+        pattern = r'(?<![a-zA-Z0-9_\-])([-+]?(?:\d+(?:\.\d+)?|\.\d+))(?:[a-zA-Z%]+)?(?![a-zA-Z0-9_\-])'
+        matches = re.finditer(pattern, text)
         nums = []
-        for t in tokens:
+        for m in matches:
             try:
-                val = float(t)
-                nums.append(val)
+                nums.append(float(m.group(1)))
             except ValueError:
                 continue
         return nums
