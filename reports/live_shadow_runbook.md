@@ -48,6 +48,11 @@ Register-ScheduledTask -TaskName "TB_LiveShadow_G2" -Action $a -Trigger $t -Sett
 Also disable system sleep for the run (`powercfg /change standby-timeout-ac 0`). Otherwise
 `cycle_coverage` drops without any error being raised.
 
+> H1 note (2026-10-15): while the `0xC000013A` scheduler failure is under diagnosis the
+> task is **disabled** and its action points at `scripts/run_live_shadow_task.bat`
+> (diagnostic wrapper, see §11.2), with `--max-backfill-hours 1`. Do not re-enable or
+> return to the direct action until H1 is passed and Gate A is approved.
+
 Foreground alternative (no scheduled task): `.venv\Scripts\python.exe -m src.live.shadow_run --loop`.
 
 ## 3. Environment variables (`.env`, never committed)
@@ -137,7 +142,8 @@ plus the 24 h outcome wait:
 ## 7. Failure and restart behaviour
 
 - **Overlap:** a lock file (`data/live/shadow.lock`) prevents overlapping cycles. A lock older
-  than 30 minutes is treated as stale and removed.
+  than 14 minutes (`LOCK_STALE_AFTER`, matching the 14-minute task execution limit) is treated
+  as stale and removed. A killed cycle therefore costs at most one slot.
 - **Idempotent:** if a cycle whose `cycle_id` is already in the database is re-run, it exits with
   `SKIPPED_ALREADY_LOGGED`.
 - **Cycle status** is one of:
@@ -195,3 +201,103 @@ Never delete or edit the prediction logs. To resume, delete `data\live\STOP` and
   they are counted as `validator_failures`.
 - **Fleet:** the fleet is frozen to the registry snapshot. New devices are not picked up.
 - **Scheduler:** the scheduled task runs only while the user is logged on.
+
+## 11. Scheduler-failure diagnostics (H1)
+
+Background (2026-10-15): four consecutive scheduled runs died with Task Scheduler
+result `0xC000013A` (`STATUS_CONTROL_C_EXIT`) and no new `cycles.jsonl` entry, while
+interactive `pythonw` probes survive. The task is **disabled** until the root cause is
+found. Key forensic rule: a Python-level exception releases the lock (`finally`) and
+writes a `FAILED` row plus `data/live/last_crash.json`; a **remaining lock file with no
+cycle row means an OS-level kill** (or power loss), not a Python exception.
+
+### 11.1 Task Scheduler Operational log (needs admin)
+
+```powershell
+wevtutil sl Microsoft-Windows-TaskScheduler/Operational /e:true
+Start-ScheduledTask -TaskName "TB_LiveShadow_G2"
+Get-WinEvent -LogName "Microsoft-Windows-TaskScheduler/Operational" -MaxEvents 50 |
+  Format-List TimeCreated, Id, LevelDisplayName, Message
+```
+
+Look for task termination, logon failure, privilege failure, or launch errors.
+Without admin rights this log stays disabled; that was the case on 2026-10-15
+(`wevtutil` → access denied).
+
+### 11.2 Wrapper log (no admin needed)
+
+During diagnosis the task action points at `scripts/run_live_shadow_task.bat`, which
+appends to `data/live/task_wrapper.log`:
+
+```
+[date time] task start
+[date time] task exit <python exit code>
+```
+
+- `task start` with no `task exit` → pythonw never returned (killed mid-run).
+- `task exit 0` with no new cycle → early exit (lock held) or STOP file; read
+  `data/live/shadow_run.log` for which.
+- Compare with Task Scheduler's `LastTaskResult`: if they differ, the wrapper was
+  killed externally.
+
+```powershell
+Get-ScheduledTask -TaskName "TB_LiveShadow_G2" | Get-ScheduledTaskInfo
+Get-Content data\live\task_wrapper.log -Tail 10
+Get-Content data\live\shadow_run.log -Tail 20
+Get-Content data\live\last_crash.json  # only exists after a Python-level crash
+```
+
+### 11.3 Interactive vs scheduled
+
+Run the wrapper by hand (`cmd /c scripts\run_live_shadow_task.bat`) and compare with a
+scheduled `Run`. Fails-only-under-scheduler points at session/logon or endpoint policy.
+Guard manual runs with a STOP file (`New-Item data\live\STOP`) so they exit before any
+fetch; delete it afterwards. A STOP-guarded run appends one honest
+`STOP_FILE_PRESENT` row to `cycles.jsonl` and never touches ThingsBoard.
+
+### 11.4 Task principal and settings
+
+```powershell
+Get-ScheduledTask -TaskName "TB_LiveShadow_G2" | Select-Object -ExpandProperty Principal
+Get-ScheduledTask -TaskName "TB_LiveShadow_G2" | Select-Object -ExpandProperty Settings
+```
+
+Preferred for unattended operation: run whether the user is logged on or not, with a
+dedicated service or password-backed account; do not depend on an interactive desktop.
+Changing the logon type needs the account password and usually admin rights.
+
+### 11.5 Security software
+
+Check Windows Security / Defender / corporate EDR quarantine and event logs for
+`pythonw.exe` or the project path. On a managed machine, ask IT before changing anything.
+
+### 11.6 Stale lock (safe to clear)
+
+`data/live/shadow.lock` older than 14 minutes (`LOCK_STALE_AFTER`, matching the task
+execution limit) is stale: no live cycle can still hold it. A cycle removes it itself
+and logs `removing stale lock`. Manual removal is equivalent when the task is disabled:
+
+```powershell
+Remove-Item data\live\shadow.lock  # only when no cycle is running
+```
+
+Never delete `cycles.jsonl`, `shadow_predictions.jsonl`, `shadow_predictions.db`,
+`fetch_state.json`, or the telemetry cache.
+
+### 11.7 Bounded-backfill resume
+
+Each cycle ingests at most `--max-backfill-hours` (default 1.0) of backlog per device,
+oldest-first, so a resume cannot issue one oversized request. During the drain the cache
+is honestly stale (expect elevated `CONNECTIVITY_ISSUE` rows); outcome windows stay valid
+because no permanent hole is left. After consecutive stable cycles, raise the cap
+gradually by editing the task-action argument:
+
+```
+--max-backfill-hours 1   # resume (default)
+--max-backfill-hours 6   # after stability proven
+--max-backfill-hours 24  # then larger
+--max-backfill-hours 0   # uncapped full catch-up, only when stable
+```
+
+`--loop` mode accepts the same flag. `cycles.jsonl` records `backfill_capped_devices`
+and `max_backfill_hours` per cycle.

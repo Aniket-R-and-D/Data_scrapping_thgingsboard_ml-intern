@@ -21,6 +21,7 @@ Nothing here creates alarms, dispatches, or notifies. action_taken is always
 Usage:
     python -m src.live.shadow_run --once      # one cycle (scheduler entry point)
     python -m src.live.shadow_run --loop      # foreground, one cycle per 15-min slot
+    # optional: --log-file PATH --max-backfill-hours 1
 """
 
 from __future__ import annotations
@@ -92,6 +93,12 @@ ALARM_REFETCH = timedelta(hours=26)    # re-read recent alarms so clear times up
 # A killed cycle (console closed, Ctrl+C) leaves its lock behind. Cycles take ~1-5 min and the
 # scheduled task's execution limit is 14 min, so an older lock is never a live cycle.
 LOCK_STALE_AFTER = timedelta(minutes=14)
+# Crash-marker file: overwritten on every abnormal cycle exit (latest crash only).
+CRASH_MARKER = LIVE_DIR / "last_crash.json"
+# Bounded backfill default: one cycle ingests at most this much backlog per device
+# (oldest-first), so a resume after an outage cannot issue one oversized request.
+# 0 or negative means uncapped (full catch-up; use only after stable cycles).
+DEFAULT_MAX_BACKFILL_HOURS = 1.0
 PAGE_LIMIT = 1000
 
 # Every telemetry key read by build_remediated_device_features (file stem == TB key).
@@ -559,8 +566,17 @@ def load_fleet() -> List[Dict[str, str]]:
              "in_training_fleet": str(r.device_id) in training} for r in reg.itertuples()]
 
 
-def run_cycle(source, now: Optional[datetime] = None) -> Dict[str, Any]:
-    """One scoring cycle. `source` provides fetch_timeseries / fetch_alarms (read-only)."""
+def run_cycle(source, now: Optional[datetime] = None,
+              max_backfill_hours: float = DEFAULT_MAX_BACKFILL_HOURS) -> Dict[str, Any]:
+    """One scoring cycle. `source` provides fetch_timeseries / fetch_alarms (read-only).
+
+    max_backfill_hours bounds how much backlog ONE cycle ingests per device
+    (oldest-first; the cursor advances by at most this much, so a resume after
+    an outage drains gradually instead of issuing one oversized request).
+    Values <= 0 mean uncapped (full catch-up; use only after stable cycles).
+    Scoring always uses the point-in-time cache below the slot cutoff; during
+    a drain the cache is honestly stale until the backlog is consumed.
+    """
     import tempfile
 
     LIVE_DIR.mkdir(parents=True, exist_ok=True)
@@ -568,6 +584,28 @@ def run_cycle(source, now: Optional[datetime] = None) -> Dict[str, Any]:
     cutoff = now.replace(second=0, microsecond=0) - timedelta(minutes=now.minute % 15)
     cycle_id = cutoff.isoformat()
     summary: Dict[str, Any] = {"cycle_id": cycle_id, "started": now.isoformat(), "status": "STARTED"}
+    stage_holder = ["startup_checks"]
+    try:
+        return _run_cycle_body(source, now, cutoff, cycle_id, summary, max_backfill_hours,
+                               stage_holder=stage_holder)
+    except BaseException as e:
+        LOG.exception("cycle %s crashed in stage %s", cycle_id, stage_holder[0])
+        _flush_logs()
+        _write_crash_marker(cycle_id, stage_holder[0], e)
+        raise
+
+
+def _run_cycle_body(source, now: datetime, cutoff: datetime, cycle_id: str,
+                    summary: Dict[str, Any], max_backfill_hours: float,
+                    stage_holder: List[str]) -> Dict[str, Any]:
+    import tempfile
+
+    def _stage(name: str) -> None:
+        stage_holder[0] = name
+        LOG.info("cycle %s stage: %s", cycle_id, name)
+        _flush_logs()
+
+    _stage("startup_checks")
 
     if STOP_FILE.exists():
         summary["status"] = "STOP_FILE_PRESENT"
@@ -585,22 +623,34 @@ def run_cycle(source, now: Optional[datetime] = None) -> Dict[str, Any]:
     floor = cutoff - LOOKBACK - timedelta(days=1)
     floor_ms = int(floor.timestamp() * 1000)
     cutoff_ms = int(cutoff.timestamp() * 1000)
+    cap_ms = (int(max_backfill_hours * 3600 * 1000)
+              if max_backfill_hours and max_backfill_hours > 0 else None)
+    LOG.info("cycle %s starting: %d devices, cutoff %s, max_backfill_hours=%s",
+             cycle_id, len(fleet), cutoff.isoformat(),
+             "uncapped" if cap_ms is None else max_backfill_hours)
+    _flush_logs()
+    _stage("fetch")
     state = _load_state()
     _seed_alarms(floor.isoformat())
 
-    fetch_fail = alarm_fail = 0
+    fetch_fail = alarm_fail = capped = 0
     fail_msgs: List[str] = []
     new_alarms: List[Dict[str, Any]] = []
     complete: Dict[str, bool] = {}
-    for dev in fleet:
+    for i, dev in enumerate(fleet):
         did = dev["device_id"]
         if did not in state:
             state[did] = _seed_device(did, floor_ms)
         complete[did] = False
+        fetch_start = state[did] + 1
+        fetch_end = cutoff_ms - 1
+        if cap_ms is not None and fetch_end - fetch_start > cap_ms:
+            fetch_end = fetch_start + cap_ms  # oldest-first: drain backlog gradually
+            capped += 1
         try:
-            pts = source.fetch_timeseries(did, FEATURE_KEYS, state[did] + 1, cutoff_ms - 1)
+            pts = source.fetch_timeseries(did, FEATURE_KEYS, fetch_start, fetch_end)
             _append_points(did, pts, floor_ms)
-            state[did] = cutoff_ms - 1
+            state[did] = fetch_end
         except Exception as e:  # device-level fetch failure: logged, scored as incomplete
             LOG.warning("telemetry fetch failed for %s: %s: %s", did, type(e).__name__, str(e)[:200])
             fetch_fail += 1
@@ -615,6 +665,10 @@ def run_cycle(source, now: Optional[datetime] = None) -> Dict[str, Any]:
             fail_msgs.append(f"alarms {type(e).__name__}: {str(e)[:120]}")
     _upsert_alarms(new_alarms)
     _save_state(state)
+    LOG.info("cycle %s fetch done: %d telemetry failures, %d alarm failures, %d devices backfill-capped",
+             cycle_id, fetch_fail, alarm_fail, capped)
+    _flush_logs()
+    _stage("scoring")
 
     alarms = pd.read_parquet(ALARM_CACHE) if ALARM_CACHE.exists() else pd.DataFrame(columns=ALARM_COLUMNS)
     alarms = alarms[pd.to_datetime(alarms["start"], format="ISO8601", utc=True, errors="coerce") < pd.Timestamp(cutoff)]
@@ -622,7 +676,9 @@ def run_cycle(source, now: Optional[datetime] = None) -> Dict[str, Any]:
     records: List[Dict[str, Any]] = []
     errors = 0
     with tempfile.TemporaryDirectory(dir=LIVE_DIR) as tmp:
-        for dev in fleet:
+        for j, dev in enumerate(fleet):
+            if j and j % 40 == 0:
+                LOG.info("cycle %s scoring %d/%d", cycle_id, j, len(fleet))
             did = dev["device_id"]
             base = {
                 "schema_version": SCHEMA_VERSION, "cycle_id": cycle_id,
@@ -650,24 +706,61 @@ def run_cycle(source, now: Optional[datetime] = None) -> Dict[str, Any]:
                                 "input_payload_hash": None, "ticket_hash": None, "validator_valid": None,
                                 "risk_tier": None, "device_state": None, "calibrated_prob": None,
                                 "rendered_ticket": None, "validator_violations": None})
+    _stage("persistence")
     append_records(records)
     tiers = pd.Series([r["risk_tier"] for r in records]).value_counts(dropna=False).to_dict()
     degraded = fetch_fail or alarm_fail or errors
     summary.update({
         "status": "DEGRADED" if degraded else "OK", "devices": len(fleet),
         "fetch_failures": fetch_fail, "alarm_fetch_failures": alarm_fail,
+        "backfill_capped_devices": capped,
+        "max_backfill_hours": max_backfill_hours,
         "complete_input_devices": sum(complete.values()),
         "failure_samples": sorted(set(fail_msgs))[:5], "scoring_errors": errors,
         "validator_failures": sum(1 for r in records if r.get("validator_valid") is False),
         "tiers": {str(k): int(v) for k, v in tiers.items()}, "llm_used": 0, "alarms_created": 0,
         "dispatches": 0, "notifications": 0, "finished": datetime.now(timezone.utc).isoformat(),
     })
+    _flush_logs()
     return summary
 
 
 # --------------------------------------------------------------------------- #
 # Entry point: lock, cycle, cycle log
 # --------------------------------------------------------------------------- #
+def _flush_logs() -> None:
+    """Flush every attached log handler (best-effort; keeps evidence on hard kills)."""
+    try:
+        for h in logging.getLogger().handlers:
+            try:
+                h.flush()
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+
+def _write_crash_marker(cycle_id: Optional[str], stage: str, exc: BaseException) -> None:
+    """Best-effort crash marker (latest crash only). Never raises."""
+    try:
+        import traceback as _tb
+        LIVE_DIR.mkdir(parents=True, exist_ok=True)
+        marker = {
+            "time_utc": datetime.now(timezone.utc).isoformat(),
+            "pid": os.getpid(),
+            "cycle_id": cycle_id,
+            "stage": stage,
+            "exc_type": type(exc).__name__,
+            "error": str(exc)[:500],
+            "traceback": "".join(_tb.format_exception(type(exc), exc, exc.__traceback__))[-4000:],
+        }
+        tmp = CRASH_MARKER.with_suffix(".tmp")
+        tmp.write_text(json.dumps(marker, indent=2, sort_keys=True), encoding="utf-8")
+        os.replace(tmp, CRASH_MARKER)
+    except Exception:
+        pass
+
+
 def _acquire_lock() -> bool:
     LIVE_DIR.mkdir(parents=True, exist_ok=True)
     if LOCK_FILE.exists():
@@ -685,14 +778,20 @@ def _acquire_lock() -> bool:
     return True
 
 
-def run_once(source_factory=ThingsBoardReadOnly.from_env) -> int:
+def run_once(source_factory=ThingsBoardReadOnly.from_env,
+             max_backfill_hours: float = DEFAULT_MAX_BACKFILL_HOURS) -> int:
     if not _acquire_lock():
         LOG.info("another cycle holds the lock; exiting")
         return 0
     summary: Dict[str, Any] = {}
     try:
         try:
-            summary = run_cycle(source_factory())
+            summary = run_cycle(source_factory(), max_backfill_hours=max_backfill_hours)
+        except (KeyboardInterrupt, SystemExit):
+            # Crash marker already written by run_cycle; flush and re-raise so the
+            # exit code still reflects abnormal termination. Do not swallow.
+            _flush_logs()
+            raise
         except Exception as e:
             summary = {"status": "FAILED", "error": f"{type(e).__name__}: {e}"[:300],
                        "started": datetime.now(timezone.utc).isoformat()}
@@ -714,16 +813,33 @@ def main(argv: Optional[List[str]] = None) -> int:
     g.add_argument("--loop", action="store_true")
     ap.add_argument("--log-file", type=Path, default=None,
                     help="append logs here (use with pythonw.exe: no console window to close)")
+    ap.add_argument("--max-backfill-hours", type=float, default=DEFAULT_MAX_BACKFILL_HOURS,
+                    help="per-device backlog ingested per cycle, oldest-first (default %(default)s). "
+                         "<= 0 means uncapped full catch-up; raise gradually (1, 6, 24, 0) only "
+                         "after consecutive stable cycles.")
     args = ap.parse_args(argv)
-    handlers: List[logging.Handler] = [logging.FileHandler(args.log_file, encoding="utf-8")] if args.log_file else []
-    if sys.stdout is not None:
-        handlers.append(logging.StreamHandler(sys.stdout))
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
-                        handlers=handlers or None)
+    # NOTE: src.features.build_remediated_features configures root logging at
+    # import time, so logging.basicConfig() here would be a no-op and --log-file
+    # would silently capture nothing (seen with pythonw.exe: 0-byte log files).
+    # Attach the file handler explicitly instead.
+    fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s - %(message)s")
+    root = logging.getLogger()
+    root.setLevel(logging.INFO)
+    if args.log_file:
+        fh = logging.FileHandler(args.log_file, encoding="utf-8")
+        fh.setFormatter(fmt)
+        fh.setLevel(logging.INFO)
+        root.addHandler(fh)
+    if sys.stdout is not None and not any(
+            isinstance(h, logging.StreamHandler) and not isinstance(h, logging.FileHandler)
+            for h in root.handlers):
+        sh = logging.StreamHandler(sys.stdout)
+        sh.setFormatter(fmt)
+        root.addHandler(sh)
     if args.once:
-        return run_once()
+        return run_once(max_backfill_hours=args.max_backfill_hours)
     while not STOP_FILE.exists():
-        run_once()
+        run_once(max_backfill_hours=args.max_backfill_hours)
         now = datetime.now(timezone.utc)
         nxt = now.replace(second=30, microsecond=0) + timedelta(minutes=15 - now.minute % 15)
         time.sleep(max(5.0, (nxt - datetime.now(timezone.utc)).total_seconds()))
