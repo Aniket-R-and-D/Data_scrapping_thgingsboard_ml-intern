@@ -16,6 +16,19 @@ is performed anywhere in this system.
 > **PENDING**; independent semantic accuracy is **NOT MEASURED**. Do not cite the retired
 > benchmark (`training_data/README.md`) as a headline result.
 
+## Operational status (2026-10-15 — live operation PAUSED)
+
+- **Deterministic renderer is the production default** (`ticket-policy-v1`).
+- **LLM (Qwen) is experimental and disabled.** No dispatch, alarm creation, or
+  external notification is enabled anywhere.
+- **Live shadow is paused** pending tenant-owner authorization (Gate A) and
+  scheduler stability (H1): the scheduled task is disabled after repeated
+  OS-level terminations (`0xC000013A`) with no stable live cycle yet.
+- Live polling cannot run without a completed `configs/gate_a_approval.yaml`
+  (template: `configs/gate_a_approval.template.yaml`); the scorer refuses otherwise.
+- Current handoff: `reports/h1_wait_state.md`. Live readout:
+  `.venv\Scripts\python.exe -m src.live.scheduler_health --status`.
+
 ---
 
 ## 1. Architecture

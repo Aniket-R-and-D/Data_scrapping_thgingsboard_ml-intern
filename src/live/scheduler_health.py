@@ -18,6 +18,10 @@ Usage:
         # exit 0 ready / 1 not ready / 2 cannot assess. Never reports outcome
         # metrics (precision/recall/lead time); use
         # `python -m src.live.outcomes --report day1` for the day-1 report.
+    python -m src.live.scheduler_health --status [--json]
+        # operational handoff: scheduler state, latest cycle, backlog estimate,
+        # Gate A status, H1 readiness. Prints LIVE OPERATION PAUSED unless every
+        # criterion is met. No device identifiers, no ThingsBoard access.
 
 Exit codes:
     0  healthy (no issues) / baseline ready
@@ -41,8 +45,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.live import shadow_run as sr
+from src.live import gate_a
 
 SLOT = timedelta(minutes=15)
+BASELINE_OK_STREAK = 3
 
 
 def _parse_cycle_id(s: str) -> Optional[datetime]:
@@ -251,10 +257,10 @@ def baseline(now: Optional[datetime] = None) -> Dict[str, Any]:
     now = now or datetime.now(timezone.utc)
     cycles = load_cycles()
     scored = [c for c in cycles if c.get("status") in ("OK", "DEGRADED")]
-    last3 = scored[-3:]
-    ready = len(last3) == 3 and all(c.get("status") == "OK" for c in last3)
+    last3 = scored[-BASELINE_OK_STREAK:]
+    ready = len(last3) == BASELINE_OK_STREAK and all(c.get("status") == "OK" for c in last3)
     reason = "three consecutive OK cycles present"
-    if len(scored) < 3:
+    if len(scored) < BASELINE_OK_STREAK:
         reason = f"only {len(scored)} scored cycle(s); need three consecutive OK"
     elif not ready:
         reason = f"last three scored statuses: {[c.get('status') for c in last3]}"
@@ -289,6 +295,117 @@ def baseline(now: Optional[datetime] = None) -> Dict[str, Any]:
     return rep
 
 
+def query_scheduler_state(task_name: str = "TB_LiveShadow_G2") -> Dict[str, Any]:
+    """Best-effort local scheduler state via schtasks. Never raises.
+
+    Returns determined=False when the task does not exist or cannot be queried
+    (e.g. non-Windows hosts, missing permissions).
+    """
+    undetermined: Dict[str, Any] = {"determined": False, "enabled": None, "status": None,
+                                    "last_result": None, "next_run": None}
+    try:
+        out = subprocess.check_output(
+            ["schtasks", "/query", "/tn", task_name, "/v", "/fo", "list"],
+            text=True, stderr=subprocess.DEVNULL, timeout=20)
+    except Exception:
+        return undetermined
+    info: Dict[str, Any] = dict(undetermined)
+    info["determined"] = True
+    for line in out.splitlines():
+        if ":" not in line:
+            continue
+        key, _, val = line.partition(":")
+        key, val = key.strip().lower(), val.strip()
+        if key == "status":
+            info["status"] = val
+        elif key == "last result":
+            try:
+                info["last_result"] = int(val)
+            except ValueError:
+                info["last_result"] = val
+        elif key == "next run time":
+            info["next_run"] = None if val.upper() == "N/A" else val
+    info["enabled"] = (info["status"] or "").lower() != "disabled" if info["status"] else None
+    return info
+
+
+def gate_status() -> Dict[str, Any]:
+    """Gate A approval state. Reports field-level reasons only, never file contents."""
+    try:
+        gate_a.require_approved()
+        return {"approved": True, "reasons": []}
+    except gate_a.GateANotApproved as e:
+        return {"approved": False, "reasons": list(e.reasons)}
+
+
+def backlog_estimate(now: Optional[datetime] = None) -> Dict[str, Any]:
+    """Hours since the last scored cycle plus fetch-cursor lag. Aggregate only."""
+    now = now or datetime.now(timezone.utc)
+    cycles = load_cycles()
+    scored = [c for c in cycles if c.get("status") in ("OK", "DEGRADED")]
+    out: Dict[str, Any] = {"hours_since_last_scored_cycle": None,
+                           "missed_slots_since_last_scored": None,
+                           "fetch_cursor_lag_hours": None}
+    if scored:
+        last = _parse_cycle_id(scored[-1].get("cycle_id", ""))
+        if last is not None:
+            slot_now = now.replace(second=0, microsecond=0) - timedelta(minutes=now.minute % 15)
+            out["hours_since_last_scored_cycle"] = round((slot_now - last).total_seconds() / 3600.0, 2)
+            # Complete slots strictly after the last scored one; the current slot
+            # is still in progress (same convention as missed_slots).
+            out["missed_slots_since_last_scored"] = max(
+                0, int((slot_now - last) / SLOT) - (1 if slot_now > last else 0))
+    try:
+        state = json.loads(sr.FETCH_STATE.read_text(encoding="utf-8")) if sr.FETCH_STATE.exists() else {}
+        cursors = [int(v) for v in state.values()]
+        if cursors:
+            out["fetch_cursor_lag_hours"] = round(
+                (now.timestamp() * 1000.0 - max(cursors)) / 3600000.0, 2)
+    except Exception:
+        pass
+    return out
+
+
+def status(now: Optional[datetime] = None) -> Dict[str, Any]:
+    """Operational handoff status. Aggregate only; never emits device identifiers."""
+    now = now or datetime.now(timezone.utc)
+    cycles = load_cycles()
+    latest = cycles[-1] if cycles else None
+    sched = query_scheduler_state()
+    gate = gate_status()
+    base = baseline(now)
+    backlog = backlog_estimate(now)
+    unmet: List[str] = []
+    if not gate["approved"]:
+        unmet.append("Gate A approval missing or incomplete: " + "; ".join(gate["reasons"][:3]))
+    if not base["ready"]:
+        unmet.append("scheduler stability: " + base["reason"])
+    if sched["determined"] and not sched["enabled"]:
+        unmet.append("scheduled task is disabled")
+    if not sched["determined"]:
+        unmet.append("scheduler state could not be determined locally")
+    h1_ready = len(unmet) == 0
+    return {
+        "checked_utc": now.isoformat(),
+        "banner": "LIVE OPERATION READY" if h1_ready else "LIVE OPERATION PAUSED",
+        "h1_ready": h1_ready,
+        "unmet_criteria": unmet,
+        "scheduler": {"determined": sched["determined"], "enabled": sched["enabled"],
+                      "status": sched["status"], "last_result": sched["last_result"],
+                      "next_run": sched["next_run"]},
+        "latest_cycle_id": latest.get("cycle_id") if latest else None,
+        "latest_cycle_status": latest.get("status") if latest else None,
+        "cycles_logged": len(cycles),
+        "backlog": backlog,
+        "gate_a": gate,
+        "baseline_ready": base["ready"],
+        "baseline_reason": base["reason"],
+        "cycle_coverage": base.get("cycle_coverage"),
+        "llm_used_rows_last_cycle": base.get("llm_used_rows"),
+        "outcome_metrics": "WITHHELD (operational-only status)",
+    }
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--json", action="store_true", help="print JSON report")
@@ -297,7 +414,24 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--no-live-query", action="store_true", help="do not query schtasks for LastTaskResult")
     ap.add_argument("--baseline", action="store_true",
                     help="operational-only baseline; requires three consecutive OK cycles")
+    ap.add_argument("--status", action="store_true",
+                    help="operational handoff status incl. scheduler/Gate-A/H1 readiness")
     args = ap.parse_args(argv)
+    if args.status:
+        rep = status()
+        if args.json:
+            print(json.dumps(rep, indent=2, sort_keys=True, default=str))
+        else:
+            print(rep["banner"])
+            print(f"h1_ready: {rep['h1_ready']}")
+            for u in rep["unmet_criteria"]:
+                print(f" - {u}")
+            print(f"latest cycle: {rep['latest_cycle_id']} status={rep['latest_cycle_status']}")
+            print(f"scheduler: {rep['scheduler']}")
+            print(f"backlog: {rep['backlog']}")
+        if rep["cycles_logged"] == 0:
+            return 2
+        return 0 if rep["h1_ready"] else 1
     if args.baseline:
         rep = baseline()
         if args.json:
