@@ -58,6 +58,20 @@ def live_dir(tmp_path, monkeypatch):
                       ("CRASH_MARKER", "last_crash.json")]:
         monkeypatch.setattr(sr, name, d / rel if rel else d)
     d.mkdir()
+    (d / "gate_a_approval.yaml").write_text(
+        "gate_a_approval:\n"
+        "  approver_name: 'Automated test approver'\n"
+        "  approver_role: 'test operator'\n"
+        "  approval_date: '2026-10-15'\n"
+        "  approved_scope: 'test scope'\n"
+        "  prohibited_actions: ['ThingsBoard alarm creation', 'technician dispatch',"
+        " 'external notifications', 'telemetry writes']\n"
+        "  retention_policy: 'test retention'\n"
+        "  identifier_policy: 'test identifiers'\n"
+        "  evidence_link: ''\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("GATE_A_APPROVAL_FILE", str(d / "gate_a_approval.yaml"))
     return d
 
 

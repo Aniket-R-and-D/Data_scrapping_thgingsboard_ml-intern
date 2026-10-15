@@ -2,6 +2,9 @@
 .env
 ml-intern/.env
 
+# Gate A live-polling approval (real approver identity; template is tracked)
+configs/gate_a_approval.yaml
+
 # Temporary files & IDE configs
 ~$*
 .ipynb_checkpoints/

@@ -13,10 +13,16 @@ Usage:
     python -m src.live.scheduler_health            # human summary, exit 0/1
     python -m src.live.scheduler_health --json     # JSON report on stdout
     python -m src.live.scheduler_health --task-results 0,3221225786,0
+    python -m src.live.scheduler_health --baseline --json
+        # operational-only baseline once three consecutive OK cycles exist.
+        # exit 0 ready / 1 not ready / 2 cannot assess. Never reports outcome
+        # metrics (precision/recall/lead time); use
+        # `python -m src.live.outcomes --report day1` for the day-1 report.
 
 Exit codes:
-    0  healthy (no issues)
+    0  healthy (no issues) / baseline ready
     1  issues found (missed slots, stale lock, non-zero task result, fetch/validator failures)
+       / baseline not ready
     2  cannot assess (no cycles logged yet, or unreadable logs)
 """
 
@@ -195,13 +201,117 @@ def summarize(now: Optional[datetime] = None,
     }
 
 
+def load_last_cycle_aggregates(cycle_id: str) -> Optional[Dict[str, Any]]:
+    """Aggregate-only stats for one cycle's prediction rows. Never emits device IDs."""
+    if not sr.LOG_JSONL.exists():
+        return None
+    tiers: Dict[str, int] = {}
+    states: Dict[str, int] = {}
+    actions: set = set()
+    n = llm = incomplete = errors = conn = 0
+    found = False
+    for line in sr.LOG_JSONL.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if r.get("cycle_id") != cycle_id:
+            continue
+        found = True
+        n += 1
+        tiers[str(r.get("risk_tier"))] = tiers.get(str(r.get("risk_tier")), 0) + 1
+        states[str(r.get("device_state"))] = states.get(str(r.get("device_state")), 0) + 1
+        if r.get("llm_used") is True:
+            llm += 1
+        if not r.get("input_complete"):
+            incomplete += 1
+        if r.get("scoring_error"):
+            errors += 1
+        if r.get("risk_tier") == "CONNECTIVITY_ISSUE":
+            conn += 1
+        if r.get("action_taken"):
+            actions.add(str(r.get("action_taken")))
+    if not found:
+        return None
+    return {"prediction_rows": n, "tier_counts": tiers, "state_counts": states,
+            "connectivity_alert_rows": conn, "llm_used_rows": llm,
+            "incomplete_input_rows": incomplete, "scoring_errors": errors,
+            "action_taken_values": sorted(actions)}
+
+
+def baseline(now: Optional[datetime] = None) -> Dict[str, Any]:
+    """Operational-only baseline. Ready only after three consecutive OK cycles.
+
+    Contains no precision, recall, lead-time, or alert-quality figures by
+    construction (outcomes are never computed here).
+    """
+    now = now or datetime.now(timezone.utc)
+    cycles = load_cycles()
+    scored = [c for c in cycles if c.get("status") in ("OK", "DEGRADED")]
+    last3 = scored[-3:]
+    ready = len(last3) == 3 and all(c.get("status") == "OK" for c in last3)
+    reason = "three consecutive OK cycles present"
+    if len(scored) < 3:
+        reason = f"only {len(scored)} scored cycle(s); need three consecutive OK"
+    elif not ready:
+        reason = f"last three scored statuses: {[c.get('status') for c in last3]}"
+    missing = missed_slots(cycles, now)
+    first = _parse_cycle_id(scored[0]["cycle_id"]) if scored else None
+    last = _parse_cycle_id(scored[-1]["cycle_id"]) if scored else None
+    expected = int((last - first) / SLOT) + 1 if first and last else 0
+    rep: Dict[str, Any] = {
+        "checked_utc": now.isoformat(),
+        "ready": ready,
+        "reason": reason,
+        "scored_cycles": len(scored),
+        "last_three": [(c.get("cycle_id"), c.get("status")) for c in last3],
+        "cycle_coverage": round(len(scored) / expected, 4) if expected else None,
+        "scheduler_gap_count": len(missing),
+        "fetch_failures_total": int(sum(int(c.get("fetch_failures", 0) or 0) for c in cycles)),
+        "alarm_fetch_failures_total": int(sum(int(c.get("alarm_fetch_failures", 0) or 0) for c in cycles)),
+        "validator_failures_total": int(sum(int(c.get("validator_failures", 0) or 0) for c in cycles)),
+        "lock": lock_status(now),
+        "outcome_metrics": "WITHHELD (operational-only baseline)",
+    }
+    if scored:
+        agg = load_last_cycle_aggregates(scored[-1].get("cycle_id", ""))
+        if agg:
+            rep["last_cycle_id"] = scored[-1].get("cycle_id")
+            rep["tier_counts_last_cycle"] = agg["tier_counts"]
+            rep["state_counts_last_cycle"] = agg["state_counts"]
+            rep["connectivity_alert_rows_last_cycle"] = agg["connectivity_alert_rows"]
+            rep["llm_used_rows"] = agg["llm_used_rows"]
+            rep["action_taken_values"] = agg["action_taken_values"]
+            rep["incomplete_input_rows_last_cycle"] = agg["incomplete_input_rows"]
+    return rep
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--json", action="store_true", help="print JSON report")
     ap.add_argument("--task-results", default=None,
                     help="comma-separated task result history, e.g. 0,3221225786,0 (for repeat detection)")
     ap.add_argument("--no-live-query", action="store_true", help="do not query schtasks for LastTaskResult")
+    ap.add_argument("--baseline", action="store_true",
+                    help="operational-only baseline; requires three consecutive OK cycles")
     args = ap.parse_args(argv)
+    if args.baseline:
+        rep = baseline()
+        if args.json:
+            print(json.dumps(rep, indent=2, sort_keys=True, default=str))
+        else:
+            print(f"health baseline: {'READY' if rep['ready'] else 'NOT READY'} ({rep['reason']})")
+            for k in ("last_three", "cycle_coverage", "fetch_failures_total",
+                      "validator_failures_total", "llm_used_rows", "tier_counts_last_cycle",
+                      "state_counts_last_cycle"):
+                if k in rep:
+                    print(f" - {k}: {rep[k]}")
+        if not rep.get("scored_cycles"):
+            return 2
+        return 0 if rep["ready"] else 1
     hist = None
     if args.task_results:
         hist = [int(x.strip()) for x in args.task_results.split(",") if x.strip() not in ("",)]

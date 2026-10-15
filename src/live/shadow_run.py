@@ -52,6 +52,7 @@ if str(ROOT) not in sys.path:
 
 from src.eval.build_splits import _row_to_ticket_input
 from src.features.build_remediated_features import build_remediated_device_features
+from src.live import gate_a
 from src.predict.train_remediated_predictor import CLEAN_FEATURES
 from src.shadow.run_shadow_remediation import assign_risk_tier
 from src.tickets import llm_bridge
@@ -612,6 +613,14 @@ def _run_cycle_body(source, now: datetime, cutoff: datetime, cycle_id: str,
         return summary
     if llm_bridge.is_experimental_llm_enabled():
         summary["status"] = "REFUSED_LLM_ENABLED"
+        return summary
+    try:
+        gate_a.require_approved()
+    except gate_a.GateANotApproved as e:
+        LOG.warning("cycle %s refused: Gate A approval missing/incomplete: %s", cycle_id, "; ".join(e.reasons))
+        _flush_logs()
+        summary["status"] = "REFUSED_GATE_A_APPROVAL"
+        summary["gate_a_reasons"] = list(e.reasons)
         return summary
     init_db()
     if cycle_already_logged(cycle_id):

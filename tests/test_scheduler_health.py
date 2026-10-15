@@ -18,6 +18,21 @@ def _cycle(cid, status="OK", fetch=0, alarm=0, val=0):
             "alarm_fetch_failures": alarm, "validator_failures": val}
 
 
+def _pred_row(cid, tier="LOW", state="ONLINE_OK", llm=False, complete=True):
+    return {"cycle_id": cid, "device_id": "d-test-1", "risk_tier": tier, "device_state": state,
+            "llm_used": llm, "input_complete": complete, "scoring_error": None,
+            "action_taken": "LOG_ONLY_NO_DISPATCH"}
+
+
+def _baseline_dir(tmp_path, monkeypatch):
+    d = tmp_path / "live"
+    d.mkdir()
+    for name, rel in [("CYCLES_JSONL", "cycles.jsonl"), ("LOCK_FILE", "shadow.lock"),
+                      ("LOG_JSONL", "shadow_predictions.jsonl")]:
+        monkeypatch.setattr(sr, name, d / rel)
+    return d
+
+
 def test_missed_slots_detected(tmp_path, monkeypatch):
     d = tmp_path / "live"
     d.mkdir()
@@ -102,3 +117,38 @@ def test_healthy_report(tmp_path, monkeypatch):
     assert rep["missed_slot_count"] == 0
     assert rep["healthy"] is True
     assert sh.main(["--no-live-query"]) == 0 or True  # main uses real LIVE_DIR; just exercise arg parsing
+
+
+def test_baseline_ready_after_three_ok(tmp_path, monkeypatch):
+    d = _baseline_dir(tmp_path, monkeypatch)
+    ids = ["2026-10-14T12:00:00+00:00", "2026-10-14T12:15:00+00:00", "2026-10-14T12:30:00+00:00"]
+    _write_cycles(sr.CYCLES_JSONL, [_cycle(i) for i in ids])
+    preds = [_pred_row(ids[0]), _pred_row(ids[1], tier="CONNECTIVITY_ISSUE", state="STALE_DATA"),
+             _pred_row(ids[2]), _pred_row(ids[2], tier="HIGH", state="ONLINE_POWER_LOSS")]
+    sr.LOG_JSONL.write_text("\n".join(json.dumps(r) for r in preds) + "\n", encoding="utf-8")
+    rep = sh.baseline(now=datetime(2026, 10, 14, 12, 45, tzinfo=timezone.utc))
+    assert rep["ready"] is True
+    assert rep["scored_cycles"] == 3
+    assert rep["cycle_coverage"] == 1.0
+    assert rep["llm_used_rows"] == 0
+    assert rep["action_taken_values"] == ["LOG_ONLY_NO_DISPATCH"]
+    assert rep["tier_counts_last_cycle"] == {"LOW": 1, "HIGH": 1}
+    assert rep["outcome_metrics"].startswith("WITHHELD")
+    text = json.dumps(rep, sort_keys=True)
+    assert "d-test-1" not in text  # aggregate only: no device identifiers
+
+
+def test_baseline_not_ready_without_three_ok(tmp_path, monkeypatch):
+    d = _baseline_dir(tmp_path, monkeypatch)
+    _write_cycles(sr.CYCLES_JSONL, [_cycle("2026-10-14T12:00:00+00:00"),
+                                    _cycle("2026-10-14T12:15:00+00:00", status="DEGRADED"),
+                                    _cycle("2026-10-14T12:30:00+00:00")])
+    rep = sh.baseline(now=datetime(2026, 10, 14, 12, 45, tzinfo=timezone.utc))
+    assert rep["ready"] is False
+    assert "DEGRADED" in rep["reason"]
+
+
+def test_baseline_cannot_assess_without_cycles(tmp_path, monkeypatch):
+    _baseline_dir(tmp_path, monkeypatch)
+    rep = sh.baseline(now=datetime(2026, 10, 14, 12, 45, tzinfo=timezone.utc))
+    assert rep["ready"] is False and rep["scored_cycles"] == 0

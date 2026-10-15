@@ -1,0 +1,25 @@
+# Gate A approval — LIVE SHADOW READ-ONLY POLLING (template only).
+#
+# 1. Copy this file to configs/gate_a_approval.yaml (that path is gitignored and
+#    is the ONLY path the live scorer accepts).
+# 2. Replace EVERY placeholder with real values. Anything looking like a
+#    placeholder (<...>, pending, TBD) is rejected by validation.
+# 3. Do not commit the completed file with placeholder values; the scorer refuses
+#    to poll until a completed, non-placeholder approval exists.
+#
+# Without a completed approval the live cycle exits early with status
+# REFUSED_GATE_A_APPROVAL and performs no ThingsBoard reads.
+
+gate_a_approval:
+  approver_name: "<real name>"
+  approver_role: "<tenant owner / authorized operator>"
+  approval_date: "<YYYY-MM-DD>"
+  approved_scope: "Read-only ThingsBoard telemetry and alarm-history polling for 158 registered devices"
+  prohibited_actions:
+    - "ThingsBoard alarm creation"
+    - "technician dispatch"
+    - "external notifications"
+    - "telemetry writes"
+  retention_policy: "<e.g. 90 days local, then delete or anonymize>"
+  identifier_policy: "<whether device IDs / branch names may appear in reports>"
+  evidence_link: ""

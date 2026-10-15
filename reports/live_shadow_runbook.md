@@ -301,3 +301,27 @@ gradually by editing the task-action argument:
 
 `--loop` mode accepts the same flag. `cycles.jsonl` records `backfill_capped_devices`
 and `max_backfill_hours` per cycle.
+
+Exact resume commands (all preserve `--once`, `--log-file`, read-only behavior,
+`LOG_ONLY_NO_DISPATCH`, `llm_used=false` — enforced in code, not flags):
+
+```powershell
+# 0) prerequisites: Gate A file completed, Operational log enabled (admin)
+# 1) point the (still disabled) task at the desired rung, e.g. 6 h:
+$a = New-ScheduledTaskAction `
+  -Execute "C:\workspace\Data_scrapping_thgingsboard_ml-intern\scripts\run_live_shadow_task.bat" `
+  -WorkingDirectory "C:\workspace\Data_scrapping_thgingsboard_ml-intern"
+Set-ScheduledTask -TaskName "TB_LiveShadow_G2" -Action $a
+#    NOTE: the rung itself lives inside scripts/run_live_shadow_task.bat
+#    (--max-backfill-hours 1). Edit that line to 6, 24, or 0 for higher rungs.
+# 2) resume:
+Enable-ScheduledTask -TaskName "TB_LiveShadow_G2"
+# 3) direct-python equivalents (manual use only, same safety properties):
+.venv\Scripts\pythonw.exe -X utf8 -m src.live.shadow_run --once --log-file data\live\shadow_run.log --max-backfill-hours 1
+.venv\Scripts\pythonw.exe -X utf8 -m src.live.shadow_run --once --log-file data\live\shadow_run.log --max-backfill-hours 6
+.venv\Scripts\pythonw.exe -X utf8 -m src.live.shadow_run --once --log-file data\live\shadow_run.log --max-backfill-hours 24
+.venv\Scripts\pythonw.exe -X utf8 -m src.live.shadow_run --once --log-file data\live\shadow_run.log --max-backfill-hours 0
+# 4) after three consecutive OK cycles, produce the operational baseline:
+.venv\Scripts\python.exe -m src.live.scheduler_health --baseline --json
+#    (exit 0 ready / 1 not ready / 2 cannot assess; never contains outcome metrics)
+```
