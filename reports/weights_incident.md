@@ -40,9 +40,15 @@ every failure caused by these two files; all 22 model-independent new tests pass
 2. **`git clean`.** AGAINST: would also have removed other ignored-untracked trees
    (`data/` matrix, training checkpoints survive). VERDICT: unlikely.
 3. **Security software quarantine/removal.** FOR: large-file targeting fits; the same
-   endpoint story as the `0xC000013A` scheduler kills. AGAINST: none observed.
-   `Get-MpThreatDetection` is inaccessible from this session; Protection history
-   needs admin/IT. VERDICT: **untested**.
+   endpoint story as the `0xC000013A` scheduler kills. Follow-up 2026-10-15 ~06:35Z
+   (read-only, no admin): Defender Operational log shows NO threat detections
+   (no 1116/1117/1119/1123/1124) and only routine 1150/1151 health reports in the
+   11:15–11:40 local window; daily quick scans complete normally (1013 events,
+   latest 10:45 local, ~30–45 min before the deletions). `Get-MpThreatDetection`
+   returns nothing; `vssadmin` and USN-journal reads are admin-denied
+   (untestable here). A non-Defender corporate EDR remains entirely uncheckable
+   from this session. VERDICT: **no evidence in the Defender operational log;
+   EDR + Protection-history GUI + IT review still untested.**
 4. **Sync client.** AGAINST for OneDrive: the repo is not a reparse point, and the
    files are truly gone (not dehydrated placeholders). VERDICT: OneDrive ruled out;
    other sync tools untested.
@@ -98,12 +104,17 @@ wanted. Retrain with the pinned procedure, pin the new weights. Release changes:
 new pin. Re-verify: nightly-chain tests, hash check. Heaviest option; deprioritize
 unless operations needs that signal.
 
-## Owner decisions required
+## Owner decisions required (in this order: back up first, then investigate)
 
-1. Investigate the cause (Protection history via IT/admin; backups inventory).
-2. Choose A, B, C/D, or a combination — and record it, not silently edit.
-3. Back up `models/` + manifests + `configs/release.yaml` off-machine
-   (`scripts/backup_release_artifacts.ps1 -Destination <path>`, then `-Verify`).
+1. Back up FIRST: attach an external drive or private encrypted folder (no second
+   local volume exists — only C: is present). Run
+   `scripts/backup_release_artifacts.ps1 -Destination <path>`, then `-Verify`,
+   confirm files/sizes by hand, disconnect the drive. Do not commit weights to git.
+2. Investigate the cause (Protection-history GUI, `winfr` to a spare drive,
+   Previous Versions, OneDrive/web bins, other machines, IT EDR review).
+   Record everything in `configs/weights_incident_decision.yaml` (template:
+   `configs/weights_incident_decision.template.yaml`).
+3. Choose option A–D and record it before any `release.yaml` edit.
 4. Only then continue the H1 resume ladder (Gate A → forensics → capped cycles).
 
 Resume order reminder: nothing restarts until (1) Gate A is approved by the real

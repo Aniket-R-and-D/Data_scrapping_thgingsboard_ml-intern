@@ -1,0 +1,23 @@
+# Weights-incident decision record (template only).
+#
+# 1. Copy this file to configs/weights_incident_decision.yaml (gitignored).
+# 2. Fill in EVERY field with real values. Do not use placeholders.
+# 3. Complete this BEFORE anyone edits configs/release.yaml.
+# 4. Options: A (restore from backup), B (split required/optional pins),
+#    B+C (split + regenerate merged Qwen), D (retrain nightly ranker).
+#    See reports/weights_incident.md for tradeoffs.
+
+weights_incident_decision:
+  decided_by: "<name / role>"
+  date: "<YYYY-MM-DD>"
+  recovery_attempted:
+    winfr: "<result, e.g. recovered 2 files hash-verified / nothing found / not run>"
+    previous_versions: "<result>"
+    defender_history: "<result>"
+    usn_journal: "<result or admin-pending>"
+    it_review: "<result or pending>"
+  files_recovered: "<list with hash-check result against configs/release.yaml pins>"
+  option_chosen: "<A | B | B+C | D | other>"
+  release_yaml_change: "<exact change, or 'none'>"
+  backup_location: "<where the verified backup lives>"
+  backup_verified_on: "<YYYY-MM-DD>"

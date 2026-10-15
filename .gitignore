@@ -5,6 +5,9 @@ ml-intern/.env
 # Gate A live-polling approval (real approver identity; template is tracked)
 configs/gate_a_approval.yaml
 
+# Weights-incident decision record (template is tracked)
+configs/weights_incident_decision.yaml
+
 # Temporary files & IDE configs
 ~$*
 .ipynb_checkpoints/
