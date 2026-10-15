@@ -71,7 +71,7 @@ def test_dispatch_and_alarms_fail_closed(tmp_path, release_config):
 
 def test_explicit_override_warns_but_passes(tmp_path, release_config, capsys):
     cfg = copy.deepcopy(release_config)
-    cfg["operational_defaults"]["experimental_llm_enabled"] = True
+    cfg["operational_defaults"]["dispatch"] = "enabled"
     result = run_startup_check(
         _write_temp_config(tmp_path, cfg), allow_unsafe_override=True
     )
@@ -99,3 +99,61 @@ def test_missing_policy_field_fails_closed(tmp_path, release_config):
 def test_missing_config_file_fails_closed(tmp_path):
     result = run_startup_check(tmp_path / "does_not_exist.yaml")
     assert not result.passed
+
+
+# --- Option B: Required vs Optional Pin Tests ---------------------------------
+
+
+def test_required_file_missing_fails(tmp_path, release_config):
+    """A missing required model file must fail closed."""
+    cfg = copy.deepcopy(release_config)
+    cfg["model_versions"]["lightgbm_outage_predictor"]["path"] = "models/non_existent_predictor.joblib"
+    result = run_startup_check(_write_temp_config(tmp_path, cfg))
+    assert not result.passed
+    assert any("missing on disk" in e and "non_existent_predictor" in e for e in result.errors)
+
+
+def test_optional_file_missing_flag_off_passes(tmp_path, release_config):
+    """An optional file missing with its feature flag OFF must pass."""
+    cfg = copy.deepcopy(release_config)
+    assert cfg["operational_defaults"]["nightly_ranker_enabled"] is False
+    assert cfg["operational_defaults"]["experimental_llm_enabled"] is False
+    result = run_startup_check(_write_temp_config(tmp_path, cfg))
+    assert result.passed, result.errors
+    assert result.checked["model_hash:nightly_gbm_alarm_event_model"] == "optional_skipped:flag_off"
+    assert result.checked["model_hash:remediated_qwen_merged"] == "optional_skipped:flag_off"
+
+
+def test_optional_file_missing_flag_on_fails(tmp_path, release_config):
+    """An optional file missing with its feature flag ON must fail closed."""
+    cfg = copy.deepcopy(release_config)
+    cfg["operational_defaults"]["nightly_ranker_enabled"] = True
+    result = run_startup_check(_write_temp_config(tmp_path, cfg))
+    assert not result.passed
+    assert any("missing on disk" in e and "gbm_outage_oct2026/model.joblib" in e for e in result.errors)
+
+
+def test_hash_mismatch_on_enforced_file_fails(tmp_path, release_config):
+    """A hash mismatch on any enforced file must fail closed."""
+    cfg = copy.deepcopy(release_config)
+    cfg["model_versions"]["platt_calibrator"]["sha256"] = "e" * 64
+    result = run_startup_check(_write_temp_config(tmp_path, cfg))
+    assert not result.passed
+    assert any("hash mismatch" in e and "remediated_platt_calibrator" in e for e in result.errors)
+
+
+def test_flag_turned_on_later_enforced_immediately(tmp_path, release_config):
+    """A feature flag turned on later must immediately enforce pins and fail on missing files."""
+    cfg = copy.deepcopy(release_config)
+    cfg["operational_defaults"]["nightly_ranker_enabled"] = False
+    config_path = _write_temp_config(tmp_path, cfg)
+    res_off = run_startup_check(config_path)
+    assert res_off.passed, res_off.errors
+
+    # Turn the flag on
+    cfg["operational_defaults"]["nightly_ranker_enabled"] = True
+    _write_temp_config(tmp_path, cfg)
+    res_on = run_startup_check(config_path)
+    assert not res_on.passed
+    assert any("missing on disk" in e for e in res_on.errors)
+

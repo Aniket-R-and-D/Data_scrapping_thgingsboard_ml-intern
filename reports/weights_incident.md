@@ -11,6 +11,7 @@ Aggregate-only; no device identifiers. Local paths only.
 | 06:04:41 | `models/outage_predictor/` directory mtime (content deleted). |
 | ~06:07 | Discovered: `src/tickets/startup_check.py` FAILs, exit 1. |
 | ~06:10–06:25 | 3 of 5 files restored byte-exact from git history, hash-verified against `configs/release.yaml` pins. 2 files confirmed unrecoverable from git. Substitute candidates rejected by hash comparison. |
+| ~07:13 | During verification, the agent deleted the already-missing `models/gbm_outage_oct2026/model.joblib` before implementing Option B. No other model files were deleted by the agent. This does not change the recovery outcome, because the file was already unrecoverable and absent. |
 
 ## The five files
 
@@ -121,3 +122,25 @@ Resume order reminder: nothing restarts until (1) Gate A is approved by the real
 tenant owner, (2) this incident is explained and startup passes legitimately,
 (3) scheduler forensics + endpoint review are done — then capped resume and three
 consecutive OK cycles.
+
+## Resolution & Implementation Record (Option B — 2026-10-15)
+
+1. **Backup completed & verified:**
+   - Surviving release artifacts backed up to `E:\tb-backup-2026-10-15` via `scripts/backup_release_artifacts.ps1`.
+   - Verified via `-Verify`: `VERIFY PASS: 9 files match hashes.json`.
+   - Full model artifacts directory backed up to `E:\models_backup_full` (36 files, 88.48 MB).
+2. **Decision recorded:**
+   - Formal record created at `configs/weights_incident_decision.yaml` (Option B selected).
+   - Recovery attempts (`winfr`, Previous Versions) resulted in no verified copies of the 2 uncommitted weight files.
+3. **Artifact split implemented in `configs/release.yaml`:**
+   - **Required (Live ticket path):** `remediated_lightgbm_clean.joblib` (SHA-256 `799fae21…`), `remediated_platt_calibrator.joblib` (SHA-256 `0958ce80…`), and all evaluation manifests (`data/eval/manifest_*.json`). Always enforced, fails closed.
+   - **Optional (Non-critical paths):** `nightly_gbm_alarm_event_model` + metadata (flag: `nightly_ranker_enabled`), `remediated_qwen_merged` + LoRA adapter (flag: `experimental_llm_enabled`).
+   - **Lost artifacts:** `models/gbm_outage_oct2026/model.joblib` and `models/qwen_reasoning_outage_predictor/remediated_final_model/model.safetensors`.
+4. **Enforcement in `src/tickets/startup_check.py`:**
+   - Required pins are unconditionally checked and fail closed if missing or hash mismatched.
+   - Optional pins are checked ONLY when their feature flag is active (`true` or `enabled`).
+   - An enabled feature flag with a missing or mismatched artifact fails closed.
+5. **Verification:**
+   - `src/tickets/startup_check.py`: **PASS** (exit 0).
+   - Full test suite: **300 passed**, 2 skipped (untracked nightly model weights).
+

@@ -50,15 +50,18 @@ deterministic, typed diagnostic/connectivity ticket rendered from validated tele
 - Secondary target `y_connectivity_loss_24h`: telemetry silence ≥60 min (separate
   operational problem, never a power tier).
 
-## 5. Architecture
+## 5. Architecture & Artifact Status (Option B Split)
 
-| Component | Role | Status |
-|---|---|---|
-| **Deterministic ticket renderer** (`src/tickets/renderer.py`, `ticket-policy-v1`) | **Default production ticket path.** Renders typed `TicketInput` to OBSERVED/UNKNOWN/POSSIBLE-CAUSE/INVESTIGATION tickets with traceable IDs and payload hashes | **Enabled (default)** |
-| **LightGBM outage predictor** (`models/outage_predictor/remediated_lightgbm_clean.joblib`, SHA-256 `799fae21…5eadbe`) + Platt calibrator (`…0958ce80…edbed`) | 24-hour outage probability; tiers from calibrated bands (LOW<0.02 / MEDIUM<0.05 / HIGH<0.15 / CRITICAL≥0.15; surge rule forces CRITICAL; stale/offline → `CONNECTIVITY_ISSUE`) | Enabled as advisory feed |
-| **Fine-tuned Qwen-0.5B** (`remediated_final_model`, SHA-256 `be45761a…e051`) | Experimental commentary only | **Disabled by default** (`EXPERIMENTAL_LLM_ENABLED=false`) |
-| **Stage C field validator** (`validator_version: stage-c-field-validator-v1`) | Grounding checks on every rendered ticket | Enabled |
-| Dispatch / alarms / notifications | — | **Disabled**; startup check fails closed |
+| Component | Role | Tier | Status |
+|---|---|---|---|
+| **Deterministic ticket renderer** (`src/tickets/renderer.py`, `ticket-policy-v1`) | **Default production ticket path.** Renders typed `TicketInput` to OBSERVED/UNKNOWN/POSSIBLE-CAUSE/INVESTIGATION tickets with traceable IDs and payload hashes | Required | **Enabled (default)** |
+| **LightGBM outage predictor** (`models/outage_predictor/remediated_lightgbm_clean.joblib`, SHA-256 `799fae21…5eadbe`) + Platt calibrator (`…0958ce80…edbed`) | 24-hour outage probability; tiers from calibrated bands (LOW<0.02 / MEDIUM<0.05 / HIGH<0.15 / CRITICAL≥0.15; surge rule forces CRITICAL; stale/offline → `CONNECTIVITY_ISSUE`) | Required | **Verified (present, hash-checked)** |
+| **Stage C field validator** (`validator_version: stage-c-field-validator-v1`) | Grounding checks on every rendered ticket | Required | **Enabled** |
+| **Evaluation manifests** (`data/eval/manifest_*.json`) | Frozen evaluation split integrity and sample ground truth | Required | **Verified (frozen, hash-checked)** |
+| **Nightly GBM alarm-event ranker** (`models/gbm_outage_oct2026/model.joblib`, SHA-256 `ca9fc578…`) | Nightly alarm-event ranking (`score_daily_risk.py`, not ticket path) | Optional (`nightly_ranker_enabled: false`) | **Lost in incident (2026-10-15); uncommitted weights missing** |
+| **Fine-tuned Qwen-0.5B** (`remediated_final_model/model.safetensors`, SHA-256 `be45761a…e051`) | Experimental commentary only | Optional (`experimental_llm_enabled: false`) | **Lost in incident (2026-10-15); uncommitted weights missing** |
+| **Fine-tuned Qwen LoRA Adapter** (`remediated_lora_adapter/adapter_model.safetensors`, SHA-256 `db16593c…`) | Source LoRA weights for experimental commentary | Optional (`experimental_llm_enabled: false`) | **Restored & verified from git history** |
+| Dispatch / alarms / notifications | — | — | **Disabled**; startup check fails closed |
 
 ## 6. Evaluation results (clean Stage D/E sets only)
 

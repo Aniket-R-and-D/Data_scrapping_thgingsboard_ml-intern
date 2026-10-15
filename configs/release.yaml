@@ -1,8 +1,16 @@
-# configs/release.yaml — R6 release configuration (Stage F).
+# configs/release.yaml — R6 release configuration (Stage F, Option B split).
 #
 # This file makes the safe operational path explicit. Any change to the
 # safety-critical flags below must be reviewed; the startup check
 # (src/tickets/startup_check.py) fails closed when they are violated.
+#
+# Option B (Weights Incident 2026-10-15):
+# Model pins are split into:
+#   - required: live ticket path (LightGBM + Platt calibrator), manifests.
+#     Always enforced; fails closed.
+#   - optional: experimental commentary (Qwen) and nightly ranker (GBM).
+#     Enforced ONLY when their corresponding feature flag is enabled.
+#     If an enabled flag points to a missing file or hash mismatch, fails closed.
 release_name: "r5-reliability-recovery-stage-f"
 release_date_utc: "2026-10-14"
 policy_version: "ticket-policy-v1"
@@ -14,6 +22,8 @@ operational_defaults:
   ticket_renderer: "enabled"
   # The fine-tuned Qwen model is experimental commentary only. Default OFF.
   experimental_llm_enabled: false
+  # Nightly alarm-event risk scorer (score_daily_risk.py). Default OFF.
+  nightly_ranker_enabled: false
   # Telemetry handling: read-only. No writes to ThingsBoard.
   telemetry_mode: "read-only"
   # All effectful outputs are disabled.
@@ -22,56 +32,80 @@ operational_defaults:
   notifications: "disabled"
 
 model_versions:
+  # ===========================================================================
+  # REQUIRED: Live ticket path — unconditionally enforced; fails closed.
+  # ===========================================================================
   lightgbm_outage_predictor:
+    tier: "required"
     path: "models/outage_predictor/remediated_lightgbm_clean.joblib"
     sha256: "799fae217485a0b56b340802171329d816e557661f43591be62511b155d2e5bf"
     role: "24-hour outage probability prediction (Platt-calibrated)"
   platt_calibrator:
+    tier: "required"
     path: "models/outage_predictor/remediated_platt_calibrator.joblib"
     sha256: "0958ce80bb3407cca838d87c2c3e28efb83aad601e21cb4c18de463bd6eddbed"
     role: "probability calibration"
+
+  # ===========================================================================
+  # OPTIONAL: Enforced ONLY when corresponding feature flag is enabled.
+  # ===========================================================================
   # Nightly alarm-event risk scorer (score_daily_risk.py). Different label
   # (any non-camera alarm event within 24h) and tiers from the ticket policy;
-  # never feeds the ticket path. Pinned so the nightly chain fails closed (L2).
+  # never feeds the ticket path. Enforced only when nightly_ranker_enabled=true.
   nightly_gbm_alarm_event_model:
+    tier: "optional"
+    feature_flag: "nightly_ranker_enabled"
     path: "models/gbm_outage_oct2026/model.joblib"
     sha256: "ca9fc5784db01a2b39129b119a9bbaa59f956b6766c028880949401aca55d1b2"
     role: "nightly alarm-event risk ranking (not the ticket path)"
   nightly_gbm_feature_names:
+    tier: "optional"
+    feature_flag: "nightly_ranker_enabled"
     path: "models/gbm_outage_oct2026/feature_names.json"
     sha256: "191e7595258bbbb6cf24ed8981e811467e79caa08f6b74daaf2df7931c2ca01b"
     role: "feature order for nightly_gbm_alarm_event_model"
   nightly_gbm_metadata:
+    tier: "optional"
+    feature_flag: "nightly_ranker_enabled"
     path: "models/gbm_outage_oct2026/metadata.json"
     sha256: "7d9af88ff1747531059c47b91b1e09b98af5535b0a1f05c9bca8160798039fda"
     role: "training metadata for nightly_gbm_alarm_event_model"
   # Experimental only — recorded for traceability, never loaded by default.
+  # Enforced only when experimental_llm_enabled=true.
   remediated_qwen_merged:
+    tier: "optional"
+    feature_flag: "experimental_llm_enabled"
     path: "models/qwen_reasoning_outage_predictor/remediated_final_model/model.safetensors"
     sha256: "be45761a2a66ed5dc5911009a1c3784af1d2d4dc5b392b9343b76cdbfe58e051"
     role: "experimental commentary only (default OFF)"
   remediated_qwen_lora_adapter:
+    tier: "optional"
+    feature_flag: "experimental_llm_enabled"
     path: "models/qwen_reasoning_outage_predictor/remediated_lora_adapter/adapter_model.safetensors"
     sha256: "db16593c3500c4d09c5dd4bfb4aae448a6ca91856eaf5db25d6d314681843438"
     role: "experimental LoRA adapter source (default OFF)"
 
 evaluation_manifests:
   train:
+    tier: "required"
     manifest: "data/eval/manifest_train.json"
     manifest_sha256: "a8a3c92e2f73324f47f04ddc929438e10ae25ee97071e169a7e9585e97b17e4e"
     data_sha256: "b5afcf84e873031387ea21dd3be726f1b829b79570cd8f7193d5b602fc5eadbe"
   future_known_devices:
+    tier: "required"
     manifest: "data/eval/manifest_future_known_devices.json"
     manifest_sha256: "7e8927dd4fe51d598407ff367853758a3fbc680c8bb4ed748a5e888e8097b72c"
     data_sha256: "54e224628cccd738e845d1bddc3477eb70fce2a68205200a8da5ed8027429ace"
   unseen_devices:
+    tier: "required"
     manifest: "data/eval/manifest_unseen_devices.json"
     manifest_sha256: "6594db4569235fe538a19b6eda855d3c77b4a688c2f7a8fbf9efdffe593183c5"
     data_sha256: "0338742c77f0be7040360373e18292868b6377b4fc928b2f160efc186dbcec46"
 
 fail_closed_rules:
   - "Missing required policy fields (policy_version, validator_version, operational_defaults) -> FAIL."
-  - "Model artifact SHA-256 mismatch vs this file -> FAIL."
+  - "Required model artifact missing on disk or SHA-256 mismatch -> FAIL."
+  - "Optional model artifact missing or SHA-256 mismatch when corresponding feature flag is enabled -> FAIL."
   - "Evaluation manifest or data-file SHA-256 mismatch vs this file -> FAIL."
   - "experimental_llm_enabled=true without explicit operator override -> FAIL."
   - "dispatch, alarm_creation, or notifications enabled without explicit operator override -> FAIL."

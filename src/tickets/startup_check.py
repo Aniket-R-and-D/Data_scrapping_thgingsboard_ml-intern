@@ -119,6 +119,19 @@ def run_startup_check(
         if not rel or not expected:
             errors.append(f"Model entry {name!r} missing path or sha256.")
             continue
+
+        tier = (spec or {}).get("tier", "required")
+        flag_name = (spec or {}).get("feature_flag")
+
+        # Optional pins are enforced only when their corresponding feature flag is enabled.
+        if tier == "optional":
+            flag_active = False
+            if flag_name:
+                flag_active = bool(ops.get(flag_name) is True or ops.get(flag_name) == "enabled")
+            if not flag_active:
+                checked[f"model_hash:{name}"] = "optional_skipped:flag_off"
+                continue
+
         full = ROOT / rel
         if not full.exists():
             errors.append(f"Model artifact missing on disk: {rel}.")

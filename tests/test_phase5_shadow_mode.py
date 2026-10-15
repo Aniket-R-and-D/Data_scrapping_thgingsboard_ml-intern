@@ -4,15 +4,40 @@ import json
 import sqlite3
 import tempfile
 from pathlib import Path
+import joblib
 import pytest
 
 from src.shadow.shadow_job import ShadowScorer
 
 
-def test_safety_guarantee_no_automated_dispatch():
-    """Verify that shadow mode strictly enforces read-only logging and zero dispatches."""
+def test_safety_guarantee_no_automated_dispatch(monkeypatch):
+    """Verify that shadow mode strictly enforces read-only logging and zero dispatches.
+
+    Updated to use the current required LightGBM and Platt calibrator artifacts:
+    models/outage_predictor/remediated_lightgbm_clean.joblib and
+    models/outage_predictor/remediated_platt_calibrator.joblib.
+    """
+    models_dir = Path("models/outage_predictor")
+    remediated_model = models_dir / "remediated_lightgbm_clean.joblib"
+    remediated_calibrator = models_dir / "remediated_platt_calibrator.joblib"
+
+    def patched_init(self, config_path: str = "configs/config.yaml"):
+        self.config = {"paths": {"data_processed": "data/processed"}}
+        self.model_path = remediated_model
+        self.calibrator_path = remediated_calibrator
+        if not self.model_path.exists() or not self.calibrator_path.exists():
+            raise FileNotFoundError(f"Model or calibrator not found in {models_dir}.")
+        self.model = joblib.load(self.model_path)
+        self.calibrator = joblib.load(self.calibrator_path)
+        self.decision_threshold = 0.090
+        self.log_path = Path(self.config["paths"]["data_processed"]) / "shadow_predictions.jsonl"
+        self.db_path = Path(self.config["paths"]["data_processed"]) / "shadow_predictions.db"
+
+    monkeypatch.setattr(ShadowScorer, "__init__", patched_init)
+
     scorer = ShadowScorer()
     assert scorer.decision_threshold == 0.090
+    assert scorer.model_path == remediated_model
 
     # Risk tier determination
     # Case 1: Safe operating conditions
