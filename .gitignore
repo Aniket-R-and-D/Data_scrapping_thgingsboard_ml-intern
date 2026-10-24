@@ -61,6 +61,11 @@ current_state_snapshots/*.json
 *.bin
 *.gguf
 
+# Whitelist compact production models required for AWS deployment (<30MB each)
+!models/gbm_outage_oct2026_365d/*.joblib
+!models/gbm_outage_365d_bridged/*.joblib
+!models/isolation_forest_365d/*.joblib
+
 # Legacy root-level stragglers (locked files that could not be moved)
 ml_training_*.jsonl
 *.ipynb.pre-organize.bak

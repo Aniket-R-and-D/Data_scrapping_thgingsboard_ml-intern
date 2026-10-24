@@ -193,7 +193,9 @@ def sync_from_harvest_and_live(
     raw_registry_dir.mkdir(parents=True, exist_ok=True)
 
     # 1. Device Registry
-    latest_harvest_devices = Path("data_harvest/runs/nightly_risk_20261012_230007/registry/devices.csv")
+    latest_harvest_devices = Path("data_harvest/runs/20261022_082325/registry/devices.csv")
+    if not latest_harvest_devices.exists():
+        latest_harvest_devices = Path("data_harvest/runs/nightly_risk_20261012_230007/registry/devices.csv")
     if latest_harvest_devices.exists():
         dev_df = pd.read_csv(latest_harvest_devices)
     else:
@@ -225,6 +227,7 @@ def sync_from_harvest_and_live(
 
     # 2. Sync Telemetry into data/raw/telemetry/<device_id>/<key>.parquet
     source_runs = [
+        Path("data_harvest/runs/20261022_082325"),
         Path("data_harvest/runs/nightly_risk_20261012_230007"),
         Path("data_harvest/runs/20261012_045343"),
         Path("data_harvest/runs/20261005_041300"),
@@ -275,7 +278,9 @@ def sync_from_harvest_and_live(
     logger.info(f"Synced {synced_series} series files, {total_telemetry_rows} total rows for {len(eligible_devices)} devices.")
 
     # 3. Alarms Sync into data/raw/alarms/alarms.parquet
-    alarms_src = Path("data_harvest/all_data_20260921_1250/alarms.csv")
+    alarms_src = Path("data_harvest/runs/20261022_082325/alarms/alarms.csv")
+    if not alarms_src.exists():
+        alarms_src = Path("data_harvest/all_data_20260921_1250/alarms.csv")
     if alarms_src.exists():
         alarms_df = pd.read_csv(alarms_src)
         # Filter to target devices or keep full raw history

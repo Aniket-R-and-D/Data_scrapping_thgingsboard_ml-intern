@@ -1,0 +1,55 @@
+# .dockerignore for SEPLE NovaEdge AI Operations Engine
+# Ignore bulky datasets, virtual environments, local caches, and sensitive keys
+
+# Git & IDE
+.git
+.gitignore
+.idea
+.vscode
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Local virtual environments
+.venv/
+venv/
+env/
+
+# Sensitive credentials & environment files
+.env
+*.pem
+*.key
+*.crt
+
+# Test & Tool caches
+.pytest_cache/
+.ruff_cache/
+.audit_pytest*/
+.review_pytest*/
+.playwright-mcp/
+.claude-flow/
+.code-review-graph/
+
+# Heavy telemetry datasets (parquet, raw csv/json harvests)
+*.parquet
+data/
+training_data/
+data_harvest/
+harvest_cache/
+archive/
+excel/
+csv/
+json/
+jsonl/
+executed/
+audit_reports/
+
+# Experimental large LLM checkpoints (Qwen model weights are ~1.5GB+, not needed for operations)
+models/qwen_reasoning_outage_predictor/
+models/autoencoder/
+
+# Documentation scratchpads & logs
+*.log
+*.bak
+desktop.ini

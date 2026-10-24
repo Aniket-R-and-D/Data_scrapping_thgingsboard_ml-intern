@@ -1,0 +1,22 @@
+{
+  "created_at": "2026-10-24T08:53:54.168806+00:00",
+  "total_samples": 140219,
+  "total_devices": 130,
+  "features_evaluated": 580,
+  "thresholds": {
+    "p95_elevated": -0.01373954435375599,
+    "p98_anomalous": 0.010606814118491237,
+    "p99_5_critical": 0.047523091736938916
+  },
+  "tier_distribution": {
+    "NORMAL": 132489,
+    "ELEVATED": 4004,
+    "ANOMALOUS": 2406,
+    "CRITICAL_FAULT": 1320
+  },
+  "models_saved": [
+    "isolation_forest_fleet.joblib",
+    "isolation_forest_BOI.joblib",
+    "isolation_forest_BOB.joblib"
+  ]
+}

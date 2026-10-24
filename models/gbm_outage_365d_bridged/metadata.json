@@ -1,0 +1,62 @@
+{
+  "created_at": "2026-10-24T09:04:44.544792+00:00",
+  "model_type": "HistGradientBoostingClassifier",
+  "dataset_scope": "365-day harvest features + 130k bridged alarm events",
+  "train_samples": 116877,
+  "train_positives": 10978,
+  "test_samples": 2807,
+  "test_positives": 321,
+  "test_roc_auc": 0.1818,
+  "test_pr_auc": 0.0708,
+  "threshold_sweep": [
+    {
+      "threshold": 0.2,
+      "alerts": 714,
+      "precision": 3.22,
+      "recall": 7.17,
+      "f1_score": 0.0444
+    },
+    {
+      "threshold": 0.3,
+      "alerts": 291,
+      "precision": 4.12,
+      "recall": 3.74,
+      "f1_score": 0.0392
+    },
+    {
+      "threshold": 0.4,
+      "alerts": 191,
+      "precision": 3.14,
+      "recall": 1.87,
+      "f1_score": 0.0234
+    },
+    {
+      "threshold": 0.5,
+      "alerts": 61,
+      "precision": 6.56,
+      "recall": 1.25,
+      "f1_score": 0.0209
+    },
+    {
+      "threshold": 0.6,
+      "alerts": 19,
+      "precision": 10.53,
+      "recall": 0.62,
+      "f1_score": 0.0118
+    },
+    {
+      "threshold": 0.7,
+      "alerts": 2,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0
+    },
+    {
+      "threshold": 0.8,
+      "alerts": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0
+    }
+  ]
+}

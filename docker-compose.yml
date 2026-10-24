@@ -1,0 +1,25 @@
+services:
+  novaedge-ai-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: novaedge-ai-agent
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POLL_INTERVAL_MINUTES=15
+      - DIGEST_HOUR_UTC=6
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Mount reports directory to host so daily HTML/CSV digests persist permanently
+      - ./reports:/app/reports
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  default:
+    name: novaedge-network
