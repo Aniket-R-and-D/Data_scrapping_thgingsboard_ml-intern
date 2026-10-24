@@ -2,7 +2,7 @@
 
 **Monitored Fleet:** 130 Bank Branches  
 **Fleet Health Score:** `55.8%`  
-**Generated At:** `2026-10-24T11:48:54.476102+00:00`  
+**Generated At:** `2026-10-24T12:30:20.679369+00:00`  
 
 ## Fleet Executive Summary
 | Severity Tier | Branch Count | Operational Status |
@@ -18,11 +18,11 @@ The following branches were previously at risk, but real-time telemetry confirms
 
 | Rank | Bank | Branch Name | Status | Vitals & Restoration Detail | ThingsBoard Link |
 |:---:|:---:|---|:---:|---|:---:|
-| 1 | BOI | **BOI-BABAI** | `🟢 RESTORED` | Hardware restored; Verified operational recovery: Recent data activity (0.1m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas | [View on TB](https://seple.iot-private.cloud/devices/5472ea20-aa78-11f0-b8ab-b38af83f6c9c) |
-| 2 | BOI | **BOI-MISROD** | `🟢 RESTORED` | Hardware restored; Verified operational recovery: Recent data activity (6.6m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas | [View on TB](https://seple.iot-private.cloud/devices/aed666e0-aa69-11f0-b150-2710a8915e1d) |
-| 3 | DX | **DX2** | `🟢 RESTORED` | Hardware restored; Verified operational recovery: Recent data activity (0.0m ago); Zero active ticket faults; Subsystems restored: gateway, fas | [View on TB](https://seple.iot-private.cloud/devices/630c1480-63e6-11f1-9555-295f91c5b7c8) |
+| 1 | BOI | **BOI-BABAI** | `🟢 RESTORED` | Hardware restored; Verified operational recovery: Recent data activity (1.0m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas | [View on TB](https://seple.iot-private.cloud/devices/5472ea20-aa78-11f0-b8ab-b38af83f6c9c) |
+| 2 | BOI | **BOI-MISROD** | `🟢 RESTORED` | Hardware restored; Verified operational recovery: Recent data activity (17.0m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas | [View on TB](https://seple.iot-private.cloud/devices/aed666e0-aa69-11f0-b150-2710a8915e1d) |
+| 3 | DX | **DX2** | `🟢 RESTORED` | Hardware restored; Verified operational recovery: Recent data activity (0.1m ago); Zero active ticket faults; Subsystems restored: gateway, fas | [View on TB](https://seple.iot-private.cloud/devices/630c1480-63e6-11f1-9555-295f91c5b7c8) |
 | 4 | BOI | **BOI-SALTLAKE** | `🟢 RESTORED` | Hardware restored; Verified operational recovery: Recent data activity (0.2m ago); Battery healthy (14.0V, not low); Mains power restored (200.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas | [View on TB](https://seple.iot-private.cloud/devices/6287e400-a823-11f0-b150-2710a8915e1d) |
-| 5 | CANARA | **CANARA-BARUIPUR** | `🟢 RESTORED` | Hardware restored; Verified operational recovery: Recent data activity (0.4m ago); Zero active ticket faults; Subsystems restored: gateway, bas, fas | [View on TB](https://seple.iot-private.cloud/devices/0b7bc7d0-671d-11f1-8c55-5bb8284c6aef) |
+| 5 | CANARA | **CANARA-BARUIPUR** | `🟢 RESTORED` | Hardware restored; Verified operational recovery: Recent data activity (0.6m ago); Zero active ticket faults; Subsystems restored: gateway, bas, fas | [View on TB](https://seple.iot-private.cloud/devices/0b7bc7d0-671d-11f1-8c55-5bb8284c6aef) |
 
 ## High-Risk & Critical Bank Branches
 | Rank | Bank | Branch Name | Unified Tier | 24h Outage Prob | Anomaly Score | Primary Root Cause | ThingsBoard Link |

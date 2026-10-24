@@ -69,8 +69,10 @@ echo "[4/5] Verifying Docker installation..."
 sudo docker --version
 sudo docker compose version
 
-# 5. Environment configuration check
+# 5. Environment configuration and reports directory permissions
 echo "[5/5] Checking environment configuration..."
+mkdir -p reports
+sudo chmod -R 777 reports || true
 if [ ! -f .env ]; then
     if [ -f .env.example ]; then
         echo "Creating .env from .env.example..."
