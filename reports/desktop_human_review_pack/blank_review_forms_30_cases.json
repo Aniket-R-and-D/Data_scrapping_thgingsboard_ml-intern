@@ -1,0 +1,772 @@
+{
+  "review_pack_version": "live-shadow-desktop-v1",
+  "human_review_status": "HUMAN REVIEW PENDING",
+  "completed_reviews_count": 0,
+  "cohens_kappa": null,
+  "run_id": "live_shadow_desktop_2026_10_15",
+  "strict_notice": "All reviewer fields are intentionally NULL/blank. Do not populate scores programmatically or simulate reviewers. Cohen's kappa and reviewer verdicts must remain NULL until real human reviewers return signed review sheets.",
+  "stratification": {
+    "total_cases": 30,
+    "normal_operation": 10,
+    "connectivity_issues": 10,
+    "power_risk_or_borderline": 10,
+    "randomized_presentation": true
+  },
+  "scoring_rubric": {
+    "factual_consistency_1_to_5": "1 = Direct contradiction of input telemetry/state/tier; 3 = Mostly consistent but ambiguous phrasing; 5 = Every number, unit, timestamp, state, and tier matches the input snapshot.",
+    "claim_grounding_pass_or_fail": "PASS = Zero ungrounded numbers, rules, hardware diagnoses, or missing-hardware claims; FAIL = Any ungrounded claim present.",
+    "operational_actionability_1_to_5": "1 = Unsafe, contradictory, or missing investigation guidance; 3 = Generic guidance; 5 = Clear, bounded investigation steps appropriate to the device state and tier.",
+    "harmful_or_misleading_recommendation_yes_or_no": "YES = Advises power-crew dispatch on a connectivity blackout, claims battery failure when no battery sensor exists, or invents breaker/inverter faults; NO = None of these.",
+    "operational_verdict_approve_or_suppress": "APPROVE = Ticket is clinically and operationally sound for field dispatch; SUPPRESS = Ticket contains errors or misleading guidance and must not be dispatched."
+  },
+  "cases": [
+    {
+      "review_case_number": 1,
+      "case_id": "DESK-LIVE-0001",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 494.5,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [
+          "RULE_AC_UNDER_50V",
+          "RULE_MAINS_LOSS_RECENT"
+        ],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - CRITICAL RISK]\nTicket ID: TKT-1FD38285FBAA\nBranch Site: CANARA-CHETLA (CANARA)\nDevice ID: 388f1380-31ad-11f1-9c6f-b71bb2771567\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 40.0% (calibrated probability 0.3999)\nAssigned Risk Tier: CRITICAL\n\nTriggered Rules: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; assigned risk tier is CRITICAL (40.0%).\n- ac_voltage: 0.0 V, observed at 2026-10-15T11:39:38.396000+00:00 (CURRENT).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: 0.0 hours, observed at 2026-10-15T11:39:38.396000+00:00 (CURRENT).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Ongoing mains loss (hypothesis only \u2014 unconfirmed).\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-distribution-board-and-breakers\n- check-inverter-and-ups-status\n- monitor-ac-voltage-6h\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 1fd38285fbaa6518f25ef2abd17b26fc13405412f821db1f28eba277e5026c3e",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 2,
+      "case_id": "DESK-LIVE-0002",
+      "telemetry_snapshot": {
+        "device_state": "STALE_DATA",
+        "telemetry_age_seconds": null,
+        "heartbeat_gap_seconds": 86400.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T11:00:00+00:00",
+        "feature_slot_ts": "2026-10-15T10:45:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nTicket ID: TKT-419A07877D61\nBranch Site: BRANCH GB-I (BRANCH)\nDevice ID: adc27390-aa7a-11f1-9dac-bfdc7cccc90b\nDevice State: STALE_DATA\nPrediction Timestamp (UTC): 2026-10-15T11:00:19.116930+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: NOT EVALUATED (connectivity ticket)\nAssigned Status: CONNECTIVITY_ISSUE\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Device state is STALE_DATA; no fresh telemetry within the 60-minute freshness window.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Electrical condition is unknown: no fresh telemetry is available during this communication blackout, so no statement about utility power, mains state, or battery condition can be made.\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Gateway cellular link or SIM connectivity interruption (unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-gateway-power-and-wiring\n- check-sim-and-network-signal\n- verify-site-power-at-premises\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 419a07877d61b014cf7b6ad9ad7157a68c42886cf07aa21919d4239216d5d1df",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 3,
+      "case_id": "DESK-LIVE-0003",
+      "telemetry_snapshot": {
+        "device_state": "STALE_DATA",
+        "telemetry_age_seconds": 7858800.0,
+        "heartbeat_gap_seconds": 86400.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T10:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T10:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nTicket ID: TKT-7C7494FB1B55\nBranch Site: SBI BHAWAL (SBI)\nDevice ID: 49626c80-3d15-11f0-9778-a73e030dc473\nDevice State: STALE_DATA\nPrediction Timestamp (UTC): 2026-10-15T10:40:34.127095+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: NOT EVALUATED (connectivity ticket)\nAssigned Status: CONNECTIVITY_ISSUE\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Device state is STALE_DATA; no fresh telemetry within the 60-minute freshness window.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Electrical condition is unknown: no fresh telemetry is available during this communication blackout, so no statement about utility power, mains state, or battery condition can be made.\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Gateway cellular link or SIM connectivity interruption (unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-gateway-power-and-wiring\n- check-sim-and-network-signal\n- verify-site-power-at-premises\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 7c7494fb1b55c66b64b7b0c269e5b6dcba63b0e036f158cafe133e2eea2f492e",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 4,
+      "case_id": "DESK-LIVE-0004",
+      "telemetry_snapshot": {
+        "device_state": "STALE_DATA",
+        "telemetry_age_seconds": null,
+        "heartbeat_gap_seconds": 86400.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T10:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T10:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nTicket ID: TKT-A77639434C42\nBranch Site: BOI-ISLAMPUR (BOI)\nDevice ID: dc0a38d0-ab31-11f0-87ea-b9809c1a7a9e\nDevice State: STALE_DATA\nPrediction Timestamp (UTC): 2026-10-15T10:40:34.127095+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: NOT EVALUATED (connectivity ticket)\nAssigned Status: CONNECTIVITY_ISSUE\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Device state is STALE_DATA; no fresh telemetry within the 60-minute freshness window.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Electrical condition is unknown: no fresh telemetry is available during this communication blackout, so no statement about utility power, mains state, or battery condition can be made.\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Gateway cellular link or SIM connectivity interruption (unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-gateway-power-and-wiring\n- check-sim-and-network-signal\n- verify-site-power-at-premises\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: a77639434c426b1d46fd96520285964bbe51696b6b44d143493d85c7dd6335cc",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 5,
+      "case_id": "DESK-LIVE-0005",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_POWER_LOSS",
+        "telemetry_age_seconds": 81.2,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [
+          "RULE_AC_UNDER_50V",
+          "RULE_MAINS_LOSS_RECENT"
+        ],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-6CFBE35986AF\nBranch Site: BOI-SALTLAKE (BOI)\nDevice ID: 6287e400-a823-11f0-b150-2710a8915e1d\nDevice State: ONLINE_POWER_LOSS\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.1% (calibrated probability 0.0015)\nAssigned Risk Tier: LOW\n\nTriggered Rules: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway reporting online in state ONLINE_POWER_LOSS with ac_voltage 0.0 V and time_since_mains_loss 0.0 hours.\n- ac_voltage: 0.0 V, observed at 2026-10-15T12:13:38.810000+00:00 (CURRENT).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: 0.0 hours, observed at 2026-10-15T12:13:38.810000+00:00 (CURRENT).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Upstream utility feeder outage (hypothesis only \u2014 unconfirmed).\n- Site distribution-board input trip (hypothesis only \u2014 unconfirmed).\n\nRoot cause is not confirmed by this ticket. Listed causes are hypotheses only (see POSSIBLE CAUSE); confirmation requires on-site investigation.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-distribution-board-and-breakers\n- verify-mains-contactor-position\n- check-inverter-and-ups-status\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 6cfbe35986af295bb00e7d8d874057047f4ec6a36e5f17b3c6d0cc9587a9695f",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 6,
+      "case_id": "DESK-LIVE-0006",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 1394.5,
+        "heartbeat_gap_seconds": 900.0,
+        "rules_triggered": [
+          "RULE_AC_UNDER_50V",
+          "RULE_MAINS_LOSS_RECENT"
+        ],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - CRITICAL RISK]\nTicket ID: TKT-E00EE782FADB\nBranch Site: CANARA-CHETLA (CANARA)\nDevice ID: 388f1380-31ad-11f1-9c6f-b71bb2771567\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 40.0% (calibrated probability 0.3999)\nAssigned Risk Tier: CRITICAL\n\nTriggered Rules: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; assigned risk tier is CRITICAL (40.0%).\n- ac_voltage: 0.0 V, observed at 2026-10-15T11:39:38.396000+00:00 (CURRENT).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: 0.0 hours, observed at 2026-10-15T11:39:38.396000+00:00 (CURRENT).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Ongoing mains loss (hypothesis only \u2014 unconfirmed).\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-distribution-board-and-breakers\n- check-inverter-and-ups-status\n- monitor-ac-voltage-6h\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: e00ee782fadbc6abd097316e0678c9a2db4abb0586d464b43a89f23e66c706b4",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 7,
+      "case_id": "DESK-LIVE-0007",
+      "telemetry_snapshot": {
+        "device_state": "STALE_DATA",
+        "telemetry_age_seconds": null,
+        "heartbeat_gap_seconds": 86400.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T11:45:00+00:00",
+        "feature_slot_ts": "2026-10-15T11:30:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nTicket ID: TKT-43E2E18259E8\nBranch Site: BOI-MISROD (BOI)\nDevice ID: aed666e0-aa69-11f0-b150-2710a8915e1d\nDevice State: STALE_DATA\nPrediction Timestamp (UTC): 2026-10-15T11:45:18.978627+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: NOT EVALUATED (connectivity ticket)\nAssigned Status: CONNECTIVITY_ISSUE\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Device state is STALE_DATA; no fresh telemetry within the 60-minute freshness window.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Electrical condition is unknown: no fresh telemetry is available during this communication blackout, so no statement about utility power, mains state, or battery condition can be made.\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Gateway cellular link or SIM connectivity interruption (unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-gateway-power-and-wiring\n- check-sim-and-network-signal\n- verify-site-power-at-premises\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 43e2e18259e8f979750632e8989860ac4f5a0a66d288ac92bf77c1525ff4e745",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 8,
+      "case_id": "DESK-LIVE-0008",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 125.1,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [
+          "RULE_AC_UNDER_50V",
+          "RULE_MAINS_LOSS_RECENT"
+        ],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-0333F8DD594D\nBranch Site: BOI-COOCHBEHAR (BOI)\nDevice ID: 148c0c90-ab3e-11f0-91df-7ffa16af2ee9\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.6% (calibrated probability 0.0056)\nAssigned Risk Tier: LOW\n\nTriggered Rules: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; telemetry within normal operating band.\n- ac_voltage: 0.0 V, observed at 2026-10-15T11:34:38.750000+00:00 (CURRENT).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: 0.0 hours, observed at 2026-10-15T11:34:38.750000+00:00 (CURRENT).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- No abnormal condition suspected; routine monitoring applies.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- continue-automated-telemetry-polling\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 0333f8dd594d1166f1c77e9aee1e490d785abfe37ce2870de42910d3848636c4",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 9,
+      "case_id": "DESK-LIVE-0009",
+      "telemetry_snapshot": {
+        "device_state": "STALE_DATA",
+        "telemetry_age_seconds": null,
+        "heartbeat_gap_seconds": 86400.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nTicket ID: TKT-1E6E7AFADC53\nBranch Site: BOI-BAHALDA (BOI)\nDevice ID: 490447a0-b87f-11f0-b4af-b334f2239a02\nDevice State: STALE_DATA\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: NOT EVALUATED (connectivity ticket)\nAssigned Status: CONNECTIVITY_ISSUE\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Device state is STALE_DATA; no fresh telemetry within the 60-minute freshness window.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Electrical condition is unknown: no fresh telemetry is available during this communication blackout, so no statement about utility power, mains state, or battery condition can be made.\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Gateway cellular link or SIM connectivity interruption (unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-gateway-power-and-wiring\n- check-sim-and-network-signal\n- verify-site-power-at-premises\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 1e6e7afadc538be8ee30a22e294eaae297a80588ac1d6ea380d1048c2713508c",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 10,
+      "case_id": "DESK-LIVE-0010",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 400.1,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nTicket ID: TKT-97DBCD72238C\nBranch Site: BOI-BALLYBAZAR (BOI)\nDevice ID: 9cdeba20-a5a3-11f0-b150-2710a8915e1d\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 8.7% (calibrated probability 0.0872)\nAssigned Risk Tier: HIGH\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; assigned risk tier is HIGH (8.7%).\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- AC line voltage depression or historical instability signature (hypothesis only \u2014 unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-distribution-board-and-breakers\n- check-inverter-and-ups-status\n- monitor-ac-voltage-6h\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 97dbcd72238cddfb3756df3dfc2099d8a599e3a2a27f903b5523079510f5e463",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 11,
+      "case_id": "DESK-LIVE-0011",
+      "telemetry_snapshot": {
+        "device_state": "STALE_DATA",
+        "telemetry_age_seconds": null,
+        "heartbeat_gap_seconds": 86400.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T11:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T11:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nTicket ID: TKT-8A1682FDC9D2\nBranch Site: BOI-ROING (BOI)\nDevice ID: da16d690-da3f-11f0-afc5-358ed627911d\nDevice State: STALE_DATA\nPrediction Timestamp (UTC): 2026-10-15T11:30:19.336691+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: NOT EVALUATED (connectivity ticket)\nAssigned Status: CONNECTIVITY_ISSUE\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Device state is STALE_DATA; no fresh telemetry within the 60-minute freshness window.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Electrical condition is unknown: no fresh telemetry is available during this communication blackout, so no statement about utility power, mains state, or battery condition can be made.\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Gateway cellular link or SIM connectivity interruption (unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-gateway-power-and-wiring\n- check-sim-and-network-signal\n- verify-site-power-at-premises\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 8a1682fdc9d25dd3a828a18ec163c5044d9a7420448802d17e44cfd175f5765f",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 12,
+      "case_id": "DESK-LIVE-0012",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 113.1,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [
+          "RULE_AC_SURGE_OVER_250V"
+        ],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - CRITICAL RISK]\nTicket ID: TKT-7B8716B615CC\nBranch Site: BOI-DOBSON (BOI)\nDevice ID: 62e55e90-a5b8-11f0-91df-7ffa16af2ee9\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.1% (calibrated probability 0.0015)\nAssigned Risk Tier: CRITICAL\n\nTriggered Rules: RULE_AC_SURGE_OVER_250V\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; assigned risk tier is CRITICAL (0.1%).\n- ac_voltage: 270.0 V, observed at 2026-10-15T12:20:53.845000+00:00 (CURRENT).\n- battery_voltage: 14.0 V, observed at 2026-10-15T12:20:53.845000+00:00 (CURRENT).\n- time_since_mains_loss: 875.2 hours, observed at 2026-10-15T12:20:53.845000+00:00 (CURRENT).\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- AC line voltage depression or historical instability signature (hypothesis only \u2014 unconfirmed).\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-distribution-board-and-breakers\n- check-inverter-and-ups-status\n- monitor-ac-voltage-6h\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 7b8716b615cc8e7d72efb47acd76637bde4e15a2817d9f384b84425ce5a6785d",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 13,
+      "case_id": "DESK-LIVE-0013",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 104.1,
+        "heartbeat_gap_seconds": 1800.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-EECC8DD6C366\nBranch Site: BOI-ZARKAWT (BOI)\nDevice ID: 23d4b010-ec77-11f0-a6fc-1dffa956f056\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.1% (calibrated probability 0.0015)\nAssigned Risk Tier: LOW\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; telemetry within normal operating band.\n- ac_voltage: 210.0 V, observed at 2026-10-15T11:45:51.717000+00:00 (CURRENT).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- No abnormal condition suspected; routine monitoring applies.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- continue-automated-telemetry-polling\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: eecc8dd6c3663b0864a68f53655e1f0f141e8b11b297b0f23dd3c30434927a5d",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 14,
+      "case_id": "DESK-LIVE-0014",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 188.9,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-A25EFE66A056\nBranch Site: BOI-TARAKESHWAR (BOI)\nDevice ID: 77f98430-a5b5-11f0-b4af-b334f2239a02\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.1% (calibrated probability 0.0015)\nAssigned Risk Tier: LOW\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; telemetry within normal operating band.\n- ac_voltage: 210.0 V, observed at 2026-10-15T11:59:18.896000+00:00 (CURRENT).\n- battery_voltage: 14.0 V, observed at 2026-10-15T11:59:18.896000+00:00 (CURRENT).\n- time_since_mains_loss: 942.0 hours, observed at 2026-10-15T11:59:18.896000+00:00 (CURRENT).\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- No abnormal condition suspected; routine monitoring applies.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- continue-automated-telemetry-polling\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: a25efe66a0564e404496b1e8896e9751d508aee6f6be4a927a2bc24b75386508",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 15,
+      "case_id": "DESK-LIVE-0015",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 14.5,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [
+          "RULE_AC_UNDER_50V",
+          "RULE_MAINS_LOSS_RECENT"
+        ],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-C0062D1157F4\nBranch Site: BOI-BALURGHAT (BOI)\nDevice ID: 668a4210-ab47-11f0-b150-2710a8915e1d\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 1.4% (calibrated probability 0.0143)\nAssigned Risk Tier: LOW\n\nTriggered Rules: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; telemetry within normal operating band.\n- ac_voltage: 0.0 V, observed at 2026-10-15T11:47:33.526000+00:00 (CURRENT).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: 0.0 hours, observed at 2026-10-15T11:47:33.526000+00:00 (CURRENT).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- No abnormal condition suspected; routine monitoring applies.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- continue-automated-telemetry-polling\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: c0062d1157f4fe709bc45d82a7074f6ea968358357d854838399cbb0ffb8af48",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 16,
+      "case_id": "DESK-LIVE-0016",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_POWER_LOSS",
+        "telemetry_age_seconds": 156.9,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [
+          "RULE_AC_SURGE_OVER_250V",
+          "RULE_MAINS_LOSS_RECENT"
+        ],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - CRITICAL RISK]\nTicket ID: TKT-CE95EC9CB8B4\nBranch Site: BOI-BETHUADAHRI (BOI)\nDevice ID: b319f660-bed5-11f0-8304-97baeec450b1\nDevice State: ONLINE_POWER_LOSS\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.2% (calibrated probability 0.0016)\nAssigned Risk Tier: CRITICAL\n\nTriggered Rules: RULE_AC_SURGE_OVER_250V, RULE_MAINS_LOSS_RECENT\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway reporting online in state ONLINE_POWER_LOSS with ac_voltage 270.0 V and time_since_mains_loss 0.0 hours.\n- ac_voltage: 270.0 V, observed at 2026-10-15T12:23:41.013000+00:00 (CURRENT).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: 0.0 hours, observed at 2026-10-15T12:23:41.013000+00:00 (CURRENT).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Upstream utility feeder outage (hypothesis only \u2014 unconfirmed).\n- Site distribution-board input trip (hypothesis only \u2014 unconfirmed).\n\nRoot cause is not confirmed by this ticket. Listed causes are hypotheses only (see POSSIBLE CAUSE); confirmation requires on-site investigation.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-distribution-board-and-breakers\n- verify-mains-contactor-position\n- check-inverter-and-ups-status\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: ce95ec9cb8b46546c971bef144d688ec7f053495bcea0f7ecc7ecfa978f3debc",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 17,
+      "case_id": "DESK-LIVE-0017",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 293.7,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-8C22F79F553A\nBranch Site: BOI-SAKCHI (BOI)\nDevice ID: 4a426620-af2d-11f0-b8ab-b38af83f6c9c\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.1% (calibrated probability 0.0015)\nAssigned Risk Tier: LOW\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; telemetry within normal operating band.\n- ac_voltage: 220.0 V, observed at 2026-10-15T12:10:06.296000+00:00 (CURRENT).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: 905.8 hours, observed at 2026-10-15T12:10:06.296000+00:00 (CURRENT).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- No abnormal condition suspected; routine monitoring applies.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- continue-automated-telemetry-polling\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 8c22f79f553a8558ad64ee041fabe8539166f1d8fca4df8db2866ccbc42e8c09",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 18,
+      "case_id": "DESK-LIVE-0018",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 20.1,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [
+          "RULE_AC_SURGE_OVER_250V"
+        ],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - CRITICAL RISK]\nTicket ID: TKT-C1BCCC8ECCA6\nBranch Site: BOI-DOBSON (BOI)\nDevice ID: 62e55e90-a5b8-11f0-91df-7ffa16af2ee9\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.1% (calibrated probability 0.0015)\nAssigned Risk Tier: CRITICAL\n\nTriggered Rules: RULE_AC_SURGE_OVER_250V\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; assigned risk tier is CRITICAL (0.1%).\n- ac_voltage: 270.0 V, observed at 2026-10-15T11:30:25.510000+00:00 (CURRENT).\n- battery_voltage: 14.0 V, observed at 2026-10-15T11:30:25.510000+00:00 (CURRENT).\n- time_since_mains_loss: 875.0 hours, observed at 2026-10-15T11:30:25.510000+00:00 (CURRENT).\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- AC line voltage depression or historical instability signature (hypothesis only \u2014 unconfirmed).\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-distribution-board-and-breakers\n- check-inverter-and-ups-status\n- monitor-ac-voltage-6h\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: c1bccc8ecca6a0865de0ff91cd4a6d91f3ec60b632ec8fda34dc146e51101a11",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 19,
+      "case_id": "DESK-LIVE-0019",
+      "telemetry_snapshot": {
+        "device_state": "STALE_DATA",
+        "telemetry_age_seconds": null,
+        "heartbeat_gap_seconds": 86400.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:00:00+00:00",
+        "feature_slot_ts": "2026-10-15T11:45:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nTicket ID: TKT-FFFCEDAA0555\nBranch Site: BOB-SAKUNTALA (BOB)\nDevice ID: c42a57c0-7f3c-11f0-8542-4de65a555965\nDevice State: STALE_DATA\nPrediction Timestamp (UTC): 2026-10-15T12:00:19.006097+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: NOT EVALUATED (connectivity ticket)\nAssigned Status: CONNECTIVITY_ISSUE\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Device state is STALE_DATA; no fresh telemetry within the 60-minute freshness window.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Electrical condition is unknown: no fresh telemetry is available during this communication blackout, so no statement about utility power, mains state, or battery condition can be made.\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Gateway cellular link or SIM connectivity interruption (unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-gateway-power-and-wiring\n- check-sim-and-network-signal\n- verify-site-power-at-premises\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: fffcedaa05554c49e7a4ad933eb8679bca5be393a12b2efb98c3139689885e4d",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 20,
+      "case_id": "DESK-LIVE-0020",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 15.1,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-67129D0CF3CD\nBranch Site: BOI-SERAMPORE (BOI)\nDevice ID: 488f0ad0-a5ab-11f0-b8ab-b38af83f6c9c\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.1% (calibrated probability 0.0015)\nAssigned Risk Tier: LOW\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; telemetry within normal operating band.\n- ac_voltage: 210.0 V, observed at 2026-10-15T11:27:52.792000+00:00 (CURRENT).\n- battery_voltage: 14.0 V, observed at 2026-10-15T11:27:52.792000+00:00 (CURRENT).\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- No abnormal condition suspected; routine monitoring applies.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- continue-automated-telemetry-polling\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 67129d0cf3cda0d68e218b68bb5e5279e6c278681076458e9e76f51a6ea4e7ac",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 21,
+      "case_id": "DESK-LIVE-0021",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 108.9,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-EF6AA29265BA\nBranch Site: BOI-CHINSURAH (BOI)\nDevice ID: 7b0a1200-a5d5-11f0-b4af-b334f2239a02\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.1% (calibrated probability 0.0015)\nAssigned Risk Tier: LOW\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; telemetry within normal operating band.\n- ac_voltage: 200.0 V, observed at 2026-10-15T11:40:55.748000+00:00 (CURRENT).\n- battery_voltage: 14.0 V, observed at 2026-10-15T11:40:55.748000+00:00 (CURRENT).\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- No abnormal condition suspected; routine monitoring applies.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- continue-automated-telemetry-polling\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: ef6aa29265ba90ddb19707598b7f0f034d448b4c1800a2f2868f757fa674224c",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 22,
+      "case_id": "DESK-LIVE-0022",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_POWER_LOSS",
+        "telemetry_age_seconds": 84.2,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [
+          "RULE_AC_UNDER_50V",
+          "RULE_MAINS_LOSS_RECENT"
+        ],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-78E7F091C7AB\nBranch Site: BOI-COOCHBEHAR (BOI)\nDevice ID: 148c0c90-ab3e-11f0-91df-7ffa16af2ee9\nDevice State: ONLINE_POWER_LOSS\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.6% (calibrated probability 0.0062)\nAssigned Risk Tier: LOW\n\nTriggered Rules: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway reporting online in state ONLINE_POWER_LOSS with ac_voltage 0.0 V and time_since_mains_loss 0.0 hours.\n- ac_voltage: 0.0 V, observed at 2026-10-15T12:24:29.771000+00:00 (CURRENT).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: 0.0 hours, observed at 2026-10-15T12:24:29.771000+00:00 (CURRENT).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Upstream utility feeder outage (hypothesis only \u2014 unconfirmed).\n- Site distribution-board input trip (hypothesis only \u2014 unconfirmed).\n\nRoot cause is not confirmed by this ticket. Listed causes are hypotheses only (see POSSIBLE CAUSE); confirmation requires on-site investigation.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-distribution-board-and-breakers\n- verify-mains-contactor-position\n- check-inverter-and-ups-status\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 78e7f091c7ab57057e27e5e1f3176bc8bd751e9aabf4b2900bcc1e8a39d52852",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 23,
+      "case_id": "DESK-LIVE-0023",
+      "telemetry_snapshot": {
+        "device_state": "STALE_DATA",
+        "telemetry_age_seconds": null,
+        "heartbeat_gap_seconds": 86400.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nTicket ID: TKT-45F0A4CF4295\nBranch Site: BOB-BARUIPUR (BOB)\nDevice ID: 50ae7220-711f-11f0-bf1e-9f28a6572bf1\nDevice State: STALE_DATA\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: NOT EVALUATED (connectivity ticket)\nAssigned Status: CONNECTIVITY_ISSUE\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Device state is STALE_DATA; no fresh telemetry within the 60-minute freshness window.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Electrical condition is unknown: no fresh telemetry is available during this communication blackout, so no statement about utility power, mains state, or battery condition can be made.\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Gateway cellular link or SIM connectivity interruption (unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-gateway-power-and-wiring\n- check-sim-and-network-signal\n- verify-site-power-at-premises\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 45f0a4cf4295b791b745c3d5b2309e00d27c49564744c4a174a67e842dbce0e1",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 24,
+      "case_id": "DESK-LIVE-0024",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 48.5,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [
+          "RULE_AC_UNDER_50V",
+          "RULE_MAINS_LOSS_RECENT"
+        ],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-54A9A894D087\nBranch Site: BOI-SALTLAKE (BOI)\nDevice ID: 6287e400-a823-11f0-b150-2710a8915e1d\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.1% (calibrated probability 0.0015)\nAssigned Risk Tier: LOW\n\nTriggered Rules: RULE_AC_UNDER_50V, RULE_MAINS_LOSS_RECENT\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; telemetry within normal operating band.\n- ac_voltage: 0.0 V, observed at 2026-10-15T12:13:38.810000+00:00 (CURRENT).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: 0.0 hours, observed at 2026-10-15T12:13:38.810000+00:00 (CURRENT).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- No abnormal condition suspected; routine monitoring applies.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- continue-automated-telemetry-polling\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 54a9a894d087f67313c947da571b094c114ef4c5ca3e627fa0349d0b810ce0e3",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 25,
+      "case_id": "DESK-LIVE-0025",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 140.3,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nTicket ID: TKT-83BE79E82F64\nBranch Site: BOI-CHHOTAGAMHARIA (BOI)\nDevice ID: fab6cde0-d27b-11f0-8d27-9f87c351edd8\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 11.3% (calibrated probability 0.1129)\nAssigned Risk Tier: HIGH\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; assigned risk tier is HIGH (11.3%).\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- AC line voltage depression or historical instability signature (hypothesis only \u2014 unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-distribution-board-and-breakers\n- check-inverter-and-ups-status\n- monitor-ac-voltage-6h\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 83be79e82f641e8ab4f42ed8eefb4bd6a63f25011663c34483e4c73c1f6f1896",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 26,
+      "case_id": "DESK-LIVE-0026",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 232.8,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-51F800523614\nBranch Site: CANARA-BARUIPUR (CANARA)\nDevice ID: 0b7bc7d0-671d-11f1-8c55-5bb8284c6aef\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 0.1% (calibrated probability 0.0015)\nAssigned Risk Tier: LOW\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; telemetry within normal operating band.\n- ac_voltage: 250.0 V, observed at 2026-10-15T11:40:39.478000+00:00 (CURRENT).\n- battery_voltage: 14.0 V, observed at 2026-10-15T11:40:39.478000+00:00 (CURRENT).\n- time_since_mains_loss: 1728.0 hours, observed at 2026-10-15T11:40:39.478000+00:00 (CURRENT).\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- No abnormal condition suspected; routine monitoring applies.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- continue-automated-telemetry-polling\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 51f800523614ffe1fb6f57a31f8309b75ce08805bf72e47335998ba74481b2e0",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 27,
+      "case_id": "DESK-LIVE-0027",
+      "telemetry_snapshot": {
+        "device_state": "STALE_DATA",
+        "telemetry_age_seconds": null,
+        "heartbeat_gap_seconds": 86400.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T11:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T11:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nTicket ID: TKT-1DD5A68559D1\nBranch Site: BOI-CUTTACK (BOI)\nDevice ID: a5cf2df0-d1cb-11f0-82a9-69e5355364db\nDevice State: STALE_DATA\nPrediction Timestamp (UTC): 2026-10-15T11:30:19.336691+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: NOT EVALUATED (connectivity ticket)\nAssigned Status: CONNECTIVITY_ISSUE\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Device state is STALE_DATA; no fresh telemetry within the 60-minute freshness window.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Electrical condition is unknown: no fresh telemetry is available during this communication blackout, so no statement about utility power, mains state, or battery condition can be made.\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Gateway cellular link or SIM connectivity interruption (unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-gateway-power-and-wiring\n- check-sim-and-network-signal\n- verify-site-power-at-premises\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 1dd5a68559d1b5729dc0688766f3bdc8f07638c6b8ef40edbb089f4ca633010e",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 28,
+      "case_id": "DESK-LIVE-0028",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 107.0,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:15:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:00:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - LOW RISK]\nTicket ID: TKT-5DFCF55278A1\nBranch Site: BOI-ASHANGI (BOI)\nDevice ID: ab5e0860-d1ce-11f0-9dd1-0f70161fd1f6\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:15:19.531572+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 1.9% (calibrated probability 0.0194)\nAssigned Risk Tier: LOW\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; telemetry within normal operating band.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: 196.5 hours, observed at 2026-10-15T12:00:34.055000+00:00 (CURRENT).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- No abnormal condition suspected; routine monitoring applies.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- continue-automated-telemetry-polling\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 5dfcf55278a1bab876c0a5daad80efce96e8d8583a329029b28124df3caf783b",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 29,
+      "case_id": "DESK-LIVE-0029",
+      "telemetry_snapshot": {
+        "device_state": "STALE_DATA",
+        "telemetry_age_seconds": null,
+        "heartbeat_gap_seconds": 86400.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T09:45:00+00:00",
+        "feature_slot_ts": "2026-10-15T09:30:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM CONNECTIVITY TICKET - INVESTIGATION REQUIRED]\nTicket ID: TKT-7889C6D1D939\nBranch Site: BOI-BERHAMPUR (BOI)\nDevice ID: 2f1e7460-ab4a-11f0-87ea-b9809c1a7a9e\nDevice State: STALE_DATA\nPrediction Timestamp (UTC): 2026-10-15T09:50:32.926072+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: NOT EVALUATED (connectivity ticket)\nAssigned Status: CONNECTIVITY_ISSUE\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Device state is STALE_DATA; no fresh telemetry within the 60-minute freshness window.\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Electrical condition is unknown: no fresh telemetry is available during this communication blackout, so no statement about utility power, mains state, or battery condition can be made.\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- Gateway cellular link or SIM connectivity interruption (unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-gateway-power-and-wiring\n- check-sim-and-network-signal\n- verify-site-power-at-premises\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 7889c6d1d9398dcfbf158843204e2db86bae098d88076aef7da6af878e92bf24",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    },
+    {
+      "review_case_number": 30,
+      "case_id": "DESK-LIVE-0030",
+      "telemetry_snapshot": {
+        "device_state": "ONLINE_OK",
+        "telemetry_age_seconds": 16.2,
+        "heartbeat_gap_seconds": 0.0,
+        "rules_triggered": [],
+        "input_complete": true,
+        "data_cutoff_ts": "2026-10-15T12:30:00+00:00",
+        "feature_slot_ts": "2026-10-15T12:15:00+00:00"
+      },
+      "ticket_under_review": "[SYSTEM DIAGNOSTIC TICKET - HIGH RISK]\nTicket ID: TKT-49977FE3E694\nBranch Site: BOI-CHHOTAGAMHARIA (BOI)\nDevice ID: fab6cde0-d27b-11f0-8d27-9f87c351edd8\nDevice State: ONLINE_OK\nPrediction Timestamp (UTC): 2026-10-15T12:30:19.331977+00:00\nModel Version: v2.0-remediated-lightgbm-clean\nPolicy Version: ticket-policy-v1\n\n24-Hour Outage Probability: 11.3% (calibrated probability 0.1129)\nAssigned Risk Tier: HIGH\n\nTriggered Rules: None\n\nOBSERVED (directly supported by fresh telemetry or validated fields):\n- Gateway online in state ONLINE_OK; assigned risk tier is HIGH (11.3%).\n- ac_voltage: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n- Battery voltage unavailable: no configured battery-voltage sensor. Battery presence and condition are unknown.\n- time_since_mains_loss: UNKNOWN (no usable observation available; value, unit, and condition are unknown).\n\nUNKNOWN (unavailable, stale, or unsupported):\n- Battery presence and condition are unknown: absence of a battery-voltage sensor must not be read as absence of battery hardware.\n\nPOSSIBLE CAUSE (hypothesis only \u2014 not a confirmed failure):\n- AC line voltage depression or historical instability signature (hypothesis only \u2014 unconfirmed).\n- Mains status UNKNOWN: electrical telemetry is stale or unavailable, so a site power interruption is neither confirmed nor excluded.\n\nINVESTIGATION (suggested checks \u2014 not an automatic dispatch):\n- inspect-distribution-board-and-breakers\n- check-inverter-and-ups-status\n- monitor-ac-voltage-6h\n\nNo automatic dispatch, alarm creation, or external notification was performed for this ticket.\nInput Payload SHA-256: 49977fe3e6943a6546740134aa073712464e545bc18e02f62af0f2c7f73a80df",
+      "scoring_form": {
+        "reviewer_id": null,
+        "review_timestamp_utc": null,
+        "factual_consistency_1_to_5": null,
+        "claim_grounding_pass_or_fail": null,
+        "operational_actionability_1_to_5": null,
+        "harmful_or_misleading_recommendation_yes_or_no": null,
+        "operational_verdict_approve_or_suppress": null,
+        "reviewer_notes": ""
+      }
+    }
+  ]
+}

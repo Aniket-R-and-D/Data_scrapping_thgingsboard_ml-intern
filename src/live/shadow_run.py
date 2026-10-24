@@ -729,6 +729,7 @@ def _run_cycle_body(source, now: datetime, cutoff: datetime, cycle_id: str,
         "validator_failures": sum(1 for r in records if r.get("validator_valid") is False),
         "tiers": {str(k): int(v) for k, v in tiers.items()}, "llm_used": 0, "alarms_created": 0,
         "dispatches": 0, "notifications": 0, "finished": datetime.now(timezone.utc).isoformat(),
+        "action_taken": ACTION_TAKEN, "git_commit": rel.git_commit,
     })
     _flush_logs()
     return summary
@@ -835,6 +836,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     root = logging.getLogger()
     root.setLevel(logging.INFO)
     if args.log_file:
+        args.log_file.parent.mkdir(parents=True, exist_ok=True)
         fh = logging.FileHandler(args.log_file, encoding="utf-8")
         fh.setFormatter(fmt)
         fh.setLevel(logging.INFO)

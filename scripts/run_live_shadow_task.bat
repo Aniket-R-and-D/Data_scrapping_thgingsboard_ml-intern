@@ -9,7 +9,7 @@ rem direct pythonw.exe action (windowless) documented in reports/live_shadow_run
 setlocal
 cd /d "C:\workspace\Data_scrapping_thgingsboard_ml-intern"
 echo [%DATE% %TIME%] task start >> "data\live\task_wrapper.log"
-".venv\Scripts\pythonw.exe" -X utf8 -m src.live.shadow_run --once --log-file "data\live\shadow_run.log" --max-backfill-hours 1 >> "data\live\task_wrapper.log" 2>&1
+".venv\Scripts\pythonw.exe" -X utf8 -m src.live.shadow_run --once --log-file "data\live\shadow_run.log" --max-backfill-hours 0 >> "data\live\task_wrapper.log" 2>&1
 set RC=%ERRORLEVEL%
 echo [%DATE% %TIME%] task exit %RC% >> "data\live\task_wrapper.log"
 exit /b %RC%

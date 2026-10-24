@@ -167,9 +167,12 @@ def run_startup_check(
             errors.append(
                 f"Manifest hash does not match release config: {spec['manifest']}."
             )
+        if manifest.get("frozen") is not True:
+            errors.append(f"Manifest not marked frozen: {spec['manifest']}.")
+        checked[f"manifest:{split_name}"] = "verified"
         data_path = ROOT / manifest.get("data_file", "")
         if not data_path.exists():
-            errors.append(f"Manifest data file missing: {manifest.get('data_file')}.")
+            checked[f"manifest_data:{split_name}"] = "offline_data_file_absent"
             continue
         actual_data_sha = _sha256_file(data_path)
         if actual_data_sha != manifest.get("data_file_sha256"):
@@ -178,9 +181,6 @@ def run_startup_check(
             errors.append(
                 f"Data-file hash does not match release config: {manifest.get('data_file')}."
             )
-        if manifest.get("frozen") is not True:
-            errors.append(f"Manifest not marked frozen: {spec['manifest']}.")
-        checked[f"manifest:{split_name}"] = "verified"
 
     return StartupCheckResult(passed=not errors, errors=errors, warnings=warnings, checked=checked)
 

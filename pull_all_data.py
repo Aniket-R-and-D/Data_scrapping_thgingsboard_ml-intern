@@ -959,7 +959,11 @@ def main(argv: list[str]) -> int:
                                 f"?keys={_safe}&startTs={cursor_ms}&endTs={end}"
                                 f"&limit={limit}&orderBy=ASC&agg=NONE&useStrictDataTypes=false"
                             )
-                            resp, retries = http_get(client.session, url, client.headers, 45, retry_policy)
+                            try:
+                                resp, retries = http_get(client.session, url, client.headers, 45, retry_policy)
+                            except AuthError:
+                                client.login()
+                                resp, retries = http_get(client.session, url, client.headers, 45, retry_policy)
                             data = resp.json()
                             batch = data.get(_rk) or [] if isinstance(data, dict) else []
                             return batch, retries

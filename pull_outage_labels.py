@@ -219,6 +219,9 @@ def classify_text(value: Any) -> str:
 class ThingsBoardClient:
     def __init__(self, host: str, email: str, password: str, verify_tls: bool):
         self.host = host.rstrip("/")
+        self.email = email
+        self.password = password
+        self.verify_tls = verify_tls
         self.session = requests.Session()
         self.session.verify = verify_tls
         if not verify_tls:
@@ -226,9 +229,12 @@ class ThingsBoardClient:
                 requests.packages.urllib3.disable_warnings()  # type: ignore[attr-defined]
             except Exception:
                 pass
+        self.login()
+
+    def login(self) -> None:
         resp = self.session.post(
             f"{self.host}/api/auth/login",
-            json={"username": email, "password": password},
+            json={"username": self.email, "password": self.password},
             headers={"Content-Type": "application/json"},
             timeout=30,
         )
@@ -248,7 +254,12 @@ class ThingsBoardClient:
             resp, _ = http_get(self.session, url, self.headers, timeout,
                                RetryPolicy(max_attempts=max(1, retries)))
         except AuthError:
-            raise RuntimeError("JWT expired or unauthorized")
+            try:
+                self.login()
+                resp, _ = http_get(self.session, url, self.headers, timeout,
+                                   RetryPolicy(max_attempts=max(1, retries)))
+            except Exception:
+                raise RuntimeError("JWT expired or unauthorized")
         except PermanentError as exc:
             if exc.status in {404, 405}:
                 return None
