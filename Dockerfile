@@ -28,9 +28,8 @@ COPY send_daily_risk_digest.py /app/
 COPY src/ /app/src/
 COPY scripts/ /app/scripts/
 
-# Copy lightweight trained production models (joblib bundles < 30MB total)
-COPY models/gbm_outage_oct2026_365d/ /app/models/gbm_outage_oct2026_365d/
-COPY models/isolation_forest_365d/ /app/models/isolation_forest_365d/
+# Copy lightweight trained production models and baseline snapshots (< 30MB total)
+COPY models/ /app/models/
 
 # Create persistent reports directory
 RUN mkdir -p /app/reports

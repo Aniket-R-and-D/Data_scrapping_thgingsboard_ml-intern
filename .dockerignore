@@ -33,6 +33,7 @@ env/
 
 # Heavy telemetry datasets (parquet, raw csv/json harvests)
 *.parquet
+!models/*.parquet
 data/
 training_data/
 data_harvest/

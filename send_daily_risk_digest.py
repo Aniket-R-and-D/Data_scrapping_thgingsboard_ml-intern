@@ -98,21 +98,29 @@ def load_environment() -> Dict[str, str]:
 def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """Compute anomaly tiers and predictive outage risk for all 130 branches."""
     logger.info("Loading latest anomaly scoring and feature representations...")
-    if not SCORED_ANOMALIES_PATH.exists() or not ANOMALY_FEATURES_PATH.exists():
-        raise FileNotFoundError(f"Missing anomaly datasets at {SCORED_ANOMALIES_PATH}")
+    fallback_scored = ROOT / "models/latest_fleet_scored.parquet"
+    fallback_feats = ROOT / "models/latest_fleet_features.parquet"
 
-    scored_df = pd.read_parquet(SCORED_ANOMALIES_PATH)
-    feats_df = pd.read_parquet(ANOMALY_FEATURES_PATH)
+    if SCORED_ANOMALIES_PATH.exists() and ANOMALY_FEATURES_PATH.exists():
+        scored_df = pd.read_parquet(SCORED_ANOMALIES_PATH)
+        feats_df = pd.read_parquet(ANOMALY_FEATURES_PATH)
+        latest_scored = scored_df.sort_values("anchor_ts").groupby("device_id").last().reset_index()
+        latest_feats = feats_df.sort_values("anchor_ts").groupby("device_id").last().reset_index()
+    elif fallback_scored.exists() and fallback_feats.exists():
+        logger.info(f"Loading packaged fleet baseline snapshots from {fallback_scored}...")
+        latest_scored = pd.read_parquet(fallback_scored)
+        latest_feats = pd.read_parquet(fallback_feats)
+    else:
+        raise FileNotFoundError(f"Missing anomaly datasets at {SCORED_ANOMALIES_PATH} and fallback models at {fallback_scored}")
 
-    # Load Device Registry
+    # Load Device Registry if available
     dev_names: Dict[str, str] = {}
     if REGISTRY_DEVICES_PATH.exists():
-        devs_reg = pd.read_csv(REGISTRY_DEVICES_PATH)
-        dev_names = devs_reg.set_index("device_id")["name"].to_dict()
-
-    # Get latest evaluated snapshot per device
-    latest_scored = scored_df.sort_values("anchor_ts").groupby("device_id").last().reset_index()
-    latest_feats = feats_df.sort_values("anchor_ts").groupby("device_id").last().reset_index()
+        try:
+            devs_reg = pd.read_csv(REGISTRY_DEVICES_PATH)
+            dev_names = devs_reg.set_index("device_id")["name"].to_dict()
+        except Exception:
+            pass
 
     # Load Outage Prediction Model
     outage_model_path = OUTAGE_MODEL_DIR / "model.joblib"
@@ -166,7 +174,7 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
     records: List[Dict[str, Any]] = []
     for _, row in latest_scored.iterrows():
         dev_id = row["device_id"]
-        dev_name = dev_names.get(dev_id, dev_id)
+        dev_name = str(row.get("device_name") or dev_names.get(dev_id, dev_id))
         p_outage = outage_probs.get(dev_id, 0.0)
         anomaly_score = float(row["anomaly_score"])
         raw_tier = str(row["anomaly_tier"])
