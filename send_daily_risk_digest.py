@@ -525,8 +525,8 @@ def generate_reports(fleet_df: pd.DataFrame, summary: Dict[str, Any]) -> Tuple[P
     return md_path, html_path, csv_path
 
 
-def sync_to_thingsboard(fleet_df: pd.DataFrame, env: Dict[str, str], max_sync: int = 130) -> None:
-    """Sync AI attributes and trigger active alarms on ThingsBoard platform."""
+def sync_to_thingsboard(fleet_df: pd.DataFrame, env: Dict[str, str], max_sync: int = 130, summary: Optional[Dict[str, Any]] = None) -> None:
+    """Sync AI attributes, trigger active alarms, and refresh modernized dashboard KPI card."""
     host = env["TB_HOST"]
     email = env["TB_EMAIL"]
     password = env["TB_PASSWORD"]
@@ -624,6 +624,34 @@ def sync_to_thingsboard(fleet_df: pd.DataFrame, env: Dict[str, str], max_sync: i
         f"ThingsBoard sync complete: {synced_attrs} devices updated, "
         f"{cleared_alarms} recovered alarms cleared, {synced_alarms} active alarms registered."
     )
+
+    # Dynamic update of modernized ThingsBoard Dashboard KPI card
+    try:
+        from scripts.modernize_ai_dashboard import update_live_kpi_card
+        if summary:
+            update_live_kpi_card(summary, host, token)
+        else:
+            total = len(fleet_df)
+            crit = int((fleet_df["unified_tier"] == "CRITICAL_FAULT").sum())
+            high = int(((fleet_df["unified_tier"] == "HIGH_RISK") | (fleet_df["outage_prob_24h"] >= 0.50)).sum())
+            recov = int((fleet_df["unified_tier"] == "SERVICED_RECOVERED").sum())
+            elev = int((fleet_df["unified_tier"] == "ELEVATED").sum())
+            nom = int((fleet_df["unified_tier"] == "NOMINAL").sum())
+            health = round((nom + recov) / max(1, total) * 100, 1)
+            derived_summary = {
+                "total_monitored_branches": total,
+                "fleet_health_score_pct": health,
+                "critical_fault_count": crit,
+                "high_risk_count": high,
+                "serviced_recovered_count": recov,
+                "elevated_count": elev,
+                "nominal_count": nom
+            }
+            update_live_kpi_card(derived_summary, host, token)
+        logger.info("ThingsBoard AI Operations Dashboard KPI card updated with latest metrics.")
+    except Exception as e:
+        logger.debug(f"Dashboard KPI update skipped or failed: {e}")
+
 
 
 def send_slack_notification(fleet_df: pd.DataFrame, summary: Dict[str, Any], env: Dict[str, str]) -> bool:
@@ -874,7 +902,7 @@ def main() -> None:
     # ThingsBoard Sync
     should_sync_tb = args.sync_tb or (not args.slack and not args.email)
     if should_sync_tb:
-        sync_to_thingsboard(fleet_df, env)
+        sync_to_thingsboard(fleet_df, env, summary=summary)
 
     # Slack Dispatch
     should_slack = args.slack or (not args.sync_tb and not args.email)

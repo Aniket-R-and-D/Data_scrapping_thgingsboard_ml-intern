@@ -49,8 +49,8 @@ def run_full_daily_cycle(env: Dict[str, str]) -> None:
         fleet_df, summary = digest_app.compute_fleet_risk(env)
         md_p, html_p, csv_p = digest_app.generate_reports(fleet_df, summary)
         
-        # Sync to ThingsBoard (clears recovered, registers active)
-        digest_app.sync_to_thingsboard(fleet_df, env)
+        # Sync to ThingsBoard (clears recovered, registers active, updates modernized KPI card)
+        digest_app.sync_to_thingsboard(fleet_df, env, summary=summary)
 
         # Dispatch Slack
         digest_app.send_slack_notification(fleet_df, summary, env)
