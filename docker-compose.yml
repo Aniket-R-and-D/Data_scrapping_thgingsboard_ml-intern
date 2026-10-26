@@ -10,6 +10,9 @@ services:
     environment:
       - POLL_INTERVAL_MINUTES=15
       - DIGEST_HOUR_UTC=6
+      - S3_BACKUP_BUCKET=bank-report-data
+      - S3_BACKUP_PREFIX=novaedge-ai-reports
+      - AWS_REGION=ap-south-1
       - PYTHONUNBUFFERED=1
     volumes:
       # Mount reports directory to host so daily HTML/CSV digests persist permanently

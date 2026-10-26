@@ -515,6 +515,13 @@ def generate_reports(fleet_df: pd.DataFrame, summary: Dict[str, Any]) -> Tuple[P
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(html_content)
 
+    # Automated S3 Cloud Archival
+    try:
+        from src.cloud.s3_archiver import archive_reports_to_s3
+        archive_reports_to_s3(REPORTS_DIR)
+    except Exception as e:
+        logger.debug(f"S3 archival skipped or encountered: {e}")
+
     return md_path, html_path, csv_path
 
 
