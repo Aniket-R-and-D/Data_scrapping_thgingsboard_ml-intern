@@ -42,7 +42,7 @@ CLOUDFLARE_DASHBOARD_CSS = """
    Solid dark surfaces, crisp 1px borders, zero gradients.
    ======================================================== */
 
-.tb-dashboard-page, body {
+.tb-dashboard-page, .tb-dashboard-content, .tb-dashboard-container {
     background-color: #0e121b !important;
     color: #f3f4f6 !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
@@ -296,7 +296,7 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                 "displayEntityType": False,
                 "displayPagination": True,
                 "defaultPageSize": 15,
-                "defaultSortOrder": "ai_outage_risk_prob:desc"
+                "defaultSortOrder": "-ai_outage_risk_prob"
             },
             "datasources": [
                 {
@@ -311,8 +311,8 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                             "color": "#f8fafc",
                             "settings": {
                                 "columnWidth": "190px",
-                                "useCellStyleFunction": True,
-                                "cellStyleFunction": "return {fontWeight: '700', color: '#f8fafc'};"
+                                "useCellContentFunction": True,
+                                "cellContentFunction": "return '<strong style=\"color:#f8fafc;font-weight:700;\">' + (value || '') + '</strong>';"
                             }
                         },
                         {
@@ -323,9 +323,7 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                             "settings": {
                                 "columnWidth": "145px",
                                 "useCellContentFunction": True,
-                                "cellContentFunction": "if (value === 'CRITICAL_FAULT') return '● CRITICAL'; if (value === 'HIGH_RISK') return '▲ HIGH_RISK'; if (value === 'SERVICED_RECOVERED') return '✔ RECOVERED'; if (value === 'ELEVATED') return '◆ ELEVATED'; return '○ NOMINAL';",
-                                "useCellStyleFunction": True,
-                                "cellStyleFunction": "if (value === 'CRITICAL_FAULT') return {color: '#fda4af', backgroundColor: '#4c0519', border: '1px solid #f43f5e', fontWeight: '700', padding: '3px 8px', borderRadius: '3px', fontFamily: 'monospace', fontSize: '11px'}; if (value === 'HIGH_RISK') return {color: '#fde68a', backgroundColor: '#451a03', border: '1px solid #f59e0b', fontWeight: '700', padding: '3px 8px', borderRadius: '3px', fontFamily: 'monospace', fontSize: '11px'}; if (value === 'SERVICED_RECOVERED') return {color: '#6ee7b7', backgroundColor: '#022c22', border: '1px solid #10b981', fontWeight: '700', padding: '3px 8px', borderRadius: '3px', fontFamily: 'monospace', fontSize: '11px'}; if (value === 'ELEVATED') return {color: '#bae6fd', backgroundColor: '#082f49', border: '1px solid #0ea5e9', fontWeight: '700', padding: '3px 8px', borderRadius: '3px', fontFamily: 'monospace', fontSize: '11px'}; return {color: '#9ca3af', backgroundColor: '#11151f', border: '1px solid #374151', fontWeight: '600', padding: '3px 8px', borderRadius: '3px', fontFamily: 'monospace', fontSize: '11px'};"
+                                "cellContentFunction": "if (value === 'CRITICAL_FAULT') return '<span style=\"color:#fda4af;background-color:#4c0519;border:1px solid #f43f5e;font-weight:700;padding:2px 7px;border-radius:3px;font-family:monospace;font-size:11px;\">● CRITICAL</span>'; if (value === 'HIGH_RISK') return '<span style=\"color:#fde68a;background-color:#451a03;border:1px solid #f59e0b;font-weight:700;padding:2px 7px;border-radius:3px;font-family:monospace;font-size:11px;\">▲ HIGH_RISK</span>'; if (value === 'SERVICED_RECOVERED') return '<span style=\"color:#6ee7b7;background-color:#022c22;border:1px solid #10b981;font-weight:700;padding:2px 7px;border-radius:3px;font-family:monospace;font-size:11px;\">✔ RECOVERED</span>'; if (value === 'ELEVATED') return '<span style=\"color:#bae6fd;background-color:#082f49;border:1px solid #0ea5e9;font-weight:700;padding:2px 7px;border-radius:3px;font-family:monospace;font-size:11px;\">◆ ELEVATED</span>'; return '<span style=\"color:#9ca3af;background-color:#11151f;border:1px solid #374151;font-weight:600;padding:2px 7px;border-radius:3px;font-family:monospace;font-size:11px;\">○ NOMINAL</span>';"
                             }
                         },
                         {
@@ -336,9 +334,7 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                             "settings": {
                                 "columnWidth": "135px",
                                 "useCellContentFunction": True,
-                                "cellContentFunction": "if (value !== undefined && value !== null && value !== '') { return (parseFloat(value) * 100).toFixed(1) + '%'; } return '-';",
-                                "useCellStyleFunction": True,
-                                "cellStyleFunction": "var p = parseFloat(value); if (p >= 0.80) return {color: '#f43f5e', fontWeight: '700', fontFamily: 'monospace', fontSize: '13px'}; if (p >= 0.50) return {color: '#f59e0b', fontWeight: '700', fontFamily: 'monospace', fontSize: '13px'}; return {color: '#10b981', fontFamily: 'monospace', fontSize: '12px'};"
+                                "cellContentFunction": "if (value !== undefined && value !== null && value !== '') { var p = parseFloat(value); var pct = (p * 100).toFixed(1) + '%'; if (p >= 0.80) return '<span style=\"color:#f43f5e;font-weight:700;font-family:monospace;font-size:13px;\">' + pct + '</span>'; if (p >= 0.50) return '<span style=\"color:#f59e0b;font-weight:700;font-family:monospace;font-size:13px;\">' + pct + '</span>'; return '<span style=\"color:#10b981;font-family:monospace;font-size:12px;\">' + pct + '</span>'; } return '-';"
                             }
                         },
                         {
@@ -349,9 +345,7 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                             "settings": {
                                 "columnWidth": "135px",
                                 "useCellContentFunction": True,
-                                "cellContentFunction": "if (value !== undefined && value !== null && value !== '') { return parseFloat(value).toFixed(4); } return '-';",
-                                "useCellStyleFunction": True,
-                                "cellStyleFunction": "return {fontFamily: 'monospace', color: '#94a3b8', fontSize: '12px'};"
+                                "cellContentFunction": "if (value !== undefined && value !== null && value !== '') { return '<span style=\"font-family:monospace;color:#94a3b8;font-size:12px;\">' + parseFloat(value).toFixed(4) + '</span>'; } return '-';"
                             }
                         },
                         {
@@ -361,8 +355,8 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                             "color": "#cbd5e1",
                             "settings": {
                                 "columnWidth": "280px",
-                                "useCellStyleFunction": True,
-                                "cellStyleFunction": "return {color: '#cbd5e1', fontSize: '12px'};"
+                                "useCellContentFunction": True,
+                                "cellContentFunction": "return '<span style=\"color:#cbd5e1;font-size:12px;\">' + (value || '-') + '</span>';"
                             }
                         },
                         {
@@ -372,8 +366,8 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                             "color": "#2dd4bf",
                             "settings": {
                                 "columnWidth": "300px",
-                                "useCellStyleFunction": True,
-                                "cellStyleFunction": "return {color: '#2dd4bf', fontSize: '12px'};"
+                                "useCellContentFunction": True,
+                                "cellContentFunction": "return '<span style=\"color:#2dd4bf;font-size:12px;\">' + (value || '-') + '</span>';"
                             }
                         },
                         {
@@ -383,8 +377,8 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                             "color": "#64748b",
                             "settings": {
                                 "columnWidth": "160px",
-                                "useCellStyleFunction": True,
-                                "cellStyleFunction": "return {color: '#64748b', fontFamily: 'monospace', fontSize: '11px'};"
+                                "useCellContentFunction": True,
+                                "cellContentFunction": "return '<span style=\"color:#64748b;font-family:monospace;font-size:11px;\">' + (value || '-') + '</span>';"
                             }
                         }
                     ]
@@ -425,6 +419,8 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                 "textTransform": "uppercase",
                 "padding": "4px 8px"
             },
+            "useDashboardTimewindow": False,
+            "showLegend": False,
             "alarmSearchStatus": "ACTIVE",
             "alarmTypeList": ["AI_CRITICAL_ANOMALY", "AI_PREDICTIVE_OUTAGE_RISK"],
             "alarmSeverityList": ["CRITICAL", "MAJOR", "MINOR", "WARNING"],
@@ -434,25 +430,59 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                 "displayDetails": True,
                 "allowAcknowledgment": True,
                 "allowClear": True,
+                "allowAssign": True,
+                "displayActivity": False,
                 "displayPagination": True,
                 "defaultPageSize": 10,
-                "defaultSortOrder": "createdTime:desc"
+                "defaultSortOrder": "-createdTime",
+                "alarmsTitle": "Active AI Incidents"
             },
-            "datasources": [
-                {
-                    "type": "entity",
-                    "name": None,
-                    "entityAliasId": alias_id,
-                    "dataKeys": [
-                        {"name": "createdTime", "type": "alarm", "label": "Incident Time", "color": "#64748b", "settings": {"columnWidth": "160px"}},
-                        {"name": "originator", "type": "alarm", "label": "Branch", "color": "#f8fafc", "settings": {"columnWidth": "190px"}},
-                        {"name": "type", "type": "alarm", "label": "Alarm Event", "color": "#f43f5e", "settings": {"columnWidth": "200px"}},
-                        {"name": "severity", "type": "alarm", "label": "Severity", "color": "#fb7185", "settings": {"columnWidth": "120px"}},
-                        {"name": "status", "type": "alarm", "label": "Status", "color": "#f59e0b", "settings": {"columnWidth": "140px"}},
-                        {"name": "details", "type": "alarm", "label": "Root Cause Details", "color": "#cbd5e1", "settings": {"columnWidth": "350px"}}
-                    ]
+            "alarmSource": {
+                "type": "entity",
+                "name": "alarms",
+                "entityAliasId": alias_id,
+                "dataKeys": [
+                    {
+                        "name": "createdTime",
+                        "type": "alarm",
+                        "label": "Incident Time",
+                        "color": "#64748b",
+                        "settings": {"columnWidth": "160px"}
+                    },
+                    {
+                        "name": "originatorDisplayName",
+                        "type": "alarm",
+                        "label": "Branch / Device",
+                        "color": "#f8fafc",
+                        "settings": {"columnWidth": "190px"}
+                    },
+                    {
+                        "name": "type",
+                        "type": "alarm",
+                        "label": "Alarm Event",
+                        "color": "#f43f5e",
+                        "settings": {"columnWidth": "200px"}
+                    },
+                    {
+                        "name": "severity",
+                        "type": "alarm",
+                        "label": "Severity",
+                        "color": "#fb7185",
+                        "settings": {"columnWidth": "120px"}
+                    },
+                    {
+                        "name": "status",
+                        "type": "alarm",
+                        "label": "Status",
+                        "color": "#f59e0b",
+                        "settings": {"columnWidth": "140px"}
+                    }
+                ],
+                "alarmFilterConfig": {
+                    "statusList": ["ACTIVE"]
                 }
-            ]
+            },
+            "datasources": []
         }
     }
 
@@ -478,7 +508,7 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
         },
         "states": {
             "default": {
-                "name": "AI Fleet Operations Command Center",
+                "name": "default",
                 "root": True,
                 "layouts": {
                     "main": {
