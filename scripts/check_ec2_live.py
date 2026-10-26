@@ -7,63 +7,37 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
 def check_ec2():
-    # 1. Send command
-    cmd_input = {
-        "InstanceIds": ["i-064834c54249ba9b7"],
-        "DocumentName": "AWS-RunShellScript",
-        "Comment": "Check container status and logs",
-        "Parameters": {
+    import boto3
+    import time
+
+    ssm = boto3.client("ssm", region_name="ap-south-1")
+    instance_id = "i-064834c54249ba9b7"
+
+    response = ssm.send_command(
+        InstanceIds=[instance_id],
+        DocumentName="AWS-RunShellScript",
+        Comment="Check container status and logs",
+        Parameters={
             "commands": [
                 "docker ps --filter name=novaedge-ai-agent",
-                "docker logs --tail 30 novaedge-ai-agent"
+                "docker logs --tail 25 novaedge-ai-agent"
             ]
         }
-    }
-    
-    import os
-    env = os.environ.copy()
-    env["PYTHONIOENCODING"] = "utf-8"
-    env["PYTHONUTF8"] = "1"
-    env["AWS_CLI_FILE_ENCODING"] = "UTF-8"
-
-    send_res = subprocess.run(
-        ["aws", "ssm", "send-command", "--cli-input-json", json.dumps(cmd_input)],
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        env=env
     )
-    if send_res.returncode != 0:
-        print("Failed to send command:", send_res.stderr)
-        return
-
-    cmd_id = json.loads(send_res.stdout)["Command"]["CommandId"]
+    cmd_id = response["Command"]["CommandId"]
     print(f"Sent SSM command {cmd_id}, waiting for execution...")
-
-    import time
     time.sleep(6)
 
-    # 2. Get invocation
-    get_res = subprocess.run(
-        ["aws", "ssm", "get-command-invocation", "--command-id", cmd_id, "--instance-id", "i-064834c54249ba9b7"],
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        env=env
-    )
-    if get_res.returncode != 0:
-        print("Failed to get invocation:", get_res.stderr)
-        return
-
-    data = json.loads(get_res.stdout)
+    inv = ssm.get_command_invocation(CommandId=cmd_id, InstanceId=instance_id)
     print("=" * 70)
     print("AWS EC2 LIVE CONTAINER STATUS & LOGS")
-    print(f"Status: {data.get('Status')} | ResponseCode: {data.get('ResponseCode')}")
+    print(f"Status: {inv.get('Status')} | ResponseCode: {inv.get('ResponseCode')}")
     print("=" * 70)
-    print(data.get("StandardOutputContent", ""))
-    if data.get("StandardErrorContent"):
+    stdout_content = inv.get("StandardOutputContent", "")
+    sys.stdout.buffer.write((stdout_content + "\n").encode("utf-8", errors="replace"))
+    if inv.get("StandardErrorContent"):
         print("STDERR:")
-        print(data.get("StandardErrorContent", ""))
+        sys.stdout.buffer.write((inv.get("StandardErrorContent", "") + "\n").encode("utf-8", errors="replace"))
     print("=" * 70)
 
 if __name__ == "__main__":
