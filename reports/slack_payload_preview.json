@@ -4,7 +4,7 @@
       "type": "header",
       "text": {
         "type": "plain_text",
-        "text": "\ud83c\udf05 ThingsBoard Morning AI Risk Digest \u2014 24 Oct 2026",
+        "text": "\ud83c\udf05 ThingsBoard Morning AI Risk Digest \u2014 26 Oct 2026",
         "emoji": true
       }
     },
@@ -12,7 +12,7 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "*Fleet Status:* `130` Branches Monitored | *Health Index:* `55.8%`\n\ud83d\udea8 *Critical Faults:* `28` | \u26a0\ufe0f *High 24h Risk:* `20` | \ud83d\udfe2 *Restored:* `5` | \u2705 *Nominal:* `58`"
+        "text": "*Fleet Status:* `130` Branches Monitored | *Health Index:* `55.0%`\n\ud83d\udea8 *Critical Faults:* `28` | \u26a0\ufe0f *High 24h Risk:* `21` | \ud83d\udfe2 *Restored:* `4` | \u2705 *Nominal:* `58`"
       }
     },
     {
@@ -29,14 +29,7 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/5472ea20-aa78-11f0-b8ab-b38af83f6c9c|BOI-BABAI>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (1.0m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas"
-      }
-    },
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/aed666e0-aa69-11f0-b150-2710a8915e1d|BOI-MISROD>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (17.0m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas"
+        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/5472ea20-aa78-11f0-b8ab-b38af83f6c9c|BOI-BABAI>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.4m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas"
       }
     },
     {
@@ -50,14 +43,14 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/6287e400-a823-11f0-b150-2710a8915e1d|BOI-SALTLAKE>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.2m ago); Battery healthy (14.0V, not low); Mains power restored (200.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas"
+        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/6287e400-a823-11f0-b150-2710a8915e1d|BOI-SALTLAKE>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.1m ago); Battery healthy (14.0V, not low); Mains power restored (200.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas"
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/0b7bc7d0-671d-11f1-8c55-5bb8284c6aef|CANARA-BARUIPUR>* (CANARA)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.6m ago); Zero active ticket faults; Subsystems restored: gateway, bas, fas"
+        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/0b7bc7d0-671d-11f1-8c55-5bb8284c6aef|CANARA-BARUIPUR>* (CANARA)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.8m ago); Zero active ticket faults; Subsystems restored: gateway, bas, fas"
       }
     },
     {
