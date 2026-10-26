@@ -10,6 +10,8 @@ services:
     environment:
       - POLL_INTERVAL_MINUTES=15
       - DIGEST_HOUR_UTC=6
+      - RETRAIN_DAY_OF_MONTH=1
+      - RETRAIN_HOUR_UTC=2
       - S3_BACKUP_BUCKET=bank-report-data
       - S3_BACKUP_PREFIX=novaedge-ai-reports
       - AWS_REGION=ap-south-1

@@ -17,6 +17,7 @@ __pycache__/
 .venv/
 smoke_test.log
 desktop.ini
+backup/
 
 # Tool caches / local agent state (pytest audit dirs are permission-locked)
 .pytest_cache/

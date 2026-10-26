@@ -180,16 +180,20 @@ def daemon_loop(env: Dict[str, str]) -> None:
     """Autonomous scheduling daemon."""
     poll_minutes = int(os.getenv("POLL_INTERVAL_MINUTES", "15"))
     digest_hour_utc = int(os.getenv("DIGEST_HOUR_UTC", "6")) # 06:00 UTC = 11:30 AM IST
+    retrain_day_of_month = int(os.getenv("RETRAIN_DAY_OF_MONTH", "1")) # 1st of month
+    retrain_hour_utc = int(os.getenv("RETRAIN_HOUR_UTC", "2")) # 02:00 UTC (off-peak)
 
     logger.info(f"Starting 24/7 NovaEdge Cloud Daemon.")
     logger.info(f"Recovery Poll Interval: Every {poll_minutes} minutes")
     logger.info(f"Scheduled Daily Digest: Daily at {digest_hour_utc:02d}:00 UTC")
+    logger.info(f"Scheduled Monthly Retraining: Day {retrain_day_of_month} at {retrain_hour_utc:02d}:00 UTC")
 
     # Run once at startup to ensure baseline state
     logger.info("Executing initial startup cycle...")
     run_full_daily_cycle(env)
 
     last_digest_day = datetime.now(timezone.utc).day
+    last_retrain_month = datetime.now(timezone.utc).month
 
     while True:
         try:
@@ -206,6 +210,16 @@ def daemon_loop(env: Dict[str, str]) -> None:
                 run_full_daily_cycle(env)
                 last_digest_day = now.day
 
+            # 3. Monthly model retraining check (captures seasonal grid drift)
+            if now.day == retrain_day_of_month and now.hour == retrain_hour_utc and now.month != last_retrain_month:
+                logger.info(f"Scheduled Monthly AI Model Retraining Triggered (Day {retrain_day_of_month}, {retrain_hour_utc}:00 UTC)")
+                try:
+                    from src.predict.monthly_retrainer import run_monthly_retraining
+                    run_monthly_retraining(env)
+                except Exception as retrain_err:
+                    logger.error(f"Error during monthly retraining: {retrain_err}", exc_info=True)
+                last_retrain_month = now.month
+
         except KeyboardInterrupt:
             logger.info("Daemon received interrupt signal. Exiting gracefully.")
             break
@@ -219,11 +233,16 @@ def main():
     parser.add_argument("--once", action="store_true", help="Execute single full daily cycle and exit (for cron/scheduled tasks)")
     parser.add_argument("--probe-only", action="store_true", help="Execute single recovery probe cycle and exit")
     parser.add_argument("--daemon", action="store_true", help="Run in continuous 24/7 background scheduler loop")
+    parser.add_argument("--retrain-now", action="store_true", help="Execute monthly model retraining immediately")
+    parser.add_argument("--force-promote", action="store_true", help="Force promotion during retraining")
     args = parser.parse_args()
 
     env = digest_app.load_environment()
 
-    if args.once:
+    if args.retrain_now:
+        from src.predict.monthly_retrainer import run_monthly_retraining
+        run_monthly_retraining(env, force_promote=args.force_promote)
+    elif args.once:
         run_full_daily_cycle(env)
     elif args.probe_only:
         run_recovery_probe_cycle(env)
