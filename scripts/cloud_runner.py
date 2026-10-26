@@ -59,8 +59,27 @@ def run_full_daily_cycle(env: Dict[str, str]) -> None:
         digest_app.send_email_notification(html_p, csv_p, summary, env)
 
         logger.info("Full Daily AI Fleet Operations Cycle completed successfully.")
+        
+        # Publish CloudWatch heartbeat & operational metrics
+        try:
+            from src.cloud.cloudwatch_metrics import publish_heartbeat
+            publish_heartbeat(
+                cycle_type="daily_digest",
+                success=True,
+                restored_count=summary.get("total_recovered", 0),
+                critical_count=summary.get("critical_risk_count", 0),
+                high_risk_count=summary.get("high_risk_count", 0)
+            )
+        except Exception as cw_err:
+            logger.warning(f"Failed to publish CloudWatch heartbeat: {cw_err}")
+
     except Exception as e:
         logger.error(f"Error during full daily cycle: {e}", exc_info=True)
+        try:
+            from src.cloud.cloudwatch_metrics import publish_heartbeat
+            publish_heartbeat(cycle_type="daily_digest", success=False)
+        except Exception:
+            pass
 
 
 def run_recovery_probe_cycle(env: Dict[str, str]) -> int:
@@ -141,8 +160,18 @@ def run_recovery_probe_cycle(env: Dict[str, str]) -> int:
     logger.info(f"Recovery probe cycle completed: probed {len(unique_candidates)} critical branches; {recovered_count} newly restored.")
     if recovered_count > 0:
         logger.info(f"Recovery cycle cleared and updated {recovered_count} devices. Refreshing summary...")
-        # Refresh full state
+        # Refresh full state (which publishes daily_digest metrics)
         run_full_daily_cycle(env)
+    else:
+        try:
+            from src.cloud.cloudwatch_metrics import publish_heartbeat
+            publish_heartbeat(
+                cycle_type="recovery_probe",
+                success=True,
+                restored_count=0
+            )
+        except Exception as cw_err:
+            logger.warning(f"Failed to publish CloudWatch recovery probe heartbeat: {cw_err}")
 
     return recovered_count
 
