@@ -17,6 +17,7 @@ def sync_ec2():
         "cd /opt/novaedge-ai",
         "git fetch origin main",
         "git reset --hard origin/main",
+        "chmod -R 777 /opt/novaedge-ai/reports /opt/novaedge-ai/models",
         "echo '=== Latest Git Commit ==='",
         "git log -1 --oneline",
         "echo '=== Restarting Docker Containers ==='",
