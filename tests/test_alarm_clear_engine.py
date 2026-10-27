@@ -78,3 +78,90 @@ def test_process_device_recovery_lifecycle(dummy_eval):
         assert result["is_recovered"] is True
         assert result["cleared_alarms_count"] == 1
         assert "alarm-ai-1" in result["cleared_alarm_ids"]
+
+
+def test_evaluate_debounce_gate_cycle_progression():
+    from datetime import datetime, timezone, timedelta
+    from src.live.alarm_clear_engine import (
+        evaluate_debounce_gate,
+        _empty_debounce_state,
+        STATUS_PENDING,
+        STATUS_CONFIRMED,
+        STATUS_RESET
+    )
+
+    state = _empty_debounce_state()
+    dev_id = "branch-test-1"
+    t0 = datetime(2026, 10, 27, 8, 0, 0, tzinfo=timezone.utc)
+
+    eval_nominal = RecoveryEvaluation(
+        device_id=dev_id,
+        is_recovered=True,
+        confidence=1.0,
+        status_tier="SERVICED_RECOVERED",
+        summary_reason="Telemetry nominal",
+        vitals={"battery_voltage": 12.8, "ac_voltage": 225.0, "mains_on": True}
+    )
+
+    # Cycle 1
+    d1 = evaluate_debounce_gate(state, dev_id, eval_nominal, now=t0)
+    assert d1.consecutive_nominal_cycles == 1
+    assert d1.status == STATUS_PENDING
+    assert d1.eligible_for_clear is False
+
+    # Cycle 2 (+15 mins)
+    t1 = t0 + timedelta(minutes=15)
+    d2 = evaluate_debounce_gate(state, dev_id, eval_nominal, now=t1)
+    assert d2.consecutive_nominal_cycles == 2
+    assert d2.status == STATUS_PENDING
+    assert d2.eligible_for_clear is False
+
+    # Cycle 3 (+30 mins from t0, satisfying required 3 cycles and 30 min min_elapsed)
+    t2 = t0 + timedelta(minutes=30)
+    d3 = evaluate_debounce_gate(state, dev_id, eval_nominal, now=t2)
+    assert d3.consecutive_nominal_cycles == 3
+    assert d3.status == STATUS_CONFIRMED
+    assert d3.eligible_for_clear is True
+
+
+def test_evaluate_debounce_gate_reset_on_voltage_sag():
+    from datetime import datetime, timezone, timedelta
+    from src.live.alarm_clear_engine import (
+        evaluate_debounce_gate,
+        _empty_debounce_state,
+        STATUS_PENDING,
+        STATUS_RESET
+    )
+
+    state = _empty_debounce_state()
+    dev_id = "branch-sag-test"
+    t0 = datetime(2026, 10, 27, 8, 0, 0, tzinfo=timezone.utc)
+
+    eval_nominal = RecoveryEvaluation(
+        device_id=dev_id,
+        is_recovered=True,
+        confidence=1.0,
+        status_tier="SERVICED_RECOVERED",
+        summary_reason="Telemetry nominal",
+        vitals={"battery_voltage": 12.8, "ac_voltage": 225.0, "mains_on": True}
+    )
+    # Voltage sag: AC dropped to 40V
+    eval_sag = RecoveryEvaluation(
+        device_id=dev_id,
+        is_recovered=True,
+        confidence=0.5,
+        status_tier="UNVERIFIED",
+        summary_reason="AC Undervoltage sag",
+        vitals={"battery_voltage": 12.0, "ac_voltage": 40.0, "mains_on": False}
+    )
+
+    # Cycle 1: Nominal
+    d1 = evaluate_debounce_gate(state, dev_id, eval_nominal, now=t0)
+    assert d1.consecutive_nominal_cycles == 1
+
+    # Cycle 2: Sudden sag -> counter reset!
+    t1 = t0 + timedelta(minutes=15)
+    d2 = evaluate_debounce_gate(state, dev_id, eval_sag, now=t1)
+    assert d2.consecutive_nominal_cycles == 0
+    assert d2.status == STATUS_RESET
+    assert d2.eligible_for_clear is False

@@ -66,6 +66,8 @@ def archive_reports_to_s3(
         ("slack_payload_preview.json", f"{base_prefix}/latest"),
         ("data_quality_profile.json", f"{base_prefix}/quality"),
         ("model_comparison_benchmark.json", f"{base_prefix}/benchmarks"),
+        ("telemetry_drift_report.json", f"{base_prefix}/quality"),
+        ("recovery_debounce_state.json", f"{base_prefix}/quality"),
     ]
 
     for pattern, s3_subfolder in target_patterns:

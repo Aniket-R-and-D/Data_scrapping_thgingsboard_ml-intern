@@ -29,7 +29,14 @@ sys.path.insert(0, str(ROOT))
 
 import send_daily_risk_digest as digest_app
 from src.live.recovery_gate import probe_device_telemetry_live
-from src.live.alarm_clear_engine import get_active_ai_alarms, clear_ai_alarm, sync_recovery_attributes
+from src.live.alarm_clear_engine import (
+    build_recovery_dispatch_payload,
+    clear_confirmed_recovery,
+    load_debounce_state,
+    pending_recovery_devices,
+    save_debounce_state,
+    summarize_mttr_by_bank,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -58,11 +65,14 @@ def run_full_daily_cycle(env: Dict[str, str]) -> None:
         # Dispatch Email
         digest_app.send_email_notification(html_p, csv_p, summary, env)
 
+        # Phase 7: telemetry drift monitoring + debounced recovery quality metrics
+        quality = run_quality_monitoring(env)
+
         logger.info("Full Daily AI Fleet Operations Cycle completed successfully.")
         
         # Publish CloudWatch heartbeat & operational metrics
         try:
-            from src.cloud.cloudwatch_metrics import publish_heartbeat
+            from src.cloud.cloudwatch_metrics import publish_heartbeat, publish_quality_metrics
             publish_heartbeat(
                 cycle_type="daily_digest",
                 success=True,
@@ -70,6 +80,12 @@ def run_full_daily_cycle(env: Dict[str, str]) -> None:
                 critical_count=summary.get("critical_risk_count", 0),
                 high_risk_count=summary.get("high_risk_count", 0)
             )
+            if quality.get("drift_report"):
+                publish_quality_metrics(
+                    drift_report=quality["drift_report"],
+                    recovery_state=quality.get("recovery_state"),
+                    confirmed_recoveries=int(summary.get("serviced_recovered_count", 0) or 0),
+                )
         except Exception as cw_err:
             logger.warning(f"Failed to publish CloudWatch heartbeat: {cw_err}")
 
@@ -80,6 +96,38 @@ def run_full_daily_cycle(env: Dict[str, str]) -> None:
             publish_heartbeat(cycle_type="daily_digest", success=False)
         except Exception:
             pass
+
+
+def run_quality_monitoring(env: Dict[str, str]) -> Dict[str, Any]:
+    """Evaluate telemetry drift, refresh quality metrics, and archive quality reports.
+
+    Every step degrades gracefully: a drift failure must not abort the daily
+    operational digest.
+    """
+    result: Dict[str, Any] = {"drift_report": None, "recovery_state": None, "archived": None}
+
+    try:
+        from src.features.drift_monitor import evaluate_drift
+        result["drift_report"] = evaluate_drift()
+        logger.info(
+            f"Telemetry drift: overall={result['drift_report'].get('overall_status')}, "
+            f"max_psi={result['drift_report'].get('max_psi')}"
+        )
+    except Exception as drift_err:
+        logger.warning(f"Telemetry drift evaluation failed: {drift_err}")
+
+    try:
+        result["recovery_state"] = load_debounce_state()
+    except Exception as state_err:
+        logger.warning(f"Could not load recovery debounce state: {state_err}")
+
+    try:
+        from src.cloud.s3_archiver import archive_reports_to_s3
+        result["archived"] = archive_reports_to_s3(ROOT / "reports")
+    except Exception as s3_err:
+        logger.warning(f"S3 quality archival failed: {s3_err}")
+
+    return result
 
 
 def run_recovery_probe_cycle(env: Dict[str, str]) -> int:
@@ -123,56 +171,137 @@ def run_recovery_probe_cycle(env: Dict[str, str]) -> int:
             seen_ids.add(cid)
             unique_candidates.append(c)
 
+    # Devices already inside a debounce window must keep being probed even if a
+    # fresh digest no longer lists them as critical.
+    debounce_state = load_debounce_state()
+    for pending in pending_recovery_devices(debounce_state):
+        pid = pending.get("device_id")
+        if pid and pid not in seen_ids:
+            seen_ids.add(pid)
+            unique_candidates.append(
+                {
+                    "device_id": pid,
+                    "device_name": pending.get("device_name", pid),
+                    "bank": pending.get("bank", "UNKNOWN"),
+                }
+            )
+
     recovered_count = 0
+    recovered_devices = []
     for cand in unique_candidates:
         dev_id = cand["device_id"]
-        dev_name = cand["device_name"]
-        
+        dev_name = cand.get("device_name") or dev_id
+
         eval_res = probe_device_telemetry_live(dev_id, host, token)
-        if eval_res.is_recovered:
-            logger.info(f"⚡ INSTANT RECOVERY DETECTED: {dev_name} ({dev_id})")
-            
-            # Clear alarms on ThingsBoard
-            active_alarms = get_active_ai_alarms(dev_id, host, token)
-            for a in active_alarms:
-                aid = a.get("id", {}).get("id")
-                if aid:
-                    clear_ai_alarm(aid, host, token)
+        decision = clear_confirmed_recovery(
+            device_id=dev_id,
+            eval_res=eval_res,
+            host=host,
+            token=token,
+            device_name=dev_name,
+            bank=str(cand.get("bank") or "UNKNOWN"),
+            state=debounce_state,
+        )
 
-            # Sync attributes
-            sync_recovery_attributes(dev_id, eval_res, host, token)
+        if decision.get("recovery_confirmed"):
             recovered_count += 1
-
-            # Post quick notification to Slack if webhook exists
-            webhook = env.get("SLACK_WEBHOOK", "").strip()
-            if webhook and webhook.startswith("https://hooks.slack.com/services/"):
-                slack_payload = {
-                    "text": f"✅ *Instant Branch Recovery Detected:* `{dev_name}` is restored online!\n"
-                            f"• ThingsBoard Alarms: Cleared automatically.\n"
-                            f"• URL: {host}/devices/{dev_id}"
-                }
-                try:
-                    requests.post(webhook, json=slack_payload, timeout=5)
-                except Exception as ex:
-                    logger.debug(f"Slack post error: {ex}")
-
-    logger.info(f"Recovery probe cycle completed: probed {len(unique_candidates)} critical branches; {recovered_count} newly restored.")
-    if recovered_count > 0:
-        logger.info(f"Recovery cycle cleared and updated {recovered_count} devices. Refreshing summary...")
-        # Refresh full state (which publishes daily_digest metrics)
-        run_full_daily_cycle(env)
-    else:
-        try:
-            from src.cloud.cloudwatch_metrics import publish_heartbeat
-            publish_heartbeat(
-                cycle_type="recovery_probe",
-                success=True,
-                restored_count=0
+            recovered_devices.append(decision)
+            logger.info(f"⚡ DEBOUNCE-CONFIRMED RECOVERY: {dev_name} ({dev_id})")
+        elif decision.get("eligible_for_clear") is False and decision.get("consecutive_nominal_cycles"):
+            logger.info(
+                f"⏳ Debounce pending for {dev_name} ({dev_id}): "
+                f"{decision.get('consecutive_nominal_cycles')}/{decision.get('required_cycles')} "
+                f"nominal cycles — {decision.get('reason')}"
             )
-        except Exception as cw_err:
-            logger.warning(f"Failed to publish CloudWatch recovery probe heartbeat: {cw_err}")
+
+    try:
+        save_debounce_state(debounce_state)
+    except Exception as state_err:
+        logger.warning(f"Could not persist recovery debounce state: {state_err}")
+
+    if recovered_devices:
+        dispatch = build_recovery_dispatch_payload(recovered_devices, state=debounce_state)
+        logger.info(
+            f"Recovery dispatch: {dispatch['confirmed_count']} branch(es), "
+            f"mean MTTR {dispatch.get('mean_mttr_minutes')} min."
+        )
+        _dispatch_recovery_notifications(env, dispatch)
+
+    logger.info(
+        f"Recovery probe cycle completed: probed {len(unique_candidates)} branches; "
+        f"{recovered_count} confirmed recovered; "
+        f"{len(pending_recovery_devices(debounce_state))} still inside a debounce window."
+    )
+
+    try:
+        from src.cloud.cloudwatch_metrics import publish_heartbeat, publish_quality_metrics
+        publish_heartbeat(
+            cycle_type="recovery_probe",
+            success=True,
+            restored_count=recovered_count,
+        )
+        publish_quality_metrics(
+            recovery_state=debounce_state,
+            confirmed_recoveries=recovered_count,
+        )
+    except Exception as cw_err:
+        logger.warning(f"Failed to publish CloudWatch recovery probe metrics: {cw_err}")
+
+    if recovered_count > 0:
+        logger.info("Refreshing fleet summary after confirmed recoveries...")
+        run_full_daily_cycle(env)
 
     return recovered_count
+
+
+def _dispatch_recovery_notifications(env: Dict[str, str], dispatch: Dict[str, Any]) -> None:
+    """Send the debounced-recovery Slack block and email body."""
+    import requests
+
+    webhook = env.get("SLACK_WEBHOOK", "").strip()
+    if webhook and webhook.startswith("https://hooks.slack.com/services/"):
+        try:
+            requests.post(webhook, json=dispatch["slack"], timeout=5)
+        except Exception as ex:
+            logger.debug(f"Recovery Slack post error: {ex}")
+
+    try:
+        _send_recovery_email(env, dispatch["email"]["subject"], dispatch["email"]["html"])
+    except Exception as ex:
+        logger.debug(f"Recovery email dispatch error: {ex}")
+
+
+def _send_recovery_email(env: Dict[str, str], subject: str, html_body: str) -> None:
+    """Send the recovery email using the digest's SMTP configuration."""
+    import smtplib
+    import ssl
+    from email.message import EmailMessage
+
+    smtp_email = env.get("SMTP_EMAIL", "").strip()
+    smtp_password = env.get("SMTP_PASSWORD", "").strip()
+    recipient = (env.get("EMAIL_TO") or "").strip()
+    if not (smtp_email and smtp_password and recipient):
+        logger.debug("SMTP configuration incomplete; skipping recovery email dispatch.")
+        return
+
+    smtp_host = env.get("SMTP_HOST", "smtp.gmail.com")
+    smtp_port = int(env.get("SMTP_PORT", "587"))
+
+    message = EmailMessage()
+    message["Subject"] = subject
+    message["From"] = smtp_email
+    message["To"] = recipient
+    message.set_content("A branch recovery was confirmed. Please view this message in an HTML client.")
+    message.add_alternative(html_body, subtype="html")
+
+    try:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=20) as server:
+            server.starttls(context=ssl.create_default_context())
+            server.login(smtp_email, smtp_password)
+            server.send_message(message)
+        logger.info(f"Recovery email dispatched to {recipient}.")
+    except Exception as ex:
+        logger.warning(f"Could not dispatch recovery email: {ex}")
 
 
 def daemon_loop(env: Dict[str, str]) -> None:

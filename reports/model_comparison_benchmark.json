@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-27T06:52:29.846695+00:00",
+  "timestamp": "2026-10-27T09:03:01.853241+00:00",
   "train_samples": 160,
   "validation_samples": 40,
   "num_features": 1,
@@ -56,7 +56,7 @@
     "logistic_l2_baseline": {
       "model_name": "logistic_l2_baseline",
       "model_family": "Linear Baseline",
-      "train_duration_seconds": 0.0,
+      "train_duration_seconds": 0.01,
       "roc_auc": {
         "metric_name": "ROC-AUC",
         "point_estimate": 0.4436,
@@ -103,7 +103,7 @@
     "random_forest": {
       "model_name": "random_forest",
       "model_family": "Tree Ensemble",
-      "train_duration_seconds": 0.1,
+      "train_duration_seconds": 0.16,
       "roc_auc": {
         "metric_name": "ROC-AUC",
         "point_estimate": 0.4436,
@@ -152,7 +152,7 @@
     "hist_gradient_boosting": {
       "model_name": "hist_gradient_boosting",
       "model_family": "Gradient Boosting",
-      "train_duration_seconds": 0.07,
+      "train_duration_seconds": 0.06,
       "roc_auc": {
         "metric_name": "ROC-AUC",
         "point_estimate": 0.3634,

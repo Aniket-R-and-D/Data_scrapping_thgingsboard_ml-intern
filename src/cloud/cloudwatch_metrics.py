@@ -120,6 +120,101 @@ def publish_heartbeat(
         return False
 
 
+def publish_quality_metrics(
+    drift_report: Optional[dict] = None,
+    recovery_state: Optional[dict] = None,
+    confirmed_recoveries: int = 0,
+    region_name: Optional[str] = None
+) -> bool:
+    """Publish telemetry-drift and debounced-recovery quality counters.
+
+    These feed the Phase 7 quality alarms: sustained drift, a stalled debounce
+    queue, and recovery volume / MTTR regressions.
+
+    Args:
+        drift_report: Output of ``src.features.drift_monitor.evaluate_drift``.
+        recovery_state: Persisted debounce state (``reports/recovery_debounce_state.json``).
+        confirmed_recoveries: Recoveries confirmed during the current cycle.
+        region_name: Optional AWS region override.
+
+    Returns:
+        True if metrics published successfully, False otherwise.
+    """
+    if drift_report is None and recovery_state is None:
+        return False
+
+    environment = os.getenv("ENVIRONMENT", "production")
+
+    try:
+        cw = get_cloudwatch_client(region_name)
+        now = datetime.now(timezone.utc)
+        dimensions = [{"Name": "Environment", "Value": environment}]
+
+        def _metric(name: str, value: float, unit: str = "Count") -> dict:
+            return {
+                "MetricName": name,
+                "Dimensions": dimensions,
+                "Timestamp": now,
+                "Value": float(value),
+                "Unit": unit,
+            }
+
+        metric_data = []
+
+        if drift_report is not None:
+            signals = drift_report.get("signals") or {}
+            drifted = drift_report.get("drifted_signals") or []
+            critical = drift_report.get("critical_signals") or []
+            metric_data.extend(
+                [
+                    _metric("DriftCriticalSignalCount", len(critical)),
+                    _metric("DriftModerateSignalCount", max(0, len(drifted) - len(critical))),
+                    _metric("DriftMaxPSI", float(drift_report.get("max_psi") or 0.0), "None"),
+                    _metric("DriftedSignalCount", len(drifted)),
+                    _metric("DriftSignalsEvaluated", len(signals)),
+                ]
+            )
+
+        if recovery_state is not None:
+            devices = recovery_state.get("devices") or {}
+            pending = [
+                record
+                for record in devices.values()
+                if not record.get("cleared_at")
+                and record.get("last_status") != "CONFIRMED_RECOVERED"
+            ]
+            stalled = [
+                record
+                for record in pending
+                if int(record.get("consecutive_nominal_cycles", 0)) > 0
+            ]
+            mttr_values = [
+                float(record["mttr_minutes"])
+                for record in (recovery_state.get("mttr_records") or [])
+                if isinstance(record.get("mttr_minutes"), (int, float))
+            ]
+            mean_mttr = sum(mttr_values) / len(mttr_values) if mttr_values else 0.0
+
+            metric_data.extend(
+                [
+                    _metric("RecoveryPendingCount", len(pending)),
+                    _metric("RecoveryConfirmationInProgressCount", len(stalled)),
+                    _metric("RecoveryConfirmedCount", confirmed_recoveries),
+                    _metric("RecoveryMTTRMeanMinutes", mean_mttr, "None"),
+                ]
+            )
+
+        cw.put_metric_data(Namespace=NAMESPACE, MetricData=metric_data)
+        logger.info(
+            f"Published {len(metric_data)} quality metrics to {NAMESPACE} "
+            f"(confirmed recoveries: {confirmed_recoveries})."
+        )
+        return True
+    except Exception as e:
+        logger.warning(f"Could not publish CloudWatch quality metrics: {e}")
+        return False
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     print(f"Testing CloudWatch metric publication to namespace '{NAMESPACE}'...")

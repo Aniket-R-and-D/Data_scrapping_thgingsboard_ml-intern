@@ -40,10 +40,9 @@ from dotenv import load_dotenv
 
 from src.live.recovery_gate import probe_device_telemetry_live, RecoveryEvaluation
 from src.live.alarm_clear_engine import (
-    process_device_recovery_lifecycle,
-    sync_recovery_attributes,
-    get_active_ai_alarms,
-    clear_ai_alarm
+    clear_confirmed_recovery,
+    load_debounce_state,
+    save_debounce_state,
 )
 
 # Ensure safe UTF-8 output on Windows console
@@ -143,6 +142,33 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
         for dev_id in latest_feats["device_id"]:
             outage_probs[dev_id] = 0.0
 
+    # Telemetry Distribution Drift Monitoring (Pillar 1)
+    try:
+        from src.features.drift_monitor import evaluate_feature_drift, save_drift_report, publish_drift_metrics
+        base_df = feats_df if 'feats_df' in locals() else latest_feats
+        drift_report = evaluate_feature_drift(baseline_df=base_df, target_df=latest_feats)
+        save_drift_report(drift_report, ROOT / "reports/telemetry_drift_report.json")
+        publish_drift_metrics(drift_report)
+    except Exception as drift_err:
+        logger.debug(f"Telemetry drift monitoring skipped: {drift_err}")
+
+    # Local Root-Cause Explainability Engine (Pillar 2)
+    fleet_explanations: Dict[str, Dict[str, Any]] = {}
+    if outage_model_path.exists() and feat_names_path.exists() and 'model' in locals():
+        try:
+            from src.predict.explainer import batch_explain_fleet
+            base_df = feats_df if 'feats_df' in locals() else latest_feats
+            fleet_explanations = batch_explain_fleet(
+                features_df=latest_feats,
+                model=model,
+                feature_names=feature_names,
+                baseline_df=base_df,
+                top_k=3
+            )
+            logger.info(f"Computed local root-cause feature attributions for {len(fleet_explanations)} devices.")
+        except Exception as exp_err:
+            logger.debug(f"Fleet explainability computation skipped: {exp_err}")
+
     # Load Ops Review Pack if available for verified failure modes
     ops_pack_map: Dict[str, Dict[str, Any]] = {}
     if OPS_REVIEW_PACK_PATH.exists():
@@ -191,6 +217,12 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
         else:
             unified_tier = "NOMINAL"
 
+        # Local explainability extraction
+        exp = fleet_explanations.get(dev_id, {})
+        d1 = exp.get("primary_driver", "Nominal telemetry profile")
+        d2 = exp.get("secondary_driver", "None")
+        d3 = exp.get("tertiary_driver", "None")
+
         # Diagnose Primary Issue & Recommended Action
         top_issue = "Normal Baseline Operation"
         recommended_action = "Routine monitoring."
@@ -213,7 +245,10 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
             elif "errorcount" in top_issue.lower() or "uptime" in top_issue.lower() or "gateway" in top_issue.lower():
                 recommended_action = "Communications/Edge: High controller reset rate; verify 4G SIM antenna & power supply."
         elif unified_tier in ("CRITICAL_FAULT", "HIGH_RISK"):
-            top_issue = f"High Predictive Collapse Risk ({p_outage * 100:.1f}%)"
+            if not pack_item and exp.get("factors") and exp["factors"][0].get("marginal_delta", 0) > 0:
+                top_issue = f"{exp['factors'][0]['formatted_summary']} (Outage Prob: {p_outage * 100:.1f}%)"
+            else:
+                top_issue = f"High Predictive Collapse Risk ({p_outage * 100:.1f}%)"
             recommended_action = "Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
 
         # Real-Time Telemetry Recovery Gate
@@ -244,6 +279,9 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
             "outage_prob_24h": round(p_outage, 4),
             "primary_issue": top_issue,
             "recommended_action": recommended_action,
+            "ai_risk_driver_1": d1,
+            "ai_risk_driver_2": d2,
+            "ai_risk_driver_3": d3,
             "thingsboard_url": tb_device_url,
             "last_evaluated": str(row["anchor_ts"]),
             "is_recovered": is_recovered,
@@ -552,7 +590,10 @@ def sync_to_thingsboard(fleet_df: pd.DataFrame, env: Dict[str, str], max_sync: i
     synced_attrs = 0
     synced_alarms = 0
     cleared_alarms = 0
+    confirmed_recoveries = 0
     now_iso = datetime.now(timezone.utc).isoformat()
+    debounce_state = load_debounce_state()
+    debounce_dirty = False
 
     for _, row in fleet_df.head(max_sync).iterrows():
         dev_id = row["device_id"]
@@ -562,17 +603,50 @@ def sync_to_thingsboard(fleet_df: pd.DataFrame, env: Dict[str, str], max_sync: i
         issue = str(row["primary_issue"])
         action = str(row["recommended_action"])
 
-        # If device is SERVICED_RECOVERED, clear any active AI alarms on ThingsBoard!
+        # SERVICED_RECOVERED may only clear alarms through the 3-cycle debounce gate.
         if tier == "SERVICED_RECOVERED":
+            vitals: Dict[str, Any] = {}
+            raw_vitals = row.get("recovery_vitals")
+            if isinstance(raw_vitals, dict):
+                vitals = raw_vitals
+            elif isinstance(raw_vitals, str) and raw_vitals.strip():
+                try:
+                    parsed_vitals = json.loads(raw_vitals)
+                    if isinstance(parsed_vitals, dict):
+                        vitals = parsed_vitals
+                except (TypeError, ValueError):
+                    vitals = {}
+
+            recovery_eval = RecoveryEvaluation(
+                device_id=dev_id,
+                is_recovered=True,
+                confidence=1.0,
+                status_tier="SERVICED_RECOVERED",
+                summary_reason=issue or "Hardware restored; telemetry nominal",
+                vitals=vitals,
+            )
             try:
-                active_ai_alarms = get_active_ai_alarms(dev_id, host, token)
-                for a in active_ai_alarms:
-                    a_id = a.get("id", {}).get("id")
-                    if a_id:
-                        if clear_ai_alarm(a_id, host, token):
-                            cleared_alarms += 1
+                decision = clear_confirmed_recovery(
+                    device_id=dev_id,
+                    eval_res=recovery_eval,
+                    host=host,
+                    token=token,
+                    device_name=str(row.get("device_name") or dev_id),
+                    bank=str(row.get("bank") or "UNKNOWN"),
+                    state=debounce_state,
+                )
+                debounce_dirty = True
+                cleared_alarms += int(decision.get("cleared_alarms_count", 0) or 0)
+                if decision.get("recovery_confirmed"):
+                    confirmed_recoveries += 1
+                else:
+                    logger.info(
+                        f"Debounce gate holding {dev_id}: "
+                        f"{decision.get('consecutive_nominal_cycles')}/"
+                        f"{decision.get('required_cycles')} nominal cycles — {decision.get('reason')}"
+                    )
             except Exception as e:
-                logger.debug(f"Exception clearing alarms for {dev_id}: {e}")
+                logger.debug(f"Exception evaluating debounce gate for {dev_id}: {e}")
 
         # 1. Push server-side and shared attributes & telemetry
         attrs_payload = {
@@ -581,6 +655,9 @@ def sync_to_thingsboard(fleet_df: pd.DataFrame, env: Dict[str, str], max_sync: i
             "ai_outage_risk_prob": p_outage,
             "ai_primary_issue": issue,
             "ai_recommended_action": action,
+            "ai_risk_driver_1": str(row.get("ai_risk_driver_1", "Nominal telemetry profile")),
+            "ai_risk_driver_2": str(row.get("ai_risk_driver_2", "None")),
+            "ai_risk_driver_3": str(row.get("ai_risk_driver_3", "None")),
             "ai_last_evaluated": now_iso,
         }
         try:
@@ -623,8 +700,15 @@ def sync_to_thingsboard(fleet_df: pd.DataFrame, env: Dict[str, str], max_sync: i
 
     logger.info(
         f"ThingsBoard sync complete: {synced_attrs} devices updated, "
-        f"{cleared_alarms} recovered alarms cleared, {synced_alarms} active alarms registered."
+        f"{cleared_alarms} recovered alarms cleared, {synced_alarms} active alarms registered, "
+        f"{confirmed_recoveries} debounce-confirmed recoveries."
     )
+
+    if debounce_dirty:
+        try:
+            save_debounce_state(debounce_state)
+        except Exception as e:
+            logger.warning(f"Could not persist recovery debounce state: {e}")
 
     # Dynamic update of modernized ThingsBoard Dashboard KPI card
     try:
