@@ -1,0 +1,202 @@
+{
+  "timestamp": "2026-10-27T06:52:29.846695+00:00",
+  "train_samples": 160,
+  "validation_samples": 40,
+  "num_features": 1,
+  "best_performing_model": "logistic_l2_baseline",
+  "best_pr_auc": 0.4785,
+  "models": {
+    "naive_baseline": {
+      "model_name": "naive_baseline",
+      "model_family": "Naive Majority",
+      "train_duration_seconds": 0.0,
+      "roc_auc": {
+        "metric_name": "ROC-AUC",
+        "point_estimate": 0.5,
+        "ci_lower": 0.5,
+        "ci_upper": 0.5
+      },
+      "pr_auc": {
+        "metric_name": "PR-AUC",
+        "point_estimate": 0.475,
+        "ci_lower": 0.325,
+        "ci_upper": 0.6131
+      },
+      "brier_score": {
+        "metric_name": "Brier Score",
+        "point_estimate": 0.2508,
+        "ci_lower": 0.2473,
+        "ci_upper": 0.2545
+      },
+      "recall_at_040": 1.0,
+      "precision_at_040": 0.475,
+      "confusion_matrix_at_040": [
+        [
+          0,
+          21
+        ],
+        [
+          0,
+          19
+        ]
+      ],
+      "slice_metrics": {
+        "OTHER": {
+          "samples": 40,
+          "positive_rate": 0.475,
+          "roc_auc": 0.5,
+          "pr_auc": 0.475,
+          "brier_score": 0.2508,
+          "recall_at_040": 1.0,
+          "precision_at_040": 0.475
+        }
+      },
+      "top_feature_importances": {}
+    },
+    "logistic_l2_baseline": {
+      "model_name": "logistic_l2_baseline",
+      "model_family": "Linear Baseline",
+      "train_duration_seconds": 0.0,
+      "roc_auc": {
+        "metric_name": "ROC-AUC",
+        "point_estimate": 0.4436,
+        "ci_lower": 0.2446,
+        "ci_upper": 0.6409
+      },
+      "pr_auc": {
+        "metric_name": "PR-AUC",
+        "point_estimate": 0.4785,
+        "ci_lower": 0.3138,
+        "ci_upper": 0.6945
+      },
+      "brier_score": {
+        "metric_name": "Brier Score",
+        "point_estimate": 0.252,
+        "ci_lower": 0.2355,
+        "ci_upper": 0.2666
+      },
+      "recall_at_040": 1.0,
+      "precision_at_040": 0.5,
+      "confusion_matrix_at_040": [
+        [
+          2,
+          19
+        ],
+        [
+          0,
+          19
+        ]
+      ],
+      "slice_metrics": {
+        "OTHER": {
+          "samples": 40,
+          "positive_rate": 0.475,
+          "roc_auc": 0.4436,
+          "pr_auc": 0.4785,
+          "brier_score": 0.252,
+          "recall_at_040": 1.0,
+          "precision_at_040": 0.5
+        }
+      },
+      "top_feature_importances": {}
+    },
+    "random_forest": {
+      "model_name": "random_forest",
+      "model_family": "Tree Ensemble",
+      "train_duration_seconds": 0.1,
+      "roc_auc": {
+        "metric_name": "ROC-AUC",
+        "point_estimate": 0.4436,
+        "ci_lower": 0.2246,
+        "ci_upper": 0.6365
+      },
+      "pr_auc": {
+        "metric_name": "PR-AUC",
+        "point_estimate": 0.4727,
+        "ci_lower": 0.3269,
+        "ci_upper": 0.6597
+      },
+      "brier_score": {
+        "metric_name": "Brier Score",
+        "point_estimate": 0.2676,
+        "ci_lower": 0.2368,
+        "ci_upper": 0.3102
+      },
+      "recall_at_040": 0.7368,
+      "precision_at_040": 0.4667,
+      "confusion_matrix_at_040": [
+        [
+          5,
+          16
+        ],
+        [
+          5,
+          14
+        ]
+      ],
+      "slice_metrics": {
+        "OTHER": {
+          "samples": 40,
+          "positive_rate": 0.475,
+          "roc_auc": 0.4436,
+          "pr_auc": 0.4727,
+          "brier_score": 0.2676,
+          "recall_at_040": 0.7368,
+          "precision_at_040": 0.4667
+        }
+      },
+      "top_feature_importances": {
+        "feat_noise": -0.0833
+      }
+    },
+    "hist_gradient_boosting": {
+      "model_name": "hist_gradient_boosting",
+      "model_family": "Gradient Boosting",
+      "train_duration_seconds": 0.07,
+      "roc_auc": {
+        "metric_name": "ROC-AUC",
+        "point_estimate": 0.3634,
+        "ci_lower": 0.2126,
+        "ci_upper": 0.534
+      },
+      "pr_auc": {
+        "metric_name": "PR-AUC",
+        "point_estimate": 0.4134,
+        "ci_lower": 0.2779,
+        "ci_upper": 0.5927
+      },
+      "brier_score": {
+        "metric_name": "Brier Score",
+        "point_estimate": 0.2772,
+        "ci_lower": 0.2538,
+        "ci_upper": 0.3023
+      },
+      "recall_at_040": 0.7895,
+      "precision_at_040": 0.4412,
+      "confusion_matrix_at_040": [
+        [
+          2,
+          19
+        ],
+        [
+          4,
+          15
+        ]
+      ],
+      "slice_metrics": {
+        "OTHER": {
+          "samples": 40,
+          "positive_rate": 0.475,
+          "roc_auc": 0.3634,
+          "pr_auc": 0.4134,
+          "brier_score": 0.2772,
+          "recall_at_040": 0.7895,
+          "precision_at_040": 0.4412
+        }
+      },
+      "top_feature_importances": {
+        "feat_noise": -0.2
+      }
+    }
+  }
+}

@@ -41,6 +41,17 @@ PROD_MODEL_DIR = ROOT / "models/gbm_outage_oct2026_365d"
 CACHE_DIR = ROOT / "models/retraining_cache"
 REPORTS_DIR = ROOT / "reports"
 
+from src.features.data_autocleaner import (
+    profile_telemetry,
+    clean_telemetry,
+    compare_profiles,
+    save_quality_evidence,
+)
+from src.predict.model_comparator import (
+    compare_models,
+    save_benchmark_report,
+)
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("monthly_retrainer")
 
@@ -96,11 +107,27 @@ def fetch_or_load_training_data(
 
 
 def prepare_dataset(fr: pd.DataFrame, lb: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
-    """Merge features with labels and incorporate recovery ledgers."""
+    """Merge features with labels, execute data autocleaning, and incorporate recovery ledgers."""
     lb["anchor_ts"] = pd.to_datetime(lb["anchor_ts"], utc=True)
     fr["anchor_ts"] = pd.to_datetime(fr["anchor_ts"], utc=True)
 
-    m = fr.merge(
+    # Automated Telemetry Profiling & Autocleaning
+    logger.info("Executing automated telemetry profiling and quality cleaning...")
+    try:
+        raw_profile = profile_telemetry(fr)
+        fr_clean, clean_summary = clean_telemetry(fr, timestamp_col="anchor_ts")
+        clean_profile = profile_telemetry(fr_clean)
+        comparison = compare_profiles(raw_profile, clean_profile)
+        save_quality_evidence(comparison)
+        logger.info(
+            f"Data autocleaning complete: {clean_summary.get('deduplicated_rows', 0)} duplicates removed, "
+            f"{comparison.get('anomalies_resolved', 0)} anomalies resolved."
+        )
+    except Exception as e:
+        logger.warning(f"Data autocleaning warning: {e}; proceeding with original features.")
+        fr_clean = fr
+
+    m = fr_clean.merge(
         lb[["device_id", "anchor_ts", "y_outage_24h", "label_status"]],
         on=["device_id", "anchor_ts"],
         how="inner"
@@ -211,6 +238,26 @@ def execute_champion_challenger_gate(
     challenger_metrics = evaluate_predictions(y_val, challenger_probas)
     logger.info(f"Challenger Metrics: {challenger_metrics}")
 
+    # Multi-model benchmarking suite (ml-best-practices)
+    logger.info("Executing multi-model comparison suite across candidates...")
+    benchmark_report = None
+    try:
+        benchmark_report = compare_models(
+            train_df=train_df,
+            val_df=val_df,
+            feature_cols=train_active_feats,
+            target_col="y",
+            cohort_col="device_id",
+            n_bootstraps=100,
+        )
+        save_benchmark_report(benchmark_report)
+        logger.info(
+            f"Multi-model comparison complete. Best performer: {benchmark_report.get('best_performing_model')} "
+            f"with PR-AUC {benchmark_report.get('best_pr_auc')}"
+        )
+    except Exception as bench_err:
+        logger.warning(f"Benchmark comparison warning: {bench_err}")
+
     # Evaluate existing Champion if present
     champ_model_file = prod_dir / "model.joblib"
     champion_metrics = None
@@ -278,7 +325,8 @@ def execute_champion_challenger_gate(
             "previous_champion_metrics": champion_metrics,
             "operating_thresholds": {
                 "recall_first": {"threshold": 0.40, "description": f"Recall: {challenger_metrics['recall_at_040']}, Precision: {challenger_metrics['precision_at_040']} [RECOMMENDED]"}
-            }
+            },
+            "benchmark_comparison": benchmark_report,
         }
         with open(prod_dir / "metadata.json", "w") as f:
             json.dump(metadata, f, indent=2)

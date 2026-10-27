@@ -28,6 +28,8 @@ deploy/rule_chain_backups/
 .playwright-mcp/
 .claude-flow/
 .code-review-graph/
+.opencode/
+graphify-out/
 session-*.md
 
 # Generated harvest outputs (too bulky for git; re-pullable)
