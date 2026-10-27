@@ -18,6 +18,7 @@ __pycache__/
 smoke_test.log
 desktop.ini
 backup/
+deploy/rule_chain_backups/
 
 # Tool caches / local agent state (pytest audit dirs are permission-locked)
 .pytest_cache/
@@ -44,7 +45,9 @@ archive/
 
 # Executed-notebook outputs (papermill writes here, never in-place)
 executed/
+notebooks/executed/
 audit_reports/
+reports/audit/
 
 # Tenant-derived snapshot data (never publish: device/branch identifiers)
 current_state_snapshots/*.csv

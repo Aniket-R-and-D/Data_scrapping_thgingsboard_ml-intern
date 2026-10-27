@@ -4,7 +4,7 @@
       "type": "header",
       "text": {
         "type": "plain_text",
-        "text": "\ud83c\udf05 ThingsBoard Morning AI Risk Digest \u2014 26 Oct 2026",
+        "text": "\ud83c\udf05 ThingsBoard Morning AI Risk Digest \u2014 27 Oct 2026",
         "emoji": true
       }
     },
@@ -29,14 +29,14 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/5472ea20-aa78-11f0-b8ab-b38af83f6c9c|BOI-BABAI>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.4m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas"
+        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/5472ea20-aa78-11f0-b8ab-b38af83f6c9c|BOI-BABAI>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (1.5m ago); Subsystems restored: gateway, bas, fas"
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/630c1480-63e6-11f1-9555-295f91c5b7c8|DX2>* (DX)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.1m ago); Zero active ticket faults; Subsystems restored: gateway, fas"
+        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/630c1480-63e6-11f1-9555-295f91c5b7c8|DX2>* (DX)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.0m ago); Zero active ticket faults; Subsystems restored: gateway, fas"
       }
     },
     {
@@ -50,7 +50,7 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/0b7bc7d0-671d-11f1-8c55-5bb8284c6aef|CANARA-BARUIPUR>* (CANARA)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.8m ago); Zero active ticket faults; Subsystems restored: gateway, bas, fas"
+        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/0b7bc7d0-671d-11f1-8c55-5bb8284c6aef|CANARA-BARUIPUR>* (CANARA)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (1.0m ago); Zero active ticket faults; Subsystems restored: gateway, bas, fas"
       }
     },
     {

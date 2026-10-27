@@ -13,13 +13,13 @@ echo Starting current-state snapshot: %date% %time% >> "%LOG_FILE%"
 echo ==================================================== >> "%LOG_FILE%"
 
 rem Self-healing environment: create/repair .venv from requirements.txt
-python provision_venv.py >> "%LOG_FILE%" 2>&1
+python scripts\data_ops\provision_venv.py >> "%LOG_FILE%" 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] .venv could not be provisioned >> "%LOG_FILE%"
     exit /b 1
 )
 
-.\.venv\Scripts\python.exe pull_current_state_snapshots.py ^
+.\.venv\Scripts\python.exe scripts\data_ops\pull_current_state_snapshots.py ^
     --output-dir "%SNAPSHOT_DIR%" ^
     --recovery-output "%SNAPSHOT_DIR%\offline_recoveries.csv" ^
     >> "%LOG_FILE%" 2>&1

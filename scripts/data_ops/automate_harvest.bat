@@ -20,7 +20,7 @@ rem Execute to a SEPARATE output notebook: papermill in-place execution was the
 rem cause of the half-executed-notebook corruption seen on 2026-09-16.
 rem (papermill does not create the output folder itself.)
 if not exist "executed" mkdir "executed"
-.\.venv\Scripts\python.exe -m papermill TB_Full_Harvest_v11.ipynb executed\TB_Full_Harvest_v11_executed.ipynb
+.\.venv\Scripts\python.exe -m papermill notebooks\TB_Full_Harvest_v11.ipynb executed\TB_Full_Harvest_v11_executed.ipynb
 if %errorlevel% neq 0 (
     echo [ERROR] Notebook execution failed!
     exit /b %errorlevel%

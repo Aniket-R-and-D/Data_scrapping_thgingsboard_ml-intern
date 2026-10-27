@@ -9,21 +9,40 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from scripts.modernize_ai_dashboard import (
-    ALARMS_WIDGET_ID,
-    BANKS_WIDGET_ID,
-    BANNER_WIDGET_ID,
-    BANK_BREAKDOWN_JS,
-    DASHBOARD_CSS,
-    FILTER_ID,
-    HISTOGRAM_WIDGET_ID,
-    RISK_HISTOGRAM_JS,
-    TABLE_WIDGET_ID,
-    TARGET_DASHBOARD_ID,
-    build_modern_dashboard_payload,
-    build_modern_kpi_html,
-    update_live_kpi_card,
-)
+try:
+    from scripts.thingsboard.modernize_ai_dashboard import (
+        ALARMS_WIDGET_ID,
+        BANKS_WIDGET_ID,
+        BANNER_WIDGET_ID,
+        BANK_BREAKDOWN_JS,
+        DASHBOARD_CSS,
+        FILTER_ID,
+        HISTOGRAM_WIDGET_ID,
+        RISK_HISTOGRAM_JS,
+        TABLE_WIDGET_ID,
+        TARGET_DASHBOARD_ID,
+        build_modern_dashboard_payload,
+        build_modern_kpi_html,
+        update_live_kpi_card,
+    )
+    MODERNIZE_MOD = "scripts.thingsboard.modernize_ai_dashboard"
+except ImportError:
+    from scripts.modernize_ai_dashboard import (
+        ALARMS_WIDGET_ID,
+        BANKS_WIDGET_ID,
+        BANNER_WIDGET_ID,
+        BANK_BREAKDOWN_JS,
+        DASHBOARD_CSS,
+        FILTER_ID,
+        HISTOGRAM_WIDGET_ID,
+        RISK_HISTOGRAM_JS,
+        TABLE_WIDGET_ID,
+        TARGET_DASHBOARD_ID,
+        build_modern_dashboard_payload,
+        build_modern_kpi_html,
+        update_live_kpi_card,
+    )
+    MODERNIZE_MOD = "scripts.modernize_ai_dashboard"
 
 SUMMARY = {
     "timestamp": "2026-10-26T04:06:08.114665+00:00",
@@ -133,7 +152,7 @@ def test_cell_functions_compile_and_render():
     assert "<b>" not in res.stdout and "&lt;b&gt;" in res.stdout
 
 
-@patch("scripts.modernize_ai_dashboard.requests")
+@patch(f"{MODERNIZE_MOD}.requests")
 def test_update_live_kpi_card_success(mock_requests):
     fake_dash = {
         "id": {"id": TARGET_DASHBOARD_ID, "entityType": "DASHBOARD"},
@@ -149,7 +168,7 @@ def test_update_live_kpi_card_success(mock_requests):
     assert "58.5%" in card_html and ">25<" in card_html and "72 of 130 branches" in card_html
 
 
-@patch("scripts.modernize_ai_dashboard.requests")
+@patch(f"{MODERNIZE_MOD}.requests")
 def test_update_live_kpi_card_refuses_other_dashboards(mock_requests):
     other = {"id": {"id": "01041560-2bc2-11f0-ba5e-e55fd4a29280"},
              "configuration": {"widgets": {BANNER_WIDGET_ID: {"config": {"settings": {}}}}}}

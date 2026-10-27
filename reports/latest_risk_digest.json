@@ -1,6 +1,6 @@
 {
   "summary": {
-    "timestamp": "2026-10-26T04:06:08.114665+00:00",
+    "timestamp": "2026-10-27T04:17:48.913315+00:00",
     "total_monitored_branches": 130,
     "fleet_health_score_pct": 55.0,
     "critical_fault_count": 28,
@@ -756,12 +756,12 @@
       "anomaly_score": -0.0232,
       "raw_anomaly_tier": "NORMAL",
       "outage_prob_24h": 0.6961,
-      "primary_issue": "Hardware restored; Verified operational recovery: Recent data activity (0.4m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas",
+      "primary_issue": "Hardware restored; Verified operational recovery: Recent data activity (1.5m ago); Subsystems restored: gateway, bas, fas",
       "recommended_action": "None \u2014 Post-service operational stability verified",
       "thingsboard_url": "https://seple.iot-private.cloud/devices/5472ea20-aa78-11f0-b8ab-b38af83f6c9c",
       "last_evaluated": "2026-10-18 00:00:00+00:00",
       "is_recovered": true,
-      "recovery_vitals": "{\"last_activity_age_minutes\": 0.4, \"battery_voltage\": 14.0, \"ac_voltage\": 210.0, \"mains_on\": true, \"battery_low\": false, \"active_ticket_faults\": [], \"cctv_status\": \"On\", \"restored_subsystems\": [\"gateway\", \"bas\", \"fas\"]}"
+      "recovery_vitals": "{\"last_activity_age_minutes\": 1.5, \"gateway_status\": \"Unavailable\", \"restored_subsystems\": [\"gateway\", \"bas\", \"fas\"]}"
     },
     {
       "device_id": "630c1480-63e6-11f1-9555-295f91c5b7c8",
@@ -771,12 +771,12 @@
       "anomaly_score": 0.0543,
       "raw_anomaly_tier": "CRITICAL_FAULT",
       "outage_prob_24h": 0.368,
-      "primary_issue": "Hardware restored; Verified operational recovery: Recent data activity (0.1m ago); Zero active ticket faults; Subsystems restored: gateway, fas",
+      "primary_issue": "Hardware restored; Verified operational recovery: Recent data activity (0.0m ago); Zero active ticket faults; Subsystems restored: gateway, fas",
       "recommended_action": "None \u2014 Post-service operational stability verified",
       "thingsboard_url": "https://seple.iot-private.cloud/devices/630c1480-63e6-11f1-9555-295f91c5b7c8",
       "last_evaluated": "2026-10-22 06:00:00+00:00",
       "is_recovered": true,
-      "recovery_vitals": "{\"last_activity_age_minutes\": 0.1, \"gateway_status\": \"Unavailable\", \"active_ticket_faults\": [], \"restored_subsystems\": [\"gateway\", \"fas\"]}"
+      "recovery_vitals": "{\"last_activity_age_minutes\": 0.0, \"gateway_status\": \"Unavailable\", \"active_ticket_faults\": [], \"restored_subsystems\": [\"gateway\", \"fas\"]}"
     },
     {
       "device_id": "6287e400-a823-11f0-b150-2710a8915e1d",
@@ -801,12 +801,12 @@
       "anomaly_score": 0.0724,
       "raw_anomaly_tier": "CRITICAL_FAULT",
       "outage_prob_24h": 0.0023,
-      "primary_issue": "Hardware restored; Verified operational recovery: Recent data activity (0.8m ago); Zero active ticket faults; Subsystems restored: gateway, bas, fas",
+      "primary_issue": "Hardware restored; Verified operational recovery: Recent data activity (1.0m ago); Zero active ticket faults; Subsystems restored: gateway, bas, fas",
       "recommended_action": "None \u2014 Post-service operational stability verified",
       "thingsboard_url": "https://seple.iot-private.cloud/devices/0b7bc7d0-671d-11f1-8c55-5bb8284c6aef",
       "last_evaluated": "2026-10-22 06:00:00+00:00",
       "is_recovered": true,
-      "recovery_vitals": "{\"last_activity_age_minutes\": 0.8, \"gateway_status\": \"Unavailable\", \"active_ticket_faults\": [], \"restored_subsystems\": [\"gateway\", \"bas\", \"fas\"]}"
+      "recovery_vitals": "{\"last_activity_age_minutes\": 1.0, \"gateway_status\": \"Unavailable\", \"active_ticket_faults\": [], \"restored_subsystems\": [\"gateway\", \"bas\", \"fas\"]}"
     }
   ]
 }

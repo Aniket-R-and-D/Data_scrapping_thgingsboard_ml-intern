@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 # ── Configuration ─────────────────────────────────────────────────────────────
-NOTEBOOK_PATH = "TB_Full_Harvest_v11.ipynb"
+NOTEBOOK_PATH = "notebooks/TB_Full_Harvest_v11.ipynb"
 OUTPUT_DIR    = Path("audit_reports")
 LOG_FILE      = OUTPUT_DIR / "audit_scheduler.log"
 TIMESTAMP     = datetime.now().strftime("%Y%m%d_%H%M")

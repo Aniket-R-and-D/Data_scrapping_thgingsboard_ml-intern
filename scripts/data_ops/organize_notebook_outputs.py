@@ -9,7 +9,7 @@ import json
 import shutil
 from pathlib import Path
 
-NB = Path("TB_Full_Harvest_v11.ipynb")
+NB = Path("notebooks/TB_Full_Harvest_v11.ipynb")
 
 # per-line exact replacements (match after strip, rewrite whole line)
 LINE_MAP = {

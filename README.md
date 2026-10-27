@@ -140,25 +140,56 @@ reproduction commands in `reports/final_claims_audit.md`.
 - New sites (<7 days telemetry) fall back to fleet priors.
 - Human review **PENDING**; independent semantic accuracy **NOT MEASURED**.
 
-## 7. Project layout (R6 additions)
+## 7. Project Structure & Organization
 
 ```
-├── configs/
-│   ├── config.yaml            # pipeline thresholds, labels, features
-│   └── release.yaml           # R6 release flags + pinned artifact/manifest hashes
-├── src/
-│   ├── tickets/               # policy.py, schema.py, renderer.py, llm_bridge.py,
-│   │                          # field_validator.py, startup_check.py
-│   └── eval/                  # build_incidents.py, build_splits.py, verify_splits.py,
-│                              # run_stage_e_comparison.py
-├── data/eval/                 # incidents_table.parquet, train/future/unseen .jsonl + manifests
-├── training_data/README.md    # retirement notice for the contaminated R5 benchmark
-├── tests/                     # ticket/field/split/stage-E/release/R-series suites
-├── reports/
-│   ├── phase_r5_correction_notice.md / phase_r5_claim_evidence_ledger.md
-│   ├── phase_r5_stage_[b-e]_*.md, phase_r5_stage_e_raw_results.json
-│   ├── phase_r5_stage_e_human_review_pack/   # 30 blinded cases, blank forms (PENDING)
-│   ├── final_claims_audit.md / project_summary.md / phase_r6_release_readiness.md
-├── MODEL_CARD.md              # regenerated R6 model card
-└── verify_r5_evidence.py      # Stage A read-only evidence reproduction
+├── configs/                     # System, model, and feature configurations
+│   ├── config.yaml              # Pipeline thresholds, label definitions, feature configs
+│   ├── release.yaml             # Release flags, operational defaults, pinned hashes
+│   ├── training_config.json     # Feature selection, aggregation windows, leakage exclusion
+│   ├── feature_policy.json      # Strict feature governance & allowlist specification
+│   ├── key_specs/               # ThingsBoard telemetry key manifests & aliases
+│   └── templates/               # Approval and decision record templates
+├── deploy/                      # Deployment automation & cloud configs
+│   ├── setup_aws_ec2.sh         # EC2 host provisioning & Docker installation script
+│   └── rule_chain_backups/      # ThingsBoard root & alarm rule chain backup snapshots
+├── docs/                        # Formal documentation, specifications, and runbooks
+│   ├── aws_cloud_deployment_guide.md
+│   ├── prd.md
+│   └── ...
+├── models/                      # Production ML models & frozen fleet baselines (< 30 MB)
+│   ├── gbm_outage_oct2026_365d/ # 24h predictive gradient boosting outage model
+│   ├── isolation_forest_365d/   # Unsupervised fleet anomaly detection model
+│   └── latest_fleet_scored.parquet # Fleet baseline snapshots
+├── notebooks/                   # Analytical & exploration Jupyter notebooks
+│   ├── TB_Full_Harvest_v11.ipynb
+│   └── executed/                # Automated batch execution runs
+├── reports/                     # Daily digests, audit logs, and performance reports
+│   ├── audit/                   # Historical nightly alarm risk & execution logs
+│   ├── daily_risk_digest_*.html # Interactive executive morning briefs
+│   ├── recovery_events_*.csv    # Real-time hardware restoration logs
+│   └── latest_risk_digest.json  # Live fleet scoring payload for dashboards & notifications
+├── scripts/                     # Operational, deployment, and analytical tools
+│   ├── thingsboard/             # Dashboard modernization, rule chain links, telemetry probes
+│   ├── cloud/                   # Cloud runner daemon, EC2 live monitoring, production sync
+│   ├── automation/              # Scheduled tasks, Windows service runners, digest dispatchers
+│   ├── data_ops/                # Telemetry harvesting, key spec audits, current-state snapshots
+│   └── training/                # Offline model training, cross-validation, and fine-tuning
+├── src/                         # Modular core Python library
+│   ├── ingest/                  # Resilient ThingsBoard client, data & alarm harvesting
+│   ├── features/                # Leakage-free feature engineering, training dataset pipelines
+│   ├── predict/                 # Daily risk scorer, daily operations digest engine, retrainer
+│   ├── rules/                   # Hardware alarm bridges, deterministic rules, nightly chains
+│   ├── live/                    # 15-min recovery gates, automatic alarm clear engine, shadow run
+│   ├── cloud/                   # AWS CloudWatch metrics heartbeat, Amazon S3 archiver
+│   ├── tickets/                 # Diagnostic ticket schema, policy, field validator, renderer
+│   ├── anomaly/                 # Autoencoder & Isolation Forest training modules
+│   ├── eval/                    # Benchmarking, dataset splits, incident builders
+│   └── explain/                 # Root-cause explanation layer, audit evaluators
+├── tests/                       # Comprehensive test suite (unit, integration, governance)
+├── Dockerfile                   # Hardened multi-stage container image for AWS EC2/ECS
+├── docker-compose.yml           # Production service definition with persistent volume mounts
+├── requirements.txt             # Full development and training dependencies
+├── requirements-prod.txt        # Production runtime dependencies (< 200 MB container footprint)
+└── pyproject.toml               # Package specifications
 ```
