@@ -31,6 +31,7 @@ deploy/rule_chain_backups/
 .opencode/
 graphify-out/
 session-*.md
+0.26.0
 
 # Generated harvest outputs (too bulky for git; re-pullable)
 data_harvest/

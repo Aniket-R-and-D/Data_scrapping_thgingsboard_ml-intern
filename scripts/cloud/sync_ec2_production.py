@@ -21,8 +21,9 @@ def sync_ec2():
         "echo '=== Latest Git Commit ==='",
         "git log -1 --oneline",
         "echo '=== Restarting Docker Containers ==='",
-        "docker compose restart",
-        "sleep 5",
+        "docker compose down",
+        "docker compose up -d --build",
+        "sleep 8",
         "echo '=== Docker Container Status ==='",
         "docker ps --filter name=novaedge-ai-agent",
         "echo '=== Recent Logs ==='",
@@ -39,8 +40,8 @@ def sync_ec2():
     cmd_id = response["Command"]["CommandId"]
     print(f"Sent SSM command {cmd_id}, waiting for completion...")
 
-    # Wait up to 60 seconds
-    for _ in range(12):
+    # Wait up to 120 seconds for docker build and startup
+    for _ in range(24):
         time.sleep(5)
         inv = ssm.get_command_invocation(CommandId=cmd_id, InstanceId=instance_id)
         status = inv.get("Status")

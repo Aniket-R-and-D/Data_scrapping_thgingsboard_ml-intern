@@ -19,6 +19,10 @@ services:
     volumes:
       # Mount reports directory to host so daily HTML/CSV digests persist permanently
       - ./reports:/app/reports
+      - ./src:/app/src
+      - ./scripts:/app/scripts
+      - ./models:/app/models
+      - ./send_daily_risk_digest.py:/app/send_daily_risk_digest.py
     logging:
       driver: "json-file"
       options:
