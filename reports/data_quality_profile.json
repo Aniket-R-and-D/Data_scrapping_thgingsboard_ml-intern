@@ -1,12 +1,22 @@
 {
-  "timestamp": "2026-10-27T09:02:57.842669+00:00",
-  "rows_before": 2,
-  "rows_after": 2,
+  "timestamp": "2026-10-29T11:03:09.731789+00:00",
+  "rows_before": 4,
+  "rows_after": 4,
   "anomalies_before": 0,
   "anomalies_after": 0,
   "anomalies_resolved": 0,
   "stuck_sensors_detected": 0,
   "column_deltas": {
+    "ac_voltage": {
+      "null_rate_before": 0.0,
+      "null_rate_after": 0.0,
+      "null_rate_delta": 0.0,
+      "min_before": 220.0,
+      "min_after": 220.0,
+      "max_before": 235.0,
+      "max_after": 235.0,
+      "is_stuck": false
+    },
     "anchor_ts": {
       "null_rate_before": 0.0,
       "null_rate_after": 0.0,
@@ -17,6 +27,16 @@
       "max_after": null,
       "is_stuck": false
     },
+    "constant_col": {
+      "null_rate_before": 0.0,
+      "null_rate_after": 0.0,
+      "null_rate_delta": 0.0,
+      "min_before": 1.0,
+      "min_after": 1.0,
+      "max_before": 1.0,
+      "max_after": 1.0,
+      "is_stuck": false
+    },
     "device_id": {
       "null_rate_before": 0.0,
       "null_rate_after": 0.0,
@@ -25,26 +45,6 @@
       "min_after": null,
       "max_before": null,
       "max_after": null,
-      "is_stuck": false
-    },
-    "feat_a": {
-      "null_rate_before": 0.0,
-      "null_rate_after": 0.0,
-      "null_rate_delta": 0.0,
-      "min_before": 1.0,
-      "min_after": 1.0,
-      "max_before": 2.0,
-      "max_after": 2.0,
-      "is_stuck": false
-    },
-    "feat_b": {
-      "null_rate_before": 0.0,
-      "null_rate_after": 0.0,
-      "null_rate_delta": 0.0,
-      "min_before": 10.0,
-      "min_after": 10.0,
-      "max_before": 20.0,
-      "max_after": 20.0,
       "is_stuck": false
     }
   }
