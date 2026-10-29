@@ -227,6 +227,26 @@ def save_drift_report(
     return path
 
 
+def evaluate_drift(
+    baseline_df: Optional[pd.DataFrame] = None,
+    target_df: Optional[pd.DataFrame] = None,
+    save_report: bool = True
+) -> Dict[str, Any]:
+    """Top-level convenience evaluator called by autonomous cloud runners."""
+    root = Path(__file__).resolve().parents[2]
+    fallback_feats = root / "models/latest_fleet_features.parquet"
+
+    if baseline_df is None:
+        baseline_df = pd.read_parquet(fallback_feats) if fallback_feats.exists() else pd.DataFrame()
+    if target_df is None:
+        target_df = baseline_df
+
+    res = evaluate_feature_drift(baseline_df, target_df)
+    if save_report:
+        save_drift_report(res, root / "reports/telemetry_drift_report.json")
+    return res
+
+
 def publish_drift_metrics(drift_result: Dict[str, Any]) -> bool:
     """Publish CloudWatch drift metrics to NovaEdge/TelemetryDrift namespace."""
     try:
