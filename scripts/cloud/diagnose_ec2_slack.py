@@ -46,3 +46,4 @@ def diagnose_ec2():
 
 if __name__ == "__main__":
     diagnose_ec2()
+

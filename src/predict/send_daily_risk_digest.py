@@ -226,6 +226,7 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
         # Diagnose Primary Issue & Recommended Action
         top_issue = "Normal Baseline Operation"
         recommended_action = "Routine monitoring."
+        pack_item = None
 
         # Check ops review pack first
         if dev_id in ops_pack_map:

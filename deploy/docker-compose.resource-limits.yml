@@ -1,0 +1,38 @@
+# ==============================================================================
+# NovaEdge AI Engine - Production Resource Limits & Safe Coexistence Override
+# ------------------------------------------------------------------------------
+# Target Host: AWS EC2 i-064834c54249ba9b7 (t3.medium: 2 vCPUs, 3.8 GB RAM)
+# Co-hosted with ThingsBoard monolithic JVM container (novaedge-dev)
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f deploy/docker-compose.resource-limits.yml up -d
+# ==============================================================================
+
+services:
+  novaedge-ai-agent:
+    deploy:
+      resources:
+        limits:
+          # Cap CPU at 0.50 vCPU (50% of a single physical thread on t3.medium)
+          # Prevents batch inference from starving Netty NIO threads in ThingsBoard
+          cpus: '0.50'
+          # Hard memory ceiling: 512 MB. Prevents container from ever triggering
+          # host memory exhaustion or Linux kernel OOM killing of ThingsBoard.
+          memory: 512M
+        reservations:
+          # Guarantee minimal baseline memory allocation
+          memory: 256M
+    environment:
+      # Pin OpenMP and OpenBLAS thread pools to a single worker thread.
+      # By default, LightGBM / scikit-learn spawns threads equal to CPU cores (2),
+      # which spikes aggregate CPU to 100% and triggers CPU credit depletion on burstable t3 instances.
+      - OMP_NUM_THREADS=1
+      - OPENBLAS_NUM_THREADS=1
+      - MKL_NUM_THREADS=1
+      - VECLIB_MAXIMUM_THREADS=1
+      - NUMEXPR_NUM_THREADS=1
+      # Python garbage collector aggressive threshold tuning
+      - PYTHONGC=2
+    # Ensure memory swap limit matches memory limit (no swap overrun within container)
+    memswap_limit: 512m
+

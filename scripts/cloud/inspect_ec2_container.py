@@ -45,3 +45,4 @@ def inspect_ec2():
 
 if __name__ == "__main__":
     inspect_ec2()
+
