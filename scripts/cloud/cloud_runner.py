@@ -46,10 +46,10 @@ logging.basicConfig(
 logger = logging.getLogger("cloud_runner")
 
 
-def run_full_daily_cycle(env: Dict[str, str]) -> None:
+def run_full_daily_cycle(env: Dict[str, str], send_alerts: bool = True) -> None:
     """Execute complete daily scoring, reporting, and multi-channel dispatch."""
     logger.info("=" * 65)
-    logger.info("Executing Full Daily AI Fleet Operations Cycle...")
+    logger.info(f"Executing Full Daily AI Fleet Operations Cycle (send_alerts={send_alerts})...")
     logger.info("=" * 65)
 
     try:
@@ -59,11 +59,17 @@ def run_full_daily_cycle(env: Dict[str, str]) -> None:
         # Sync to ThingsBoard (clears recovered, registers active, updates modernized KPI card)
         digest_app.sync_to_thingsboard(fleet_df, env, summary=summary)
 
-        # Dispatch Slack
-        digest_app.send_slack_notification(fleet_df, summary, env)
+        # Dispatch Slack (only when send_alerts is True)
+        if send_alerts:
+            digest_app.send_slack_notification(fleet_df, summary, env)
+        else:
+            logger.info("Alert dispatch disabled for this cycle; skipping Slack notification.")
 
-        # Dispatch Email
-        digest_app.send_email_notification(html_p, csv_p, summary, env)
+        # Dispatch Email (only when send_alerts is True)
+        if send_alerts:
+            digest_app.send_email_notification(html_p, csv_p, summary, env)
+        else:
+            logger.info("Alert dispatch disabled for this cycle; skipping Email notification.")
 
         # Phase 7: telemetry drift monitoring + debounced recovery quality metrics
         quality = run_quality_monitoring(env)
@@ -153,10 +159,30 @@ def run_recovery_probe_cycle(env: Dict[str, str]) -> int:
 
     # Read latest risk digest to find candidate critical/high-risk devices
     latest_json = ROOT / "reports/latest_risk_digest.json"
+    debounce_file = ROOT / "reports/recovery_debounce_state.json"
+    s3_bucket = env.get("S3_BUCKET", "bank-report-data")
+    s3_prefix = env.get("S3_PREFIX", "novaedge-ai-reports").strip("/")
+
+    # Attempt to restore state from S3 if running in stateless container (e.g. AWS ECS Fargate)
+    try:
+        import boto3
+        s3 = boto3.client("s3", region_name=env.get("AWS_REGION", "ap-south-1"))
+        if not latest_json.exists():
+            latest_json.parent.mkdir(parents=True, exist_ok=True)
+            s3.download_file(s3_bucket, f"{s3_prefix}/latest_risk_digest.json", str(latest_json))
+            logger.info("Successfully restored latest_risk_digest.json from S3.")
+        if not debounce_file.exists():
+            debounce_file.parent.mkdir(parents=True, exist_ok=True)
+            s3.download_file(s3_bucket, f"{s3_prefix}/recovery_debounce_state.json", str(debounce_file))
+            logger.info("Successfully restored recovery_debounce_state.json from S3.")
+    except Exception as s3_fetch_err:
+        logger.debug(f"S3 state fetch skipped/failed: {s3_fetch_err}")
+
     if not latest_json.exists():
-        logger.info("No prior risk digest found; running full cycle first.")
-        run_full_daily_cycle(env)
-        return 0
+        logger.info("No prior risk digest found; computing fleet risk silently without email/slack alerts.")
+        run_full_daily_cycle(env, send_alerts=False)
+        if not latest_json.exists():
+            return 0
 
     import json
     with open(latest_json, "r", encoding="utf-8") as f:
@@ -215,7 +241,14 @@ def run_recovery_probe_cycle(env: Dict[str, str]) -> int:
             )
 
     try:
-        save_debounce_state(debounce_state)
+        saved_path = save_debounce_state(debounce_state)
+        # Archive debounce state to S3 for serverless continuity
+        try:
+            import boto3
+            s3 = boto3.client("s3", region_name=env.get("AWS_REGION", "ap-south-1"))
+            s3.upload_file(str(saved_path), s3_bucket, f"{s3_prefix}/recovery_debounce_state.json")
+        except Exception as s3_up_err:
+            logger.debug(f"Could not upload debounce state to S3: {s3_up_err}")
     except Exception as state_err:
         logger.warning(f"Could not persist recovery debounce state: {state_err}")
 
