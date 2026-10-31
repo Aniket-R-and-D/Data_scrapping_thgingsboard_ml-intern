@@ -19,8 +19,8 @@ def check_ec2():
         Comment="Check container status and logs",
         Parameters={
             "commands": [
-                "docker ps --filter name=novaedge-ai-agent",
-                "docker logs --tail 25 novaedge-ai-agent"
+                "docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'",
+                "cd /opt/novaedge-ai && git fetch origin main && git log -1 --oneline"
             ]
         }
     )
