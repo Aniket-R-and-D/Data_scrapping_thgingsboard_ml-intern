@@ -38,7 +38,11 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 
-from src.live.recovery_gate import probe_device_telemetry_live, RecoveryEvaluation
+from src.live.recovery_gate import (
+    probe_device_telemetry_live,
+    RecoveryEvaluation,
+    fetch_fleet_liveness,
+)
 from src.live.alarm_clear_engine import (
     clear_confirmed_recovery,
     load_debounce_state,
@@ -115,10 +119,17 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
 
     # Load Device Registry if available
     dev_names: Dict[str, str] = {}
+    if fallback_scored.exists():
+        try:
+            fb_df = pd.read_parquet(fallback_scored)
+            if "device_name" in fb_df.columns:
+                dev_names.update(fb_df.set_index("device_id")["device_name"].to_dict())
+        except Exception:
+            pass
     if REGISTRY_DEVICES_PATH.exists():
         try:
             devs_reg = pd.read_csv(REGISTRY_DEVICES_PATH)
-            dev_names = devs_reg.set_index("device_id")["name"].to_dict()
+            dev_names.update(devs_reg.set_index("device_id")["name"].to_dict())
         except Exception:
             pass
 
@@ -180,9 +191,10 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
         except Exception as e:
             logger.debug(f"Could not load ops pack map: {e}")
 
-    # Authenticate to ThingsBoard for Real-Time Telemetry Recovery Gate
+    # Authenticate to ThingsBoard for Real-Time Telemetry Recovery Gate & Liveness
     tb_token = None
     tb_host = None
+    tb_liveness_map: Dict[str, Dict[str, Any]] = {}
     if env and env.get("TB_HOST") and env.get("TB_EMAIL") and env.get("TB_PASSWORD"):
         tb_host = env["TB_HOST"].rstrip("/")
         try:
@@ -193,7 +205,11 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
             )
             if login_resp.status_code == 200:
                 tb_token = login_resp.json().get("token")
-                logger.info("Connected to ThingsBoard for real-time recovery probing.")
+                logger.info("Connected to ThingsBoard for real-time recovery probing & liveness.")
+                try:
+                    tb_liveness_map = fetch_fleet_liveness(tb_host, tb_token)
+                except Exception as live_err:
+                    logger.warning(f"Could not load bulk liveness map: {live_err}")
         except Exception as e:
             logger.debug(f"Could not authenticate for recovery gate probing: {e}")
 
@@ -201,14 +217,33 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
     records: List[Dict[str, Any]] = []
     for _, row in latest_scored.iterrows():
         dev_id = row["device_id"]
-        dev_name = str(row.get("device_name") or dev_names.get(dev_id, dev_id))
+        tb_dev_name = tb_liveness_map.get(dev_id, {}).get("device_name")
+        dev_name = str(row.get("device_name") or dev_names.get(dev_id) or tb_dev_name or dev_id)
         p_outage = outage_probs.get(dev_id, 0.0)
         anomaly_score = float(row["anomaly_score"])
         raw_tier = str(row["anomaly_tier"])
         contributions = row.get("top_contributions", {})
 
+        # Hardware Liveness Check (Fail-Closed Gate)
+        is_hardware_offline = False
+        offline_reason = ""
+        liveness = tb_liveness_map.get(dev_id)
+        if liveness:
+            if not liveness.get("is_active", True):
+                is_hardware_offline = True
+                age_h = liveness.get("age_hours")
+                if age_h is not None and age_h >= 48.0:
+                    age_desc = f"{age_h / 24.0:.0f} days"
+                elif age_h is not None:
+                    age_desc = f"{age_h:.1f} hours"
+                else:
+                    age_desc = "extended period"
+                offline_reason = f"Hardware Disconnected (Silent for {age_desc})"
+
         # Determine Baseline Risk Tier
-        if raw_tier == "CRITICAL_FAULT" or p_outage >= 0.80:
+        if is_hardware_offline:
+            unified_tier = "CRITICAL_FAULT"
+        elif raw_tier == "CRITICAL_FAULT" or p_outage >= 0.80:
             unified_tier = "CRITICAL_FAULT"
         elif raw_tier == "ANOMALOUS" or p_outage >= 0.50:
             unified_tier = "HIGH_RISK"
@@ -228,8 +263,10 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
         recommended_action = "Routine monitoring."
         pack_item = None
 
-        # Check ops review pack first
-        if dev_id in ops_pack_map:
+        if is_hardware_offline:
+            top_issue = offline_reason
+            recommended_action = "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site"
+        elif dev_id in ops_pack_map:
             pack_item = ops_pack_map[dev_id]
             top_issue = pack_item.get("primary_failure_mode", top_issue)
             recommended_action = pack_item.get("recommended_field_action", recommended_action)
@@ -246,16 +283,20 @@ def compute_fleet_risk(env: Optional[Dict[str, str]] = None) -> Tuple[pd.DataFra
             elif "errorcount" in top_issue.lower() or "uptime" in top_issue.lower() or "gateway" in top_issue.lower():
                 recommended_action = "Communications/Edge: High controller reset rate; verify 4G SIM antenna & power supply."
         elif unified_tier in ("CRITICAL_FAULT", "HIGH_RISK"):
-            if not pack_item and exp.get("factors") and exp["factors"][0].get("marginal_delta", 0) > 0:
+            if raw_tier == "NORMAL":
+                top_issue = f"Predictive Warning: Elevated Outage Risk ({p_outage * 100:.1f}%) with Nominal Sensor Baseline"
+                recommended_action = "Electrical & Preventative: Inspect incoming line stability and battery reserve ahead of predicted outage."
+            elif not pack_item and exp.get("factors") and exp["factors"][0].get("marginal_delta", 0) > 0:
                 top_issue = f"{exp['factors'][0]['formatted_summary']} (Outage Prob: {p_outage * 100:.1f}%)"
+                recommended_action = "Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
             else:
                 top_issue = f"High Predictive Collapse Risk ({p_outage * 100:.1f}%)"
-            recommended_action = "Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
+                recommended_action = "Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
 
         # Real-Time Telemetry Recovery Gate
         is_recovered = False
         recovery_vitals: Dict[str, Any] = {}
-        if unified_tier in ("CRITICAL_FAULT", "HIGH_RISK") and tb_token and tb_host:
+        if not is_hardware_offline and unified_tier in ("CRITICAL_FAULT", "HIGH_RISK") and tb_token and tb_host:
             try:
                 rec_eval = probe_device_telemetry_live(dev_id, tb_host, tb_token)
                 if rec_eval.is_recovered:

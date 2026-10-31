@@ -301,3 +301,97 @@ def probe_device_telemetry_live(
         logger.debug(f"Failed to query attributes for {device_id}: {e}")
 
     return evaluate_telemetry_recovery(device_id, timeseries, attributes)
+
+
+def fetch_fleet_liveness(
+    host: str,
+    token: str,
+    max_inactivity_hours: float = 24.0,
+    timeout: float = 10.0,
+) -> Dict[str, Dict[str, Any]]:
+    """Bulk-fetch live connectivity status for all tenant devices via ThingsBoard entitiesQuery.
+
+    Returns a dictionary mapping device_id -> {
+        "device_id": str,
+        "device_name": str,
+        "active": bool,
+        "last_activity_time": Optional[float],
+        "age_hours": Optional[float],
+        "is_active": bool,
+        "inactivity_reason": str,
+    }
+    """
+    headers = {"X-Authorization": f"Bearer {token}"}
+    host = host.rstrip("/")
+
+    payload = {
+        "entityFilter": {"type": "entityType", "entityType": "DEVICE"},
+        "pageLink": {
+            "pageSize": 250,
+            "page": 0,
+            "sortOrder": {"key": {"type": "ENTITY_FIELD", "key": "createdTime"}, "direction": "DESC"}
+        },
+        "entityFields": [
+            {"type": "ENTITY_FIELD", "key": "name"},
+            {"type": "ENTITY_FIELD", "key": "type"}
+        ],
+        "latestValues": [
+            {"type": "SERVER_ATTRIBUTE", "key": "active"},
+            {"type": "SERVER_ATTRIBUTE", "key": "lastActivityTime"},
+            {"type": "SERVER_ATTRIBUTE", "key": "lastConnectTime"},
+            {"type": "SERVER_ATTRIBUTE", "key": "lastDisconnectTime"},
+            {"type": "SERVER_ATTRIBUTE", "key": "inactivityReason"}
+        ]
+    }
+
+    liveness_map: Dict[str, Dict[str, Any]] = {}
+    try:
+        resp = requests.post(
+            f"{host}/api/entitiesQuery/find",
+            headers=headers,
+            json=payload,
+            timeout=timeout
+        )
+        if resp.status_code == 200:
+            data = resp.json().get("data", [])
+            now_ms = time.time() * 1000
+            for d in data:
+                dev_id = d.get("entityId", {}).get("id")
+                if not dev_id:
+                    continue
+                name = d.get("latest", {}).get("ENTITY_FIELD", {}).get("name", {}).get("value", "")
+                sa = d.get("latest", {}).get("SERVER_ATTRIBUTE", {})
+
+                raw_active = sa.get("active", {}).get("value")
+                is_tb_active = str(raw_active).lower() == "true"
+
+                lat_raw = sa.get("lastActivityTime", {}).get("value")
+                lat_ms = _to_float(lat_raw)
+
+                age_hours = None
+                if lat_ms and lat_ms > 0:
+                    age_hours = max(0.0, (now_ms - lat_ms) / 3600000.0)
+
+                reason = sa.get("inactivityReason", {}).get("value", "") or ""
+
+                # Device is considered fresh if TB reports active AND data received within max_inactivity_hours
+                is_fresh = is_tb_active and (age_hours is None or age_hours <= max_inactivity_hours)
+
+                liveness_map[dev_id] = {
+                    "device_id": dev_id,
+                    "device_name": name,
+                    "active": is_tb_active,
+                    "last_activity_time": lat_ms,
+                    "age_hours": round(age_hours, 1) if age_hours is not None else None,
+                    "is_active": is_fresh,
+                    "inactivity_reason": reason,
+                }
+            active_count = sum(1 for v in liveness_map.values() if v["is_active"])
+            logger.info(f"Retrieved bulk liveness for {len(liveness_map)} devices ({active_count} active).")
+        else:
+            logger.warning(f"Entities query returned status {resp.status_code}: {resp.text[:200]}")
+    except Exception as e:
+        logger.warning(f"Failed to fetch bulk fleet liveness from ThingsBoard: {e}")
+
+    return liveness_map
+

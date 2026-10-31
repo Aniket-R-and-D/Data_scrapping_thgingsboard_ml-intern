@@ -1121,3 +1121,151 @@ class TestDryRunAndOfflineIsolation:
         assert md_p.stat().st_size > 500
         assert html_p.stat().st_size > 1000
         assert csv_p.stat().st_size > 200
+
+
+# ============================================================================
+# Section 5: Fail-Closed Hardware Freshness Gate (SBI Bhawal & Dead Inliers)
+# ============================================================================
+
+class TestFailClosedHardwareFreshnessGate:
+    """Verifies that flatline synthetic zeroes on dead/disconnected hardware never mask outages."""
+
+    def test_fetch_fleet_liveness_parses_thingsboard_entities(self, monkeypatch):
+        """Verifies bulk liveness parsing from ThingsBoard /api/entitiesQuery/find."""
+        import requests
+        from src.live.recovery_gate import fetch_fleet_liveness
+
+        now_ms = time.time() * 1000
+        mock_response_data = {
+            "data": [
+                {
+                    "entityId": {"id": "dev-dead-sbi-bhawal"},
+                    "latest": {
+                        "ENTITY_FIELD": {"name": {"value": "SBI BHAWAL"}},
+                        "SERVER_ATTRIBUTE": {
+                            "active": {"value": "false"},
+                            "lastActivityTime": {"value": str(now_ms - 438 * 86400 * 1000)},
+                            "inactivityReason": {"value": "Connection timeout"},
+                        },
+                    },
+                },
+                {
+                    "entityId": {"id": "dev-active-branch"},
+                    "latest": {
+                        "ENTITY_FIELD": {"name": {"value": "BOI-BAGULA"}},
+                        "SERVER_ATTRIBUTE": {
+                            "active": {"value": "true"},
+                            "lastActivityTime": {"value": str(now_ms - 300 * 1000)},  # 5 min ago
+                        },
+                    },
+                },
+            ]
+        }
+
+        class MockResponse:
+            status_code = 200
+            def json(self):
+                return mock_response_data
+
+        monkeypatch.setattr(requests, "post", lambda *args, **kwargs: MockResponse())
+
+        liveness = fetch_fleet_liveness("https://mock-tb.cloud", "mock-token")
+        assert len(liveness) == 2
+
+        dead = liveness["dev-dead-sbi-bhawal"]
+        assert dead["active"] is False
+        assert dead["is_active"] is False
+        assert dead["age_hours"] > 10000.0
+
+        active = liveness["dev-active-branch"]
+        assert active["active"] is True
+        assert active["is_active"] is True
+        assert active["age_hours"] < 1.0
+
+    def test_freshness_gate_overrides_dead_inliers_to_critical_fault(self, monkeypatch):
+        """Verifies that a dead device with nominal flatline score is fail-closed into CRITICAL_FAULT."""
+        import requests
+        from src.predict.send_daily_risk_digest import compute_fleet_risk
+        import src.predict.send_daily_risk_digest as digest_module
+
+        # Mock liveness map to return SBI BHAWAL as inactive (silent for 438 days)
+        mock_liveness = {
+            "49626c80-3d15-11f0-9778-a73e030dc473": {
+                "device_id": "49626c80-3d15-11f0-9778-a73e030dc473",
+                "device_name": "SBI BHAWAL",
+                "active": False,
+                "last_activity_time": 1755531118472,
+                "age_hours": 10525.0,
+                "is_active": False,
+                "inactivity_reason": "Disconnected",
+            }
+        }
+
+        monkeypatch.setattr(digest_module, "fetch_fleet_liveness", lambda *args, **kwargs: mock_liveness)
+
+        mock_env = {
+            "TB_HOST": "https://mock-tb.cloud",
+            "TB_EMAIL": "user@bank.in",
+            "TB_PASSWORD": "secretpassword",
+        }
+
+        class MockLoginResp:
+            status_code = 200
+            def json(self):
+                return {"token": "mock-token-xyz"}
+
+        monkeypatch.setattr(requests, "post", lambda *args, **kwargs: MockLoginResp())
+
+        fleet_df, summary = compute_fleet_risk(env=mock_env)
+
+        sbi_row = fleet_df[fleet_df["device_id"] == "49626c80-3d15-11f0-9778-a73e030dc473"]
+        assert len(sbi_row) == 1
+        sbi = sbi_row.iloc[0]
+
+        # Critical Fail-Closed Assertion: Must be CRITICAL_FAULT, NOT NOMINAL
+        assert sbi["unified_tier"] == "CRITICAL_FAULT"
+        assert "Hardware Disconnected" in sbi["primary_issue"]
+        assert "Restore gateway power" in sbi["recommended_action"]
+        assert sbi["raw_anomaly_tier"] == "NORMAL"  # Model evaluated flatline zeroes as normal
+
+    def test_predictive_warning_issue_calibrated_for_nominal_sensor_branches(self, monkeypatch):
+        """Verifies that operational branches with normal sensor baselines receive clear predictive warnings."""
+        import requests
+        from src.predict.send_daily_risk_digest import compute_fleet_risk
+        import src.predict.send_daily_risk_digest as digest_module
+
+        # Mock liveness to show device as active right now
+        mock_liveness = {
+            "dev-active-pred-warning": {
+                "device_id": "dev-active-pred-warning",
+                "device_name": "BOI-BAGULA",
+                "active": True,
+                "last_activity_time": time.time() * 1000,
+                "age_hours": 0.1,
+                "is_active": True,
+                "inactivity_reason": "",
+            }
+        }
+        monkeypatch.setattr(digest_module, "fetch_fleet_liveness", lambda *args, **kwargs: mock_liveness)
+
+        mock_env = {
+            "TB_HOST": "https://mock-tb.cloud",
+            "TB_EMAIL": "user@bank.in",
+            "TB_PASSWORD": "secretpassword",
+        }
+        class MockLoginResp:
+            status_code = 200
+            def json(self):
+                return {"token": "mock-token-xyz"}
+        monkeypatch.setattr(requests, "post", lambda *args, **kwargs: MockLoginResp())
+
+        fleet_df, summary = compute_fleet_risk(env=mock_env)
+
+        # Check any branch with raw_tier == NORMAL and outage_prob >= 0.80
+        high_prob_normal_branches = fleet_df[(fleet_df["raw_anomaly_tier"] == "NORMAL") & (fleet_df["outage_prob_24h"] >= 0.80)]
+        if not high_prob_normal_branches.empty:
+            sample = high_prob_normal_branches.iloc[0]
+            assert "Predictive Warning" in sample["primary_issue"]
+            assert "Nominal Sensor Baseline" in sample["primary_issue"]
+            assert "Electrical & Preventative" in sample["recommended_action"]
+
