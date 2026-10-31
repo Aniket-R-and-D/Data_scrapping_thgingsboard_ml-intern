@@ -1,0 +1,138 @@
+{
+  "cycle_interval_minutes": 15,
+  "devices": {
+    "0bfa8fa0-c067-11f0-a562-d9639f025684": {
+      "bank": "BOI",
+      "cleared_at": null,
+      "consecutive_nominal_cycles": 2,
+      "cycle_interval_minutes": 15.0,
+      "device_id": "0bfa8fa0-c067-11f0-a562-d9639f025684",
+      "device_name": "BOI-BAGULA",
+      "first_flagged_at": "2026-10-30T02:31:09.026564+00:00",
+      "first_nominal_at": "2026-10-30T02:31:09.026564+00:00",
+      "history": [
+        {
+          "consecutive_nominal_cycles": 1,
+          "evaluated_at": "2026-10-30T02:31:09.026564+00:00",
+          "is_recovered": true,
+          "status": "PENDING_CONFIRMATION",
+          "voltage_sag": false
+        },
+        {
+          "consecutive_nominal_cycles": 2,
+          "evaluated_at": "2026-10-31T06:59:25.795966+00:00",
+          "is_recovered": true,
+          "status": "PENDING_CONFIRMATION",
+          "voltage_sag": false
+        }
+      ],
+      "last_cleared_at": null,
+      "last_evaluated_at": "2026-10-31T06:59:25.795966+00:00",
+      "last_reason": "Nominal cycle 2/3 confirmed (1708 minutes into the debounce window).",
+      "last_status": "PENDING_CONFIRMATION",
+      "mttr_recorded": false,
+      "required_cycles": 3
+    },
+    "5472ea20-aa78-11f0-b8ab-b38af83f6c9c": {
+      "bank": "BOI",
+      "cleared_at": null,
+      "consecutive_nominal_cycles": 2,
+      "cycle_interval_minutes": 15.0,
+      "device_id": "5472ea20-aa78-11f0-b8ab-b38af83f6c9c",
+      "device_name": "BOI-BABAI",
+      "first_flagged_at": "2026-10-30T02:31:07.639202+00:00",
+      "first_nominal_at": "2026-10-30T02:31:07.639202+00:00",
+      "history": [
+        {
+          "consecutive_nominal_cycles": 1,
+          "evaluated_at": "2026-10-30T02:31:07.639202+00:00",
+          "is_recovered": true,
+          "status": "PENDING_CONFIRMATION",
+          "voltage_sag": false
+        },
+        {
+          "consecutive_nominal_cycles": 2,
+          "evaluated_at": "2026-10-31T06:59:24.372783+00:00",
+          "is_recovered": true,
+          "status": "PENDING_CONFIRMATION",
+          "voltage_sag": false
+        }
+      ],
+      "last_cleared_at": null,
+      "last_evaluated_at": "2026-10-31T06:59:24.372783+00:00",
+      "last_reason": "Nominal cycle 2/3 confirmed (1708 minutes into the debounce window).",
+      "last_status": "PENDING_CONFIRMATION",
+      "mttr_recorded": false,
+      "required_cycles": 3
+    },
+    "6287e400-a823-11f0-b150-2710a8915e1d": {
+      "bank": "BOI",
+      "cleared_at": null,
+      "consecutive_nominal_cycles": 2,
+      "cycle_interval_minutes": 15.0,
+      "device_id": "6287e400-a823-11f0-b150-2710a8915e1d",
+      "device_name": "BOI-SALTLAKE",
+      "first_flagged_at": "2026-10-30T02:31:08.586843+00:00",
+      "first_nominal_at": "2026-10-30T02:31:08.586843+00:00",
+      "history": [
+        {
+          "consecutive_nominal_cycles": 1,
+          "evaluated_at": "2026-10-30T02:31:08.586843+00:00",
+          "is_recovered": true,
+          "status": "PENDING_CONFIRMATION",
+          "voltage_sag": false
+        },
+        {
+          "consecutive_nominal_cycles": 2,
+          "evaluated_at": "2026-10-31T06:59:25.332264+00:00",
+          "is_recovered": true,
+          "status": "PENDING_CONFIRMATION",
+          "voltage_sag": false
+        }
+      ],
+      "last_cleared_at": null,
+      "last_evaluated_at": "2026-10-31T06:59:25.332264+00:00",
+      "last_reason": "Nominal cycle 2/3 confirmed (1708 minutes into the debounce window).",
+      "last_status": "PENDING_CONFIRMATION",
+      "mttr_recorded": false,
+      "required_cycles": 3
+    },
+    "630c1480-63e6-11f1-9555-295f91c5b7c8": {
+      "bank": "DX",
+      "cleared_at": null,
+      "consecutive_nominal_cycles": 2,
+      "cycle_interval_minutes": 15.0,
+      "device_id": "630c1480-63e6-11f1-9555-295f91c5b7c8",
+      "device_name": "DX2",
+      "first_flagged_at": "2026-10-30T02:31:08.104441+00:00",
+      "first_nominal_at": "2026-10-30T02:31:08.104441+00:00",
+      "history": [
+        {
+          "consecutive_nominal_cycles": 1,
+          "evaluated_at": "2026-10-30T02:31:08.104441+00:00",
+          "is_recovered": true,
+          "status": "PENDING_CONFIRMATION",
+          "voltage_sag": false
+        },
+        {
+          "consecutive_nominal_cycles": 2,
+          "evaluated_at": "2026-10-31T06:59:24.851316+00:00",
+          "is_recovered": true,
+          "status": "PENDING_CONFIRMATION",
+          "voltage_sag": false
+        }
+      ],
+      "last_cleared_at": null,
+      "last_evaluated_at": "2026-10-31T06:59:24.851316+00:00",
+      "last_reason": "Nominal cycle 2/3 confirmed (1708 minutes into the debounce window).",
+      "last_status": "PENDING_CONFIRMATION",
+      "mttr_recorded": false,
+      "required_cycles": 3
+    }
+  },
+  "min_elapsed_minutes": 30,
+  "mttr_records": [],
+  "required_cycles": 3,
+  "updated_at": "2026-10-31T06:59:37.416375+00:00",
+  "version": 1
+}

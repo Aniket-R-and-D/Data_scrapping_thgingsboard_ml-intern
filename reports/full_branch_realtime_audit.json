@@ -1,0 +1,825 @@
+{
+  "audited_at": "2026-10-31T06:17:00.011954+00:00",
+  "total_branches_audited": 29,
+  "results": [
+    {
+      "branch_name": "CANARA-BARUIPUR",
+      "device_id": "0b7bc7d0-671d-11f1-8c55-5bb8284c6aef",
+      "tb_active": false,
+      "tb_age_hours": 77.6,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": 0.0724,
+      "raw_anomaly_tier": "CRITICAL_FAULT",
+      "outage_prob_24h": 0.0023,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 3 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Zero active ticket faults; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 4654.4,
+        "gateway_status": "Unavailable",
+        "active_ticket_faults": [],
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "CANARA-KAMARHATI",
+      "device_id": "0e4358d0-6708-11f1-8c55-5bb8284c6aef",
+      "tb_active": false,
+      "tb_age_hours": 1725.4,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": 0.0442,
+      "raw_anomaly_tier": "ANOMALOUS",
+      "outage_prob_24h": 0.9942,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 72 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Zero active ticket faults; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 103523.3,
+        "gateway_status": "Unavailable",
+        "active_ticket_faults": [],
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "CANARA-CHETLA",
+      "device_id": "388f1380-31ad-11f1-9c6f-b71bb2771567",
+      "tb_active": false,
+      "tb_age_hours": 66.0,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": 0.047,
+      "raw_anomaly_tier": "ANOMALOUS",
+      "outage_prob_24h": 0.868,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 3 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (3962.6m ago > 60.0m); Active ticket faults present: FAS_OFF, IAS_OFF",
+      "vitals": {
+        "last_activity_age_minutes": 3962.6,
+        "gateway_status": "Unavailable",
+        "active_ticket_faults": [
+          "FAS_OFF",
+          "IAS_OFF"
+        ],
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "CANARA-BURNPUR",
+      "device_id": "58990a60-6708-11f1-8c55-5bb8284c6aef",
+      "tb_active": false,
+      "tb_age_hours": 1942.3,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.1047,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.5498,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 81 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Zero active ticket faults; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 116536.9,
+        "gateway_status": "Unavailable",
+        "active_ticket_faults": [],
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "CANARA-HALDI2",
+      "device_id": "6910ecc0-671f-11f1-8c55-5bb8284c6aef",
+      "tb_active": false,
+      "tb_age_hours": 816.3,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": 0.0186,
+      "raw_anomaly_tier": "ANOMALOUS",
+      "outage_prob_24h": 0.8578,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 34 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (48975.7m ago > 60.0m); Active ticket faults present: CAM_DIS",
+      "vitals": {
+        "last_activity_age_minutes": 48975.7,
+        "gateway_status": "Unavailable",
+        "active_ticket_faults": [
+          "CAM_DIS"
+        ],
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "DX7",
+      "device_id": "6aac1ab0-63f4-11f1-9555-295f91c5b7c8",
+      "tb_active": false,
+      "tb_age_hours": 2082.5,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.0048,
+      "raw_anomaly_tier": "ELEVATED",
+      "outage_prob_24h": 0.3679,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 87 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 124949.6,
+        "gateway_status": "Unavailable",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-MALLAGURI",
+      "device_id": "4d4f61e0-a8f4-11f0-b4af-b334f2239a02",
+      "tb_active": false,
+      "tb_age_hours": 1436.6,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.013,
+      "raw_anomaly_tier": "ELEVATED",
+      "outage_prob_24h": 0.987,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 60 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 86198.7,
+        "battery_voltage": 14.0,
+        "ac_voltage": 210.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-CUTTACK",
+      "device_id": "a5cf2df0-d1cb-11f0-82a9-69e5355364db",
+      "tb_active": false,
+      "tb_age_hours": 2008.6,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.0976,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.9775,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 84 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (120516.5m ago > 60.0m); Active ticket faults present: BATTERY_LOW",
+      "vitals": {
+        "last_activity_age_minutes": 120516.5,
+        "battery_voltage": 14.0,
+        "ac_voltage": 210.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [
+          "BATTERY_LOW"
+        ],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-SINGH-MORE",
+      "device_id": "424f3e90-1b96-11f1-88f8-7daa5068de06",
+      "tb_active": false,
+      "tb_age_hours": 2008.8,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.1012,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.9652,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 84 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Zero active ticket faults; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 120528.8,
+        "gateway_status": "Unavailable",
+        "active_ticket_faults": [],
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-PANASPADA",
+      "device_id": "d1a4f0f0-d73d-11f0-afc5-358ed627911d",
+      "tb_active": false,
+      "tb_age_hours": 2011.2,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.1012,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.9622,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 84 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (120669.7m ago > 60.0m); Active ticket faults present: BATTERY_LOW",
+      "vitals": {
+        "last_activity_age_minutes": 120669.7,
+        "battery_voltage": 14.0,
+        "ac_voltage": 210.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [
+          "BATTERY_LOW"
+        ],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-LALPUR",
+      "device_id": "c0ad6070-b4ba-11f0-b150-2710a8915e1d",
+      "tb_active": false,
+      "tb_age_hours": 1968.4,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.0182,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.9258,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 82 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (118103.8m ago > 60.0m); Battery degraded (0.0V, low=False); Active ticket faults present: BATTERY_LOW, FAS_OFF",
+      "vitals": {
+        "last_activity_age_minutes": 118103.8,
+        "battery_voltage": 0.0,
+        "ac_voltage": 230.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [
+          "BATTERY_LOW",
+          "FAS_OFF"
+        ],
+        "cctv_status": "Off",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-HARDA-ROAD",
+      "device_id": "b7736000-a98d-11f0-b4af-b334f2239a02",
+      "tb_active": false,
+      "tb_age_hours": 2017.0,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.0995,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.9131,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 84 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Battery healthy (14.0V, not low); Mains power restored (200.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 121020.5,
+        "battery_voltage": 14.0,
+        "ac_voltage": 200.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-HGBAD",
+      "device_id": "194571b0-a998-11f0-b4af-b334f2239a02",
+      "tb_active": false,
+      "tb_age_hours": 1969.6,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.0506,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.9031,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 82 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (118176.0m ago > 60.0m); Active ticket faults present: IAS_OFF",
+      "vitals": {
+        "last_activity_age_minutes": 118176.0,
+        "battery_voltage": 14.0,
+        "ac_voltage": 190.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [
+          "IAS_OFF"
+        ],
+        "cctv_status": "Off",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-BHUBANESHWAR",
+      "device_id": "275da890-d1c4-11f0-b238-bd8a9470eef2",
+      "tb_active": false,
+      "tb_age_hours": 2010.9,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.1019,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.8943,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 84 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (120654.9m ago > 60.0m); Active ticket faults present: NVR_OFF",
+      "vitals": {
+        "last_activity_age_minutes": 120654.9,
+        "battery_voltage": 14.0,
+        "ac_voltage": 240.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [
+          "NVR_OFF"
+        ],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-SONAHATU",
+      "device_id": "589773f0-c44a-11f0-ae8f-9fad3c067e6e",
+      "tb_active": false,
+      "tb_age_hours": 2011.1,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.1013,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.8919,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 84 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (120663.8m ago > 60.0m); Battery degraded (14.0V, low=True); Mains power outage (0.0V, mains_on=False); Active ticket faults present: FAS_OFF",
+      "vitals": {
+        "last_activity_age_minutes": 120663.8,
+        "battery_voltage": 14.0,
+        "ac_voltage": 0.0,
+        "mains_on": false,
+        "battery_low": true,
+        "active_ticket_faults": [
+          "FAS_OFF"
+        ],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-AIZWAL",
+      "device_id": "64673b00-ed32-11f0-80c0-fdc442896b74",
+      "tb_active": false,
+      "tb_age_hours": 2207.1,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.104,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.8789,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 92 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (132428.8m ago > 60.0m); Active ticket faults present: NVR_OFF",
+      "vitals": {
+        "last_activity_age_minutes": 132428.8,
+        "gateway_status": "Unavailable",
+        "active_ticket_faults": [
+          "NVR_OFF"
+        ],
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-RAIGANJ",
+      "device_id": "9f2b14b0-ab41-11f0-b8ab-b38af83f6c9c",
+      "tb_active": false,
+      "tb_age_hours": 552.6,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.0393,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.861,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 23 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Battery healthy (14.0V, not low); Mains power restored (220.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 33155.3,
+        "battery_voltage": 14.0,
+        "ac_voltage": 220.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-PURI",
+      "device_id": "e1f85910-db3e-11f0-afc5-358ed627911d",
+      "tb_active": false,
+      "tb_age_hours": 2011.1,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.1019,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.8564,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 84 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Battery healthy (14.0V, not low); Mains power restored (200.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 120664.7,
+        "battery_voltage": 14.0,
+        "ac_voltage": 200.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-SITHIO",
+      "device_id": "5bb79740-c51c-11f0-ae8f-9fad3c067e6e",
+      "tb_active": false,
+      "tb_age_hours": 1961.6,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.0909,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.8545,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 82 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (117695.9m ago > 60.0m); Battery degraded (0.0V, low=False)",
+      "vitals": {
+        "last_activity_age_minutes": 117695.9,
+        "battery_voltage": 0.0,
+        "ac_voltage": 220.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-KALYANI",
+      "status": "NOT_FOUND",
+      "notes": "Device not registered in ThingsBoard or historical parquet"
+    },
+    {
+      "branch_name": "BOI-BAGULA",
+      "device_id": "0bfa8fa0-c067-11f0-a562-d9639f025684",
+      "tb_active": true,
+      "tb_age_hours": 0.0,
+      "physical_age_hours": 0.0,
+      "last_physical_packet_key": "alerts",
+      "anomaly_score": 0.0285,
+      "raw_anomaly_tier": "ANOMALOUS",
+      "outage_prob_24h": 0.0326,
+      "predicted_unified_tier": "SERVICED_RECOVERED",
+      "primary_issue": "Hardware restored; Verified operational recovery: Recent data activity (0.5m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; Subsystems restored: gateway, bas, fas",
+      "recommended_action": "None \u2014 Post-service operational stability verified",
+      "is_recovered_live": true,
+      "recovery_reason": "Verified operational recovery: Recent data activity (0.7m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 0.7,
+        "battery_voltage": 14.0,
+        "ac_voltage": 210.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [],
+        "cctv_status": "Off",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-COOCHBEHAR",
+      "device_id": "148c0c90-ab3e-11f0-91df-7ffa16af2ee9",
+      "tb_active": true,
+      "tb_age_hours": 0.0,
+      "physical_age_hours": 0.0,
+      "last_physical_packet_key": "alerts",
+      "anomaly_score": -0.0025,
+      "raw_anomaly_tier": "ELEVATED",
+      "outage_prob_24h": 0.0386,
+      "predicted_unified_tier": "ELEVATED",
+      "primary_issue": "Normal Baseline Operation",
+      "recommended_action": "Routine monitoring.",
+      "is_recovered_live": true,
+      "recovery_reason": "Verified operational recovery: Recent data activity (0.2m ago); Battery healthy (14.0V, not low); Mains power restored (200.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 0.2,
+        "battery_voltage": 14.0,
+        "ac_voltage": 200.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-BERO",
+      "device_id": "12e5db10-bbaf-11f0-91ad-09ca52d2dd91",
+      "tb_active": false,
+      "tb_age_hours": 2009.5,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.093,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.1822,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 84 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (120572.6m ago > 60.0m); Battery degraded (0.0V, low=False)",
+      "vitals": {
+        "last_activity_age_minutes": 120572.6,
+        "battery_voltage": 0.0,
+        "ac_voltage": 220.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-MALDATOWN",
+      "device_id": "01c61bb0-ab4c-11f0-91df-7ffa16af2ee9",
+      "tb_active": false,
+      "tb_age_hours": 83.3,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.078,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.2883,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 3 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Ongoing hardware fault: Stale data activity (4999.1m ago > 60.0m); Battery degraded (14.0V, low=True)",
+      "vitals": {
+        "last_activity_age_minutes": 4999.1,
+        "battery_voltage": 14.0,
+        "ac_voltage": 210.0,
+        "mains_on": false,
+        "battery_low": true,
+        "active_ticket_faults": [],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-R-BAZAR",
+      "device_id": "04de5640-a5bc-11f0-b150-2710a8915e1d",
+      "tb_active": false,
+      "tb_age_hours": 9259.4,
+      "physical_age_hours": 5334.3,
+      "last_physical_packet_key": "BAS_Uptime_Minutes",
+      "anomaly_score": null,
+      "raw_anomaly_tier": "N/A",
+      "outage_prob_24h": null,
+      "predicted_unified_tier": "NOT_IN_FLEET",
+      "primary_issue": "N/A",
+      "recommended_action": "N/A",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Stale data activity (555566.1m ago > 60.0m)",
+      "vitals": {
+        "last_activity_age_minutes": 555566.1,
+        "gateway_status": "Unavailable"
+      }
+    },
+    {
+      "branch_name": "SBI BHAWAL",
+      "device_id": "49626c80-3d15-11f0-9778-a73e030dc473",
+      "tb_active": false,
+      "tb_age_hours": 10526.7,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "ai_risk_driver_1",
+      "anomaly_score": -0.0915,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.0001,
+      "predicted_unified_tier": "CRITICAL_FAULT",
+      "primary_issue": "Hardware Disconnected (Silent for 439 days)",
+      "recommended_action": "Edge & Telecom: Restore gateway power and verify cellular SIM connectivity on site",
+      "is_recovered_live": false,
+      "recovery_reason": "Inconclusive telemetry status: Zero active ticket faults",
+      "vitals": {
+        "last_activity_age_minutes": 631605.0,
+        "gateway_status": "Unavailable",
+        "active_ticket_faults": []
+      }
+    },
+    {
+      "branch_name": "BOI-BABAI",
+      "device_id": "5472ea20-aa78-11f0-b8ab-b38af83f6c9c",
+      "tb_active": true,
+      "tb_age_hours": 0.0,
+      "physical_age_hours": 0.1,
+      "last_physical_packet_key": "alerts",
+      "anomaly_score": -0.0232,
+      "raw_anomaly_tier": "NORMAL",
+      "outage_prob_24h": 0.6961,
+      "predicted_unified_tier": "SERVICED_RECOVERED",
+      "primary_issue": "Hardware restored; Verified operational recovery: Recent data activity (0.6m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas",
+      "recommended_action": "None \u2014 Post-service operational stability verified",
+      "is_recovered_live": true,
+      "recovery_reason": "Verified operational recovery: Recent data activity (0.0m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 0.0,
+        "battery_voltage": 14.0,
+        "ac_voltage": 210.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "BOI-SALTLAKE",
+      "device_id": "6287e400-a823-11f0-b150-2710a8915e1d",
+      "tb_active": true,
+      "tb_age_hours": 0.0,
+      "physical_age_hours": 0.0,
+      "last_physical_packet_key": "alerts",
+      "anomaly_score": 0.0173,
+      "raw_anomaly_tier": "ANOMALOUS",
+      "outage_prob_24h": 0.0833,
+      "predicted_unified_tier": "SERVICED_RECOVERED",
+      "primary_issue": "Hardware restored; Verified operational recovery: Recent data activity (0.0m ago); Battery healthy (14.0V, not low); Mains power restored (200.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas",
+      "recommended_action": "None \u2014 Post-service operational stability verified",
+      "is_recovered_live": true,
+      "recovery_reason": "Verified operational recovery: Recent data activity (0.1m ago); Battery healthy (14.0V, not low); Mains power restored (200.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas",
+      "vitals": {
+        "last_activity_age_minutes": 0.1,
+        "battery_voltage": 14.0,
+        "ac_voltage": 200.0,
+        "mains_on": true,
+        "battery_low": false,
+        "active_ticket_faults": [],
+        "cctv_status": "On",
+        "restored_subsystems": [
+          "gateway",
+          "bas",
+          "fas"
+        ]
+      }
+    },
+    {
+      "branch_name": "DX2",
+      "device_id": "630c1480-63e6-11f1-9555-295f91c5b7c8",
+      "tb_active": true,
+      "tb_age_hours": 0.0,
+      "physical_age_hours": -0.0,
+      "last_physical_packet_key": "alerts",
+      "anomaly_score": 0.0543,
+      "raw_anomaly_tier": "CRITICAL_FAULT",
+      "outage_prob_24h": 0.368,
+      "predicted_unified_tier": "SERVICED_RECOVERED",
+      "primary_issue": "Hardware restored; Verified operational recovery: Recent data activity (0.0m ago); Zero active ticket faults; Subsystems restored: gateway, fas",
+      "recommended_action": "None \u2014 Post-service operational stability verified",
+      "is_recovered_live": true,
+      "recovery_reason": "Verified operational recovery: Recent data activity (0.0m ago); Zero active ticket faults; Subsystems restored: gateway, fas",
+      "vitals": {
+        "last_activity_age_minutes": 0.0,
+        "gateway_status": "Unavailable",
+        "active_ticket_faults": [],
+        "restored_subsystems": [
+          "gateway",
+          "fas"
+        ]
+      }
+    }
+  ],
+  "fleet_summary": {
+    "timestamp": "2026-10-31T06:16:42.209216+00:00",
+    "total_monitored_branches": 130,
+    "fleet_health_score_pct": 18.5,
+    "critical_fault_count": 103,
+    "high_risk_count": 0,
+    "serviced_recovered_count": 4,
+    "elevated_count": 6,
+    "nominal_count": 17,
+    "high_outage_risk_branches": 45
+  }
+}

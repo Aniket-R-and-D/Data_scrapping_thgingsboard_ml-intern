@@ -76,3 +76,5 @@ current_state_snapshots/*.json
 # Legacy root-level stragglers (locked files that could not be moved)
 ml_training_*.jsonl
 *.ipynb.pre-organize.bak
+
+.agents/teamwork/

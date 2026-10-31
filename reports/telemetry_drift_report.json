@@ -48,7 +48,7 @@
   "mean_psi": 1.2798,
   "max_psi_feature": "cpu__last_age_h",
   "max_psi": 3.8386,
-  "evaluated_at": "2026-10-29T11:03:43.591816+00:00",
+  "evaluated_at": "2026-10-31T07:11:10.953910+00:00",
   "feature_details": {
     "cctvUptime__count_1h": {
       "psi": 0.0,

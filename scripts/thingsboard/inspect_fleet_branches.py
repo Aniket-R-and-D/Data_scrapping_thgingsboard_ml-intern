@@ -62,3 +62,4 @@ for b in branches_to_check:
     score_str = f"{sc['anomaly_score']:.4f}" if sc is not None else "N/A"
     tier_str = str(sc["anomaly_tier"]) if sc is not None else "N/A"
     print(f"{b:<20} | {str(tb_info[0]):<9} | {tb_info[1]:10.1f} | {score_str:<10} | {tier_str:<15}")
+

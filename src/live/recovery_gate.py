@@ -340,7 +340,12 @@ def fetch_fleet_liveness(
             {"type": "SERVER_ATTRIBUTE", "key": "lastActivityTime"},
             {"type": "SERVER_ATTRIBUTE", "key": "lastConnectTime"},
             {"type": "SERVER_ATTRIBUTE", "key": "lastDisconnectTime"},
-            {"type": "SERVER_ATTRIBUTE", "key": "inactivityReason"}
+            {"type": "SERVER_ATTRIBUTE", "key": "inactivityReason"},
+            {"type": "TIME_SERIES", "key": "gatewayStatus"},
+            {"type": "TIME_SERIES", "key": "cameraStatus"},
+            {"type": "TIME_SERIES", "key": "ticketStatus"},
+            {"type": "TIME_SERIES", "key": "ac_voltage"},
+            {"type": "TIME_SERIES", "key": "battery_voltage"}
         ]
     }
 
@@ -361,6 +366,7 @@ def fetch_fleet_liveness(
                     continue
                 name = d.get("latest", {}).get("ENTITY_FIELD", {}).get("name", {}).get("value", "")
                 sa = d.get("latest", {}).get("SERVER_ATTRIBUTE", {})
+                ts = d.get("latest", {}).get("TIME_SERIES", {})
 
                 raw_active = sa.get("active", {}).get("value")
                 is_tb_active = str(raw_active).lower() == "true"
@@ -377,6 +383,42 @@ def fetch_fleet_liveness(
                 # Device is considered fresh if TB reports active AND data received within max_inactivity_hours
                 is_fresh = is_tb_active and (age_hours is None or age_hours <= max_inactivity_hours)
 
+                # Extract latest vitals from time-series payload
+                gw_raw = ts.get("gatewayStatus", {}).get("value")
+                cam_raw = ts.get("cameraStatus", {}).get("value")
+                ticket_raw = ts.get("ticketStatus", {}).get("value")
+                raw_ac = ts.get("ac_voltage", {}).get("value")
+                raw_batt = ts.get("battery_voltage", {}).get("value")
+
+                batt_v = _to_float(raw_batt)
+                ac_v = _to_float(raw_ac)
+                mains_on = None
+                batt_low = None
+                cctv_status = None
+                ticket_faults = []
+
+                if gw_raw:
+                    gw_dict = _safe_json_parse(gw_raw)
+                    if isinstance(gw_dict, dict):
+                        if "battery_voltage" in gw_dict and (batt_v is None or batt_v == 0):
+                            batt_v = _to_float(gw_dict.get("battery_voltage"))
+                        if "ac_voltage" in gw_dict and (ac_v is None or ac_v == 0):
+                            ac_v = _to_float(gw_dict.get("ac_voltage"))
+                        mains_on = _to_bool(gw_dict.get("MAINS ON"))
+                        batt_low = _to_bool(gw_dict.get("BATTERY LOW"))
+
+                if cam_raw:
+                    cam_dict = _safe_json_parse(cam_raw)
+                    if isinstance(cam_dict, dict):
+                        cctv_status = cam_dict.get("cctvStatus")
+                    elif isinstance(cam_raw, str):
+                        cctv_status = cam_raw
+
+                if ticket_raw:
+                    ticket_dict = _safe_json_parse(ticket_raw)
+                    if isinstance(ticket_dict, dict):
+                        ticket_faults = [k for k, v in ticket_dict.items() if _to_bool(v)]
+
                 liveness_map[dev_id] = {
                     "device_id": dev_id,
                     "device_name": name,
@@ -385,6 +427,12 @@ def fetch_fleet_liveness(
                     "age_hours": round(age_hours, 1) if age_hours is not None else None,
                     "is_active": is_fresh,
                     "inactivity_reason": reason,
+                    "battery_voltage": batt_v,
+                    "ac_voltage": ac_v,
+                    "mains_on": mains_on,
+                    "battery_low": batt_low,
+                    "cctv_status": cctv_status,
+                    "active_ticket_faults": ticket_faults,
                 }
             active_count = sum(1 for v in liveness_map.values() if v["is_active"])
             logger.info(f"Retrieved bulk liveness for {len(liveness_map)} devices ({active_count} active).")

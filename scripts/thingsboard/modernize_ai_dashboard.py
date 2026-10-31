@@ -26,7 +26,7 @@ from dotenv import load_dotenv
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("modernize_ai_dashboard")
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(ROOT / ".env")
 
 TB_HOST = os.getenv("TB_HOST", "https://seple.iot-private.cloud").rstrip("/")
@@ -238,6 +238,58 @@ STATUS_CELL_JS = _cell(
     "var s = m[value] || [esc(value || ''), '#475569', '#94a3b8'];\n"
     "return '<span style=\"display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;white-space:nowrap;color:' + s[1] + ';\">'"
     " + '<span style=\"width:6px;height:6px;border-radius:50%;background:' + s[2] + ';\"></span>' + s[0] + '</span>';\n"
+)
+
+OP_STATUS_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    "var isOnline = String(value).toUpperCase() === 'ONLINE';\n"
+    "var c = isOnline ? '#0f7a55' : '#b4232c';\n"
+    "var bg = isOnline ? '#e8f7f0' : '#fdecec';\n"
+    "var b = isOnline ? '#b9e5d2' : '#f5c2c4';\n"
+    "var dot = isOnline ? '#16a36f' : '#dc2626';\n"
+    "return '<span style=\"display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;color:' + c + ';background:' + bg + ';border:1px solid ' + b + ';\"><span style=\"width:6px;height:6px;border-radius:50%;background:' + dot + ';\"></span>' + esc(value) + '</span>';\n"
+)
+
+PRIORITY_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    "var v = String(value);\n"
+    f"var fg = '{INK_2}', bg = '#f1f4f8', b = '#dfe5ec', dot = '{MUTED}';\n"
+    "if (v.indexOf('P1') >= 0) { fg = '#b4232c'; bg = '#fdecec'; b = '#f5c2c4'; dot = '#dc2626'; }\n"
+    "else if (v.indexOf('P2') >= 0) { fg = '#9a4d00'; bg = '#fff4e5'; b = '#f7d7a8'; dot = '#ea8a0c'; }\n"
+    "else if (v.indexOf('P3') >= 0) { fg = '#1d4ed8'; bg = '#eef4ff'; b = '#c9dafc'; dot = '#3b6fe0'; }\n"
+    "else if (v.indexOf('P4') >= 0) { fg = '#0f7a55'; bg = '#e8f7f0'; b = '#b9e5d2'; dot = '#16a36f'; }\n"
+    "return '<span style=\"display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;color:' + fg + ';background:' + bg + ';border:1px solid ' + b + ';\"><span style=\"width:6px;height:6px;border-radius:50%;background:' + dot + ';\"></span>' + esc(v) + '</span>';\n"
+)
+
+POWER_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    "var v = String(value);\n"
+    f"var c = v.indexOf('Brownout') >= 0 ? '#b4232c' : v.indexOf('Surge') >= 0 ? '#b35c00' : v.indexOf('Offline') >= 0 ? '{MUTED}' : '{INK}';\n"
+    "var fw = (v.indexOf('Brownout') >= 0 || v.indexOf('Surge') >= 0) ? '600' : '400';\n"
+    "return '<span style=\"color:' + c + ';font-weight:' + fw + ';font-variant-numeric:tabular-nums;\">' + esc(v) + '</span>';\n"
+)
+
+BATTERY_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    "var v = String(value);\n"
+    f"var c = (v.indexOf('Low') >= 0 || v.indexOf('Discharged') >= 0 || v.indexOf('Alert') >= 0) ? '#b4232c' : v.indexOf('Healthy') >= 0 ? '#0f7a55' : '{MUTED}';\n"
+    "var fw = (v.indexOf('Low') >= 0 || v.indexOf('Discharged') >= 0) ? '600' : '400';\n"
+    "return '<span style=\"color:' + c + ';font-weight:' + fw + ';font-variant-numeric:tabular-nums;\">' + esc(v) + '</span>';\n"
+)
+
+CCTV_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    "var v = String(value);\n"
+    f"var isOnline = v.toLowerCase().indexOf('online') >= 0;\n"
+    f"var c = isOnline ? '#0f7a55' : '{MUTED}';\n"
+    "return '<span style=\"color:' + c + ';font-weight:600;\">' + esc(v) + '</span>';\n"
+)
+
+DURATION_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    "var v = String(value);\n"
+    f"var c = v.toLowerCase().indexOf('online') >= 0 ? '#0f7a55' : '{INK}';\n"
+    "return '<span style=\"color:' + c + ';font-variant-numeric:tabular-nums;\">' + esc(v) + '</span>';\n"
 )
 
 
@@ -503,13 +555,18 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                     "entityAliasId": ALIAS_ID,
                     "filterId": FILTER_ID,
                     "dataKeys": [
-                        _key("name", "entityField", "Branch", "200px", BRANCH_CELL_JS),
-                        _key("ai_health_tier", "attribute", "Health", "150px", TIER_CELL_JS),
-                        _key("ai_outage_risk_prob", "attribute", "24 h outage risk", "150px", RISK_CELL_JS),
-                        _key("ai_primary_issue", "attribute", "Root cause", "28%", _clamped_text_js(INK)),
-                        _key("ai_recommended_action", "attribute", "Recommended action", "28%", _clamped_text_js(INK_2)),
-                        _key("ai_anomaly_score", "attribute", "Anomaly score", "110px", ANOMALY_CELL_JS),
-                        _key("ai_last_evaluated", "attribute", "Last evaluated", "120px", WHEN_CELL_JS),
+                        _key("name", "entityField", "Branch", "180px", BRANCH_CELL_JS),
+                        _key("ai_operational_status", "attribute", "Status", "110px", OP_STATUS_CELL_JS),
+                        _key("ai_management_priority", "attribute", "Priority", "190px", PRIORITY_CELL_JS),
+                        _key("ai_days_offline", "attribute", "Offline Duration", "130px", DURATION_CELL_JS),
+                        _key("ai_ac_mains", "attribute", "AC Mains Power", "150px", POWER_CELL_JS),
+                        _key("ai_battery_health", "attribute", "Battery Backup", "150px", BATTERY_CELL_JS),
+                        _key("ai_cctv_status", "attribute", "CCTV", "110px", CCTV_CELL_JS),
+                        _key("ai_outage_risk_prob", "attribute", "24 h Outage Risk", "150px", RISK_CELL_JS),
+                        _key("ai_executive_diagnosis", "attribute", "Executive Diagnosis", "24%", _clamped_text_js(INK)),
+                        _key("ai_manager_action", "attribute", "Action Required", "24%", _clamped_text_js(INK_2)),
+                        _key("ai_health_tier", "attribute", "Tier", "130px", TIER_CELL_JS),
+                        _key("ai_last_evaluated", "attribute", "Last Evaluated", "120px", WHEN_CELL_JS),
                     ]
                 }
             ]

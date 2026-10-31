@@ -4,7 +4,7 @@
       "type": "header",
       "text": {
         "type": "plain_text",
-        "text": "\ud83c\udf05 ThingsBoard Morning AI Risk Digest \u2014 27 Oct 2026",
+        "text": "\ud83c\udf05 ThingsBoard Morning AI Risk Digest \u2014 30 Oct 2026",
         "emoji": true
       }
     },
@@ -12,7 +12,7 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "*Fleet Status:* `130` Branches Monitored | *Health Index:* `55.0%`\n\ud83d\udea8 *Critical Faults:* `28` | \u26a0\ufe0f *High 24h Risk:* `21` | \ud83d\udfe2 *Restored:* `4` | \u2705 *Nominal:* `58`"
+        "text": "*Fleet Status:* `130` Branches Monitored | *Health Index:* `55.0%`\n\ud83d\udea8 *Critical Faults:* `29` | \u26a0\ufe0f *High 24h Risk:* `20` | \ud83d\udfe2 *Restored:* `4` | \u2705 *Nominal:* `58`"
       }
     },
     {
@@ -29,28 +29,28 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/5472ea20-aa78-11f0-b8ab-b38af83f6c9c|BOI-BABAI>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (1.5m ago); Subsystems restored: gateway, bas, fas"
+        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/5472ea20-aa78-11f0-b8ab-b38af83f6c9c|5472ea20-aa78-11f0-b8ab-b38af83f6c9c>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.7m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas"
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/630c1480-63e6-11f1-9555-295f91c5b7c8|DX2>* (DX)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.0m ago); Zero active ticket faults; Subsystems restored: gateway, fas"
+        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/630c1480-63e6-11f1-9555-295f91c5b7c8|630c1480-63e6-11f1-9555-295f91c5b7c8>* (DX)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.0m ago); Zero active ticket faults; Subsystems restored: gateway, fas"
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/6287e400-a823-11f0-b150-2710a8915e1d|BOI-SALTLAKE>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.1m ago); Battery healthy (14.0V, not low); Mains power restored (200.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas"
+        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/6287e400-a823-11f0-b150-2710a8915e1d|6287e400-a823-11f0-b150-2710a8915e1d>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.3m ago); Battery healthy (14.0V, not low); Mains power restored (200.0V); Zero active ticket faults; CCTV online & cameras connected; Subsystems restored: gateway, bas, fas"
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/0b7bc7d0-671d-11f1-8c55-5bb8284c6aef|CANARA-BARUIPUR>* (CANARA)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (1.0m ago); Zero active ticket faults; Subsystems restored: gateway, bas, fas"
+        "text": "\ud83d\udfe2 *<https://seple.iot-private.cloud/devices/0bfa8fa0-c067-11f0-a562-d9639f025684|0bfa8fa0-c067-11f0-a562-d9639f025684>* (BOI)\n\u2022 *Status:* Restored & Telemetry Verified Healthy | *Alarms:* Cleared\n\u2022 *Vitals:* Hardware restored; Verified operational recovery: Recent data activity (0.1m ago); Battery healthy (14.0V, not low); Mains power restored (210.0V); Zero active ticket faults; Subsystems restored: gateway, bas, fas"
       }
     },
     {
@@ -67,42 +67,42 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/0e4358d0-6708-11f1-8c55-5bb8284c6aef|CANARA-KAMARHATI>* (CANARA)\n\u2022 *24h Outage Risk:* `99.4%` | *Anomaly Score:* `0.0442`\n\u2022 *Primary Issue:* ac_voltage__gap_max_7d (z=236.1); battery_voltage__gap_max_7d (z=236.1); system_current__gap_max_7d (z=236.1)\n\u2022 *Action:* Urgent: Inspect 12V backup battery pack; test internal resistance & replace if failing load test."
+        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/0e4358d0-6708-11f1-8c55-5bb8284c6aef|0e4358d0-6708-11f1-8c55-5bb8284c6aef>* (CANARA)\n\u2022 *24h Outage Risk:* `99.4%` | *Anomaly Score:* `0.0442`\n\u2022 *Primary Issue:* ac_voltage__gap_max_7d (z=236.1); battery_voltage__gap_max_7d (z=236.1); system_current__gap_max_7d (z=236.1)\n\u2022 *Action:* Urgent: Inspect 12V backup battery pack; test internal resistance & replace if failing load test."
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/50ae7220-711f-11f0-bf1e-9f28a6572bf1|BOB-BARUIPUR>* (BOB)\n\u2022 *24h Outage Risk:* `99.3%` | *Anomaly Score:* `-0.0305`\n\u2022 *Primary Issue:* High Predictive Collapse Risk (99.3%)\n\u2022 *Action:* Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
+        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/50ae7220-711f-11f0-bf1e-9f28a6572bf1|50ae7220-711f-11f0-bf1e-9f28a6572bf1>* (BOB)\n\u2022 *24h Outage Risk:* `99.3%` | *Anomaly Score:* `-0.0305`\n\u2022 *Primary Issue:* Disk Min 24H (60.6% impact; observed: -2.729 vs baseline: 0.033) (Outage Prob: 99.3%)\n\u2022 *Action:* Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/4d4f61e0-a8f4-11f0-b4af-b334f2239a02|BOI-MALLAGURI>* (BOI)\n\u2022 *24h Outage Risk:* `98.7%` | *Anomaly Score:* `-0.0130`\n\u2022 *Primary Issue:* High Predictive Collapse Risk (98.7%)\n\u2022 *Action:* Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
+        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/4d4f61e0-a8f4-11f0-b4af-b334f2239a02|4d4f61e0-a8f4-11f0-b4af-b334f2239a02>* (BOI)\n\u2022 *24h Outage Risk:* `98.7%` | *Anomaly Score:* `-0.0130`\n\u2022 *Primary Issue:* Elevated enclosure temperature (51.4% impact; observed: 1.097 vs baseline: -0.388) (Outage Prob: 98.7%)\n\u2022 *Action:* Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/a5cf2df0-d1cb-11f0-82a9-69e5355364db|BOI-CUTTACK>* (BOI)\n\u2022 *24h Outage Risk:* `97.8%` | *Anomaly Score:* `-0.0976`\n\u2022 *Primary Issue:* High Predictive Collapse Risk (97.7%)\n\u2022 *Action:* Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
+        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/a5cf2df0-d1cb-11f0-82a9-69e5355364db|a5cf2df0-d1cb-11f0-82a9-69e5355364db>* (BOI)\n\u2022 *24h Outage Risk:* `97.8%` | *Anomaly Score:* `-0.0976`\n\u2022 *Primary Issue:* Elevated enclosure temperature (52.8% impact; observed: 1.123 vs baseline: -0.388) (Outage Prob: 97.7%)\n\u2022 *Action:* Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/424f3e90-1b96-11f1-88f8-7daa5068de06|BOI-SINGH-MORE>* (BOI)\n\u2022 *24h Outage Risk:* `96.5%` | *Anomaly Score:* `-0.1012`\n\u2022 *Primary Issue:* High Predictive Collapse Risk (96.5%)\n\u2022 *Action:* Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
+        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/424f3e90-1b96-11f1-88f8-7daa5068de06|424f3e90-1b96-11f1-88f8-7daa5068de06>* (BOI)\n\u2022 *24h Outage Risk:* `96.5%` | *Anomaly Score:* `-0.1012`\n\u2022 *Primary Issue:* Elevated enclosure temperature (43.9% impact; observed: 1.11 vs baseline: -0.388) (Outage Prob: 96.5%)\n\u2022 *Action:* Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/d1a4f0f0-d73d-11f0-afc5-358ed627911d|BOI-PANASPADA>* (BOI)\n\u2022 *24h Outage Risk:* `96.2%` | *Anomaly Score:* `-0.1012`\n\u2022 *Primary Issue:* High Predictive Collapse Risk (96.2%)\n\u2022 *Action:* Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
+        "text": "\ud83d\udd34 *<https://seple.iot-private.cloud/devices/d1a4f0f0-d73d-11f0-afc5-358ed627911d|d1a4f0f0-d73d-11f0-afc5-358ed627911d>* (BOI)\n\u2022 *24h Outage Risk:* `96.2%` | *Anomaly Score:* `-0.1012`\n\u2022 *Primary Issue:* Elevated enclosure temperature (41.2% impact; observed: 1.021 vs baseline: -0.388) (Outage Prob: 96.2%)\n\u2022 *Action:* Electrical & Edge: High probability of outage within 24h; verify branch mains power and battery."
       }
     },
     {

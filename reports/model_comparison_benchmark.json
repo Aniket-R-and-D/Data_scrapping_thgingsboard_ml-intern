@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-29T11:03:37.177777+00:00",
+  "timestamp": "2026-10-31T07:11:06.687601+00:00",
   "train_samples": 160,
   "validation_samples": 40,
   "num_features": 1,
@@ -56,7 +56,7 @@
     "logistic_l2_baseline": {
       "model_name": "logistic_l2_baseline",
       "model_family": "Linear Baseline",
-      "train_duration_seconds": 0.01,
+      "train_duration_seconds": 0.0,
       "roc_auc": {
         "metric_name": "ROC-AUC",
         "point_estimate": 0.4436,

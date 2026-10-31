@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; color: #1e293b; margin: 0; padding: 24px; }
+  .container { max-width: 920px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+  .header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: #ffffff; padding: 28px 32px; }
+  .header h1 { margin: 0 0 6px 0; font-size: 24px; font-weight: 700; }
+  .header p { margin: 0; opacity: 0.85; font-size: 14px; }
+  .metric-row { display: flex; border-bottom: 1px solid #e2e8f0; background: #f1f5f9; flex-wrap: wrap; }
+  .metric-card { flex: 1 1 140px; padding: 16px 14px; text-align: center; border-right: 1px solid #e2e8f0; }
+  .metric-card:last-child { border-right: none; }
+  .metric-val { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .metric-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-weight: 600; }
+  .content { padding: 28px 32px; }
+  h2 { font-size: 16px; font-weight: 700; margin: 24px 0 12px 0; color: #0f172a; border-left: 4px solid #2563eb; padding-left: 10px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+  th { background: #f8fafc; color: #475569; font-weight: 600; text-align: left; padding: 10px 10px; border-bottom: 2px solid #e2e8f0; }
+  td { padding: 10px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+  .badge-p1 { background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; display: inline-block; }
+  .badge-p2 { background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; display: inline-block; }
+  .badge-recovered { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; display: inline-block; }
+  .badge-online { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 10px; }
+  .badge-offline { background: #fee2e2; color: #991b1b; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 10px; }
+  .btn-link { background: #2563eb; color: #ffffff !important; text-decoration: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; display: inline-block; }
+  .footer { padding: 18px 32px; background: #f8fafc; font-size: 12px; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>ThingsBoard Executive AI Operations Digest</h1>
+    <p>Operational Fleet Brief &bull; Saturday, 31 October 2026 &bull; SEPLE NovaEdge AI</p>
+  </div>
+  <div class="metric-row">
+    <div class="metric-card">
+      <div class="metric-val" style="color: #2563eb;">130</div>
+      <div class="metric-lbl">Monitored Branches</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color: #059669;">28</div>
+      <div class="metric-lbl">Active Online</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color: #dc2626;">102</div>
+      <div class="metric-lbl">Disconnected Offline</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color: #059669;">4</div>
+      <div class="metric-lbl">Verified Restored</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color: #d97706;">1</div>
+      <div class="metric-lbl">Electrical Alerts</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color: #16a34a;">18.5%</div>
+      <div class="metric-lbl">Fleet Health Index</div>
+    </div>
+  </div>
+  <div class="content">
+    <h2>🚨 Priority 1: Immediate Field Dispatches (Recent Outages & High Failure Risk)</h2>
+    <p style="font-size: 12px; color: #64748b; margin-top: -6px;">The following branches require urgent field technician dispatch due to recent disconnection or high predictive outage risk:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Branch Name</th>
+          <th>Bank</th>
+          <th>Priority</th>
+          <th>Inactivity / Risk</th>
+          <th>Diagnosis & Action Required</th>
+          <th>ThingsBoard</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>CANARA-KAMARHATI</strong></td>
+          <td>CANARA</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>99.4% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 71.9 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/0e4358d0-6708-11f1-8c55-5bb8284c6aef" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOB-BARUIPUR</strong></td>
+          <td>BOB</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>99.3% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 189.7 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/50ae7220-711f-11f0-bf1e-9f28a6572bf1" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOI-MALLAGURI</strong></td>
+          <td>BOI</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>98.7% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 59.9 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/4d4f61e0-a8f4-11f0-b4af-b334f2239a02" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOI-CUTTACK</strong></td>
+          <td>BOI</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>97.8% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 83.7 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/a5cf2df0-d1cb-11f0-82a9-69e5355364db" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOI-SINGH-MORE</strong></td>
+          <td>BOI</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>96.5% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 83.7 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/424f3e90-1b96-11f1-88f8-7daa5068de06" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOI-PANASPADA</strong></td>
+          <td>BOI</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>96.2% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 83.8 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/d1a4f0f0-d73d-11f0-afc5-358ed627911d" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOB-BARAJAGULI</strong></td>
+          <td>BOB</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>93.8% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 329.9 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/1b016000-859d-11f0-9dcf-813811befd2b" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOI-LALPUR</strong></td>
+          <td>BOI</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>92.6% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 82.0 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/c0ad6070-b4ba-11f0-b150-2710a8915e1d" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOI-HARDA-ROAD</strong></td>
+          <td>BOI</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>91.3% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 84.1 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/b7736000-a98d-11f0-b4af-b334f2239a02" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOI-HGBAD</strong></td>
+          <td>BOI</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>90.3% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 82.1 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/194571b0-a998-11f0-b4af-b334f2239a02" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>SEPLe-HO1</strong></td>
+          <td>SEPLE</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>89.9% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 25.9 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/1c3a2640-b59a-11f1-9dac-bfdc7cccc90b" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOB-SURYASEN</strong></td>
+          <td>BOB</td>
+          <td><span class="badge-p1">P1 DISPATCH</span></td>
+          <td><span style='color: #dc2626; font-weight: 700;'>89.8% Outage Risk</span></td>
+          <td><strong>Hardware disconnected and completely silent for 299.7 days. IoT gateway has lost cellular connection or power on site.</strong><br><span style="color: #64748b; font-size: 11px;">Dispatch field technician to branch: inspect gateway power adapter, antenna, and cellular SIM connectivity.</span></td>
+          <td><a href="https://seple.iot-private.cloud/devices/1a801820-d0f6-11f0-9dd1-0f70161fd1f6" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>⚡ Priority 2: Facility & Power Infrastructure Alerts</h2>
+    <p style="font-size: 12px; color: #64748b; margin-top: -6px;">The following active branches are experiencing severe electrical supply deviations (brownout or surge):</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Branch Name</th>
+          <th>Bank</th>
+          <th>Grid Voltage</th>
+          <th>Battery Backup</th>
+          <th>Recommended Facility Action</th>
+          <th>ThingsBoard</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>BOI-LILUAH</strong></td>
+          <td>BOI</td>
+          <td><span style="color: #dc2626; font-weight: 700;">150V (Severe Brownout Warning)</span></td>
+          <td>14.0V (Healthy / Fully Charged)</td>
+          <td>Alert branch facility manager and local electrician to check utility transformer, circuit breakers, and voltage stabilizer.</td>
+          <td><a href="https://seple.iot-private.cloud/devices/bed23640-a821-11f0-b150-2710a8915e1d" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>🟢 Priority 4: Verified Branch Recoveries (Past 24 Hours)</h2>
+    <p style="font-size: 12px; color: #64748b; margin-top: -6px;">Hardware restored and telemetry confirmed healthy:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Branch Name</th>
+          <th>Bank</th>
+          <th>Status</th>
+          <th>Restoration Vitals Detail</th>
+          <th>ThingsBoard</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>BOI-BABAI</strong></td>
+          <td>BOI</td>
+          <td><span class="badge-recovered">RESTORED ONLINE</span></td>
+          <td style="color: #047857; font-size: 12px;">Operational recovery confirmed. Real-time telemetry resumed with healthy battery, restored mains power, and zero ticket faults.</td>
+          <td><a href="https://seple.iot-private.cloud/devices/5472ea20-aa78-11f0-b8ab-b38af83f6c9c" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>DX2</strong></td>
+          <td>DX</td>
+          <td><span class="badge-recovered">RESTORED ONLINE</span></td>
+          <td style="color: #047857; font-size: 12px;">Operational recovery confirmed. Real-time telemetry resumed with healthy battery, restored mains power, and zero ticket faults.</td>
+          <td><a href="https://seple.iot-private.cloud/devices/630c1480-63e6-11f1-9555-295f91c5b7c8" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOI-SALTLAKE</strong></td>
+          <td>BOI</td>
+          <td><span class="badge-recovered">RESTORED ONLINE</span></td>
+          <td style="color: #047857; font-size: 12px;">Operational recovery confirmed. Real-time telemetry resumed with healthy battery, restored mains power, and zero ticket faults.</td>
+          <td><a href="https://seple.iot-private.cloud/devices/6287e400-a823-11f0-b150-2710a8915e1d" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><strong>BOI-BAGULA</strong></td>
+          <td>BOI</td>
+          <td><span class="badge-recovered">RESTORED ONLINE</span></td>
+          <td style="color: #047857; font-size: 12px;">Operational recovery confirmed. Real-time telemetry resumed with healthy battery, restored mains power, and zero ticket faults.</td>
+          <td><a href="https://seple.iot-private.cloud/devices/0bfa8fa0-c067-11f0-a562-d9639f025684" class="btn-link" target="_blank">Open TB &rarr;</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 6px; margin-top: 24px; font-size: 12px; line-height: 1.6;">
+      <strong>Manager Note:</strong> The complete executive report across all 130 branches is attached as CSV (<code>daily_risk_digest_20261031.csv</code>).
+      You can also inspect live operational status, battery levels, and incident alerts on the 
+      <a href="https://seple.iot-private.cloud/dashboards/4a25a020-62f7-11f1-9463-fde182b082f4" style="color: #2563eb; font-weight: 700;">ThingsBoard AI Fleet Operations Dashboard</a>.
+    </div>
+  </div>
+  <div class="footer">
+    SEPLE NovaEdge Advanced IoT Machine Learning Engine &bull; Automated Operations Service
+  </div>
+</div>
+</body>
+</html>

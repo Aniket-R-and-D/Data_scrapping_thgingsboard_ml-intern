@@ -15,3 +15,4 @@ print(f"{'Branch Name':<20} | {'Unified Tier':<18} | {'Raw Tier':<10} | {'Score'
 print("-" * 110)
 for _, r in active_df.iterrows():
     print(f"{r['device_name']:<20} | {r['unified_tier']:<18} | {r['raw_anomaly_tier']:<10} | {r['anomaly_score']:<7} | {r['outage_prob_24h']:<6} | {r['primary_issue'][:60]}")
+
