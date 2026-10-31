@@ -90,9 +90,14 @@ TITLE_CONFIG = {
 # ThingsBoard namespaces dashboardCss under the dashboard root, so every rule here
 # only reaches widget internals. Rows get one explicit background (no zebra).
 DASHBOARD_CSS = f"""
+.tb-entities-table-container, .mat-mdc-table-container {{
+    overflow-x: auto !important;
+}}
 .mat-mdc-table, table.mat-mdc-table {{
     background: {SURFACE} !important;
     font-family: {FONT};
+    min-width: 100% !important;
+    width: max-content !important;
 }}
 .mat-mdc-header-row, .mat-mdc-header-cell {{
     background: {BRAND_TINT} !important;
@@ -103,6 +108,7 @@ DASHBOARD_CSS = f"""
     font-weight: 600 !important;
     letter-spacing: 0.01em;
     border-bottom: 1px solid {HAIRLINE} !important;
+    white-space: nowrap !important;
 }}
 .mat-mdc-row, .mat-mdc-row:nth-child(even), .mat-mdc-row:nth-child(odd) {{
     background: {SURFACE} !important;
@@ -250,6 +256,31 @@ OP_STATUS_CELL_JS = _cell(
     "return '<span style=\"display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;color:' + c + ';background:' + bg + ';border:1px solid ' + b + ';\"><span style=\"width:6px;height:6px;border-radius:50%;background:' + dot + ';\"></span>' + esc(value) + '</span>';\n"
 )
 
+BANK_PILL_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    f"return '<span style=\"display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;letter-spacing:0.01em;color:{BRAND_DEEP};background:{BRAND_TINT};border:1px solid #d3e0f5;\">' + esc(value) + '</span>';\n"
+)
+
+FLEET_CLASS_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    "var isMon = String(value).indexOf('Monitored') >= 0;\n"
+    f"var fg = isMon ? '{INK}' : '{MUTED}';\n"
+    "var bg = isMon ? '#f1f4f8' : '#f8fafc';\n"
+    "var b = isMon ? '#dfe5ec' : '#e2e8f0';\n"
+    "return '<span style=\"display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;color:' + fg + ';background:' + bg + ';border:1px solid ' + b + ';\">' + esc(value) + '</span>';\n"
+)
+
+HEALTH_STATUS_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    "var v = String(value);\n"
+    f"var fg = '{INK_2}', bg = '#f1f4f8', b = '#dfe5ec', dot = '{MUTED}';\n"
+    "if (v.indexOf('CRITICAL FAULT') >= 0) { fg = '#b4232c'; bg = '#fdecec'; b = '#f5c2c4'; dot = '#dc2626'; }\n"
+    "else if (v.indexOf('PREDICTIVE OUTAGE') >= 0) { fg = '#9a4d00'; bg = '#fff4e5'; b = '#f7d7a8'; dot = '#ea8a0c'; }\n"
+    "else if (v.indexOf('BROWNOUT') >= 0 || v.indexOf('ELEVATED') >= 0) { fg = '#1d4ed8'; bg = '#eef4ff'; b = '#c9dafc'; dot = '#3b6fe0'; }\n"
+    "else if (v.indexOf('RECOVERED') >= 0 || v.indexOf('NOMINAL') >= 0) { fg = '#0f7a55'; bg = '#e8f7f0'; b = '#b9e5d2'; dot = '#16a36f'; }\n"
+    "return '<span title=\"' + esc(v) + '\" style=\"display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:normal;line-height:16px;color:' + fg + ';background:' + bg + ';border:1px solid ' + b + ';\"><span style=\"min-width:6px;width:6px;height:6px;border-radius:50%;background:' + dot + ';flex-shrink:0;\"></span>' + esc(v) + '</span>';\n"
+)
+
 PRIORITY_CELL_JS = _cell(
     f"if (!value) return {_JS_EMPTY};\n"
     "var v = String(value);\n"
@@ -258,7 +289,43 @@ PRIORITY_CELL_JS = _cell(
     "else if (v.indexOf('P2') >= 0) { fg = '#9a4d00'; bg = '#fff4e5'; b = '#f7d7a8'; dot = '#ea8a0c'; }\n"
     "else if (v.indexOf('P3') >= 0) { fg = '#1d4ed8'; bg = '#eef4ff'; b = '#c9dafc'; dot = '#3b6fe0'; }\n"
     "else if (v.indexOf('P4') >= 0) { fg = '#0f7a55'; bg = '#e8f7f0'; b = '#b9e5d2'; dot = '#16a36f'; }\n"
-    "return '<span style=\"display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;color:' + fg + ';background:' + bg + ';border:1px solid ' + b + ';\"><span style=\"width:6px;height:6px;border-radius:50%;background:' + dot + ';\"></span>' + esc(v) + '</span>';\n"
+    f"else if (v.indexOf('INFO') >= 0) {{ fg = '{INK_2}'; bg = '#f1f4f8'; b = '#dfe5ec'; dot = '{MUTED}'; }}\n"
+    "return '<span title=\"' + esc(v) + '\" style=\"display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:normal;line-height:16px;color:' + fg + ';background:' + bg + ';border:1px solid ' + b + ';\"><span style=\"min-width:6px;width:6px;height:6px;border-radius:50%;background:' + dot + ';flex-shrink:0;\"></span>' + esc(v) + '</span>';\n"
+)
+
+ALARMS_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    "var v = String(value);\n"
+    "var isNone = v.indexOf('None') >= 0;\n"
+    f"var isOff = v.indexOf('Offline') >= 0;\n"
+    f"var c = isNone ? '#0f7a55' : isOff ? '{MUTED}' : '#b4232c';\n"
+    "var fw = isNone ? '400' : isOff ? '400' : '600';\n"
+    "return '<span style=\"color:' + c + ';font-weight:' + fw + ';\">' + esc(v) + '</span>';\n"
+)
+
+DEVICE_TYPE_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    f"return '<span style=\"font-size:12px;color:{INK_2};font-weight:500;\">' + esc(value) + '</span>';\n"
+)
+
+ID_CELL_JS = _cell(
+    f"if (!value) return {_JS_EMPTY};\n"
+    f"return '<code style=\"font-family:monospace;font-size:11px;color:{INK_3};background:#f1f4f8;padding:2px 6px;border-radius:4px;\">' + esc(value) + '</code>';\n"
+)
+
+RAW_PROB_CELL_JS = _cell(
+    f"if (value === undefined || value === null || value === '') return {_JS_EMPTY};\n"
+    "var p = parseFloat(value);\n"
+    "if (isNaN(p)) return esc(value);\n"
+    "var c = p >= 0.70 ? '#b4232c' : p >= 0.30 ? '#9a4d00' : '#0f7a55';\n"
+    "return '<span style=\"font-variant-numeric:tabular-nums;font-weight:600;color:' + c + ';\">' + p.toFixed(4) + '</span>';\n"
+)
+
+VOLTAGE_CELL_JS = _cell(
+    f"if (value === undefined || value === null || value === '') return {_JS_EMPTY};\n"
+    "var v = parseFloat(value);\n"
+    "if (isNaN(v)) return esc(value);\n"
+    f"return '<span style=\"font-variant-numeric:tabular-nums;color:{INK};font-weight:500;\">' + v.toFixed(1) + ' V</span>';\n"
 )
 
 POWER_CELL_JS = _cell(
@@ -555,18 +622,26 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                     "entityAliasId": ALIAS_ID,
                     "filterId": FILTER_ID,
                     "dataKeys": [
-                        _key("name", "entityField", "Branch", "180px", BRANCH_CELL_JS),
-                        _key("ai_operational_status", "attribute", "Status", "110px", OP_STATUS_CELL_JS),
-                        _key("ai_management_priority", "attribute", "Priority", "190px", PRIORITY_CELL_JS),
-                        _key("ai_days_offline", "attribute", "Offline Duration", "130px", DURATION_CELL_JS),
-                        _key("ai_ac_mains", "attribute", "AC Mains Power", "150px", POWER_CELL_JS),
-                        _key("ai_battery_health", "attribute", "Battery Backup", "150px", BATTERY_CELL_JS),
-                        _key("ai_cctv_status", "attribute", "CCTV", "110px", CCTV_CELL_JS),
-                        _key("ai_outage_risk_prob", "attribute", "24 h Outage Risk", "150px", RISK_CELL_JS),
-                        _key("ai_executive_diagnosis", "attribute", "Executive Diagnosis", "24%", _clamped_text_js(INK)),
-                        _key("ai_manager_action", "attribute", "Action Required", "24%", _clamped_text_js(INK_2)),
-                        _key("ai_health_tier", "attribute", "Tier", "130px", TIER_CELL_JS),
-                        _key("ai_last_evaluated", "attribute", "Last Evaluated", "120px", WHEN_CELL_JS),
+                        _key("name", "entityField", "Branch / Device Name", "200px", BRANCH_CELL_JS),
+                        _key("ai_bank", "attribute", "Bank", "180px", BANK_PILL_CELL_JS),
+                        _key("ai_fleet_classification", "attribute", "Fleet Classification", "170px", FLEET_CLASS_CELL_JS),
+                        _key("ai_operational_status", "attribute", "Operational Status", "130px", OP_STATUS_CELL_JS),
+                        _key("ai_health_status", "attribute", "Health Status", "220px", HEALTH_STATUS_CELL_JS),
+                        _key("ai_management_priority", "attribute", "Management Priority", "320px", PRIORITY_CELL_JS),
+                        _key("ai_days_offline", "attribute", "Days Offline", "150px", DURATION_CELL_JS),
+                        _key("ai_ac_mains", "attribute", "AC Mains Power", "180px", POWER_CELL_JS),
+                        _key("ai_battery_health", "attribute", "Battery Health", "180px", BATTERY_CELL_JS),
+                        _key("ai_cctv_status", "attribute", "CCTV Surveillance", "150px", CCTV_CELL_JS),
+                        _key("ai_active_alarms", "attribute", "Active System Alarms", "190px", ALARMS_CELL_JS),
+                        _key("ai_outage_risk_prob", "attribute", "Predicted Outage Risk (24h)", "160px", RISK_CELL_JS),
+                        _key("ai_executive_diagnosis", "attribute", "Executive Diagnosis", "320px", _clamped_text_js(INK)),
+                        _key("ai_manager_action", "attribute", "Recommended Manager Action", "320px", _clamped_text_js(INK_2)),
+                        _key("type", "entityField", "Device Type", "160px", DEVICE_TYPE_CELL_JS),
+                        _key("ai_device_id", "attribute", "ThingsBoard Device ID", "240px", ID_CELL_JS),
+                        _key("ai_anomaly_score", "attribute", "Raw Anomaly Score", "130px", ANOMALY_CELL_JS),
+                        _key("ai_outage_prob_raw", "attribute", "Raw Outage Probability", "130px", RAW_PROB_CELL_JS),
+                        _key("ai_battery_voltage", "attribute", "Last Known Battery Voltage (V)", "160px", VOLTAGE_CELL_JS),
+                        _key("ai_ac_voltage", "attribute", "Last Known AC Voltage (V)", "160px", VOLTAGE_CELL_JS),
                     ]
                 }
             ]
