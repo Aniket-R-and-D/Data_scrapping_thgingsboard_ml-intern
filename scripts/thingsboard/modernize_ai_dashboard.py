@@ -43,6 +43,7 @@ TABLE_WIDGET_ID = "3ec22488-34fa-4f2f-838a-ead69b1f3d2a"
 ALARMS_WIDGET_ID = "9ecdb8fd-ed07-476c-8d8b-da14aea0add8"
 HISTOGRAM_WIDGET_ID = "b3d1f6a2-5c47-4e8a-9f21-6a0c3e7d1b01"
 BANKS_WIDGET_ID = "c84e2b19-7a3d-4f65-8e0b-2d9f5a6c1b02"
+GUIDE_WIDGET_ID = "f7e8a910-b1c2-4d3e-8f5a-6b7c8d9e0f11"
 
 IST = timezone(timedelta(hours=5, minutes=30))
 
@@ -526,6 +527,87 @@ def build_modern_kpi_html(summary: Dict[str, Any]) -> str:
 </div>"""
 
 
+def build_modern_guidance_html() -> str:
+    """Compact 4-pillar reference guidance card for AI anomaly scoring, outage risk, and operational gates."""
+    card = f"box-sizing:border-box;border-radius:10px;background:{SURFACE};border:1px solid {HAIRLINE};box-shadow:0 1px 3px rgba(15,27,45,0.04);overflow:hidden;padding:10px 14px;display:flex;flex-direction:column;justify-content:space-between;"
+
+    pillar1 = f"""
+  <div style="{card}flex:1.4 1 310px;border-top:3px solid {BRAND};">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:{BRAND_DEEP};">AI Anomaly Score Meter</span>
+      <code style="font-size:10px;font-family:monospace;background:{BRAND_TINT};color:{BRAND_DEEP};padding:1px 5px;border-radius:4px;border:1px solid #d3e0f5;">S(x) = -dec_func(x)</code>
+    </div>
+    <div style="font-size:11px;line-height:14px;color:{INK_2};margin-bottom:6px;">
+      Measures multi-variate sensor deviation. Negative scores indicate healthy baseline inliers; positive scores reflect outlier severity:
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:10.5px;">
+      <div style="background:#e8f7f0;border:1px solid #b9e5d2;color:#0f7a55;padding:3px 6px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;">
+        <span><strong>Normal</strong> (&lt; -0.0137)</span><span style="font-size:9.5px;opacity:0.85;">85.4% fleet</span>
+      </div>
+      <div style="background:#eef4ff;border:1px solid #c9dafc;color:#1d4ed8;padding:3px 6px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;">
+        <span><strong>Elevated</strong> (-0.0137 to +0.0106)</span><span style="font-size:9.5px;opacity:0.85;">Sensor drift</span>
+      </div>
+      <div style="background:#fff4e5;border:1px solid #f7d7a8;color:#9a4d00;padding:3px 6px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;">
+        <span><strong>High Risk</strong> (+0.0106 to +0.0475)</span><span style="font-size:9.5px;opacity:0.85;">Anomalous</span>
+      </div>
+      <div style="background:#fdecec;border:1px solid #f5c2c4;color:#b4232c;padding:3px 6px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;">
+        <span><strong>Critical Fault</strong> (&ge; +0.0475)</span><span style="font-size:9.5px;opacity:0.85;">Top 0.5%</span>
+      </div>
+    </div>
+  </div>"""
+
+    pillar2 = f"""
+  <div style="{card}flex:1 1 230px;border-top:3px solid #ea8a0c;">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#9a4d00;">24 h Outage Risk</span>
+        <span style="font-size:10px;font-weight:600;background:#fff4e5;color:#9a4d00;padding:1px 6px;border-radius:4px;border:1px solid #f7d7a8;">Predictive Horizon</span>
+      </div>
+      <div style="font-size:11.5px;line-height:15px;color:{INK_2};">
+        Calibrated supervised probability (0% to 100%) predicting impending site blackout or power failure within 24 hours based on 544 historical telemetry features.
+      </div>
+    </div>
+    <div style="font-size:10px;color:{INK_3};margin-top:6px;border-top:1px dashed {DIVIDER};padding-top:4px;">
+      Identifies high risk before physical equipment failure occurs.
+    </div>
+  </div>"""
+
+    pillar3 = f"""
+  <div style="{card}flex:1 1 230px;border-top:3px solid #dc2626;">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#b4232c;">Fail-Closed Gate</span>
+        <span style="font-size:10px;font-weight:600;background:#fdecec;color:#b4232c;padding:1px 6px;border-radius:4px;border:1px solid #f5c2c4;">Offline Policy</span>
+      </div>
+      <div style="font-size:11.5px;line-height:15px;color:{INK_2};">
+        Real-time status tracks IoT cellular telemetry. Disconnected gateways silent for &ge; 48 hours fail-closed directly to <strong>Critical Fault (P1)</strong> to prevent blindspots.
+      </div>
+    </div>
+    <div style="font-size:10px;color:{INK_3};margin-top:6px;border-top:1px dashed {DIVIDER};padding-top:4px;">
+      Overrides raw scores when hardware telemetry is absent.
+    </div>
+  </div>"""
+
+    pillar4 = f"""
+  <div style="{card}flex:1 1 230px;border-top:3px solid #16a36f;">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0f7a55;">Automated Recovery Gate</span>
+        <span style="font-size:10px;font-weight:600;background:#e8f7f0;color:#0f7a55;padding:1px 6px;border-radius:4px;border:1px solid #b9e5d2;">Debounce Filter</span>
+      </div>
+      <div style="font-size:11.5px;line-height:15px;color:{INK_2};">
+        Active alarms automatically de-escalate and clear after <strong>3 consecutive cycles (30 min)</strong> of verified healthy 14V battery and 220V grid telemetry.
+      </div>
+    </div>
+    <div style="font-size:10px;color:{INK_3};margin-top:6px;border-top:1px dashed {DIVIDER};padding-top:4px;">
+      Prevents transient oscillation during grid restoration.
+    </div>
+  </div>"""
+
+    return f'<div style="box-sizing:border-box;height:100%;display:flex;flex-wrap:wrap;gap:12px;align-items:stretch;font-family:{FONT};color:{INK};">{pillar1}{pillar2}{pillar3}{pillar4}</div>'
+
+
+
 def _key(name: str, key_type: str, label: str, width: str, js: str) -> Dict[str, Any]:
     return {
         "name": name,
@@ -583,6 +665,46 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
         }
     }
 
+    guide_widget = {
+        "id": GUIDE_WIDGET_ID,
+        "typeFullFqn": "system.cards.html_card",
+        "type": "static",
+        "title": "AI Metric & Operational Guidance",
+        "sizeX": 24,
+        "sizeY": 3,
+        "row": 8,
+        "col": 0,
+        "config": {
+            "showTitle": False,
+            "backgroundColor": "transparent",
+            "color": INK,
+            "padding": "0px",
+            "dropShadow": False,
+            "enableFullscreen": False,
+            "mobileHeight": 6,
+            "datasources": [
+                {
+                    "type": "static",
+                    "name": "function",
+                    "dataKeys": [
+                        {
+                            "name": "f(x)",
+                            "type": "function",
+                            "label": "guide",
+                            "color": INK,
+                            "settings": {},
+                            "funcBody": "return true;"
+                        }
+                    ]
+                }
+            ],
+            "settings": {
+                "cardHtml": build_modern_guidance_html(),
+                "cardCss": ""
+            }
+        }
+    }
+
     table_widget = {
         "id": TABLE_WIDGET_ID,
         "typeFullFqn": "system.cards.entities_table",
@@ -590,7 +712,7 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
         "title": "Monitored branches · ranked by 24 h outage risk",
         "sizeX": 24,
         "sizeY": 10,
-        "row": 8,
+        "row": 11,
         "col": 0,
         "config": {
             **TITLE_CONFIG,
@@ -662,7 +784,7 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
         "title": "Active AI incidents",
         "sizeX": 24,
         "sizeY": 9,
-        "row": 18,
+        "row": 21,
         "col": 0,
         "config": {
             "timewindow": {
@@ -748,10 +870,11 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
         "description": "AI fleet health, 24 h outage prediction and active AI incidents for SEPLE-monitored bank branches",
         "widgets": {
             BANNER_WIDGET_ID: banner_widget,
+            HISTOGRAM_WIDGET_ID: _analytics_widget(HISTOGRAM_WIDGET_ID, "24 h outage risk distribution", 0, RISK_HISTOGRAM_JS),
+            BANKS_WIDGET_ID: _analytics_widget(BANKS_WIDGET_ID, "Risk by bank", 12, BANK_BREAKDOWN_JS),
+            GUIDE_WIDGET_ID: guide_widget,
             TABLE_WIDGET_ID: table_widget,
             ALARMS_WIDGET_ID: alarms_widget,
-            HISTOGRAM_WIDGET_ID: _analytics_widget(HISTOGRAM_WIDGET_ID, "24 h outage risk distribution", 0, RISK_HISTOGRAM_JS),
-            BANKS_WIDGET_ID: _analytics_widget(BANKS_WIDGET_ID, "Risk by bank", 12, BANK_BREAKDOWN_JS)
         },
         "states": {
             "default": {
@@ -763,8 +886,9 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                             BANNER_WIDGET_ID: {"sizeX": 24, "sizeY": 3, "row": 0, "col": 0, "mobileHeight": 7},
                             HISTOGRAM_WIDGET_ID: {"sizeX": 12, "sizeY": 5, "row": 3, "col": 0, "mobileHeight": 6},
                             BANKS_WIDGET_ID: {"sizeX": 12, "sizeY": 5, "row": 3, "col": 12, "mobileHeight": 6},
-                            TABLE_WIDGET_ID: {"sizeX": 24, "sizeY": 10, "row": 8, "col": 0},
-                            ALARMS_WIDGET_ID: {"sizeX": 24, "sizeY": 9, "row": 18, "col": 0}
+                            GUIDE_WIDGET_ID: {"sizeX": 24, "sizeY": 3, "row": 8, "col": 0, "mobileHeight": 6},
+                            TABLE_WIDGET_ID: {"sizeX": 24, "sizeY": 10, "row": 11, "col": 0},
+                            ALARMS_WIDGET_ID: {"sizeX": 24, "sizeY": 9, "row": 21, "col": 0}
                         },
                         "gridSettings": {
                             "layoutType": "default",

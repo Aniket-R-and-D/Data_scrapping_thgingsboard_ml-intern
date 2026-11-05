@@ -13,6 +13,7 @@ try:
     from scripts.thingsboard.modernize_ai_dashboard import (
         ALARMS_WIDGET_ID,
         BANKS_WIDGET_ID,
+        GUIDE_WIDGET_ID,
         BANNER_WIDGET_ID,
         BANK_BREAKDOWN_JS,
         DASHBOARD_CSS,
@@ -22,6 +23,7 @@ try:
         TABLE_WIDGET_ID,
         TARGET_DASHBOARD_ID,
         build_modern_dashboard_payload,
+        build_modern_guidance_html,
         build_modern_kpi_html,
         update_live_kpi_card,
     )
@@ -30,6 +32,7 @@ except ImportError:
     from scripts.modernize_ai_dashboard import (
         ALARMS_WIDGET_ID,
         BANKS_WIDGET_ID,
+        GUIDE_WIDGET_ID,
         BANNER_WIDGET_ID,
         BANK_BREAKDOWN_JS,
         DASHBOARD_CSS,
@@ -39,6 +42,7 @@ except ImportError:
         TABLE_WIDGET_ID,
         TARGET_DASHBOARD_ID,
         build_modern_dashboard_payload,
+        build_modern_guidance_html,
         build_modern_kpi_html,
         update_live_kpi_card,
     )
@@ -71,9 +75,36 @@ def test_kpi_html_tolerates_minimal_summary():
     assert "80.0%" in html and "latest run" in html
 
 
+def test_guidance_html_metrics_and_thresholds():
+    html = build_modern_guidance_html()
+    for text in (
+        "-0.0137",
+        "+0.0106",
+        "+0.0475",
+        "Critical Fault",
+        "24 h Outage Risk",
+        "Fail-Closed Gate",
+        "Automated Recovery Gate",
+        "3 consecutive cycles (30 min)",
+    ):
+        assert text in html
+    assert "gradient" not in html.lower()
+    assert "height:100%" in html
+
+
 def test_payload_follows_tb_schema_rules():
     payload = build_modern_dashboard_payload(SUMMARY)
-    assert set(payload["widgets"]) == {BANNER_WIDGET_ID, HISTOGRAM_WIDGET_ID, BANKS_WIDGET_ID, TABLE_WIDGET_ID, ALARMS_WIDGET_ID}
+    assert set(payload["widgets"]) == {
+        BANNER_WIDGET_ID,
+        HISTOGRAM_WIDGET_ID,
+        BANKS_WIDGET_ID,
+        GUIDE_WIDGET_ID,
+        TABLE_WIDGET_ID,
+        ALARMS_WIDGET_ID,
+    }
+    assert payload["widgets"][GUIDE_WIDGET_ID]["row"] == 8
+    assert payload["widgets"][TABLE_WIDGET_ID]["row"] == 11
+    assert payload["widgets"][ALARMS_WIDGET_ID]["row"] == 21
 
     state = payload["states"]["default"]
     assert state["name"] == "default" and state["root"] is True
