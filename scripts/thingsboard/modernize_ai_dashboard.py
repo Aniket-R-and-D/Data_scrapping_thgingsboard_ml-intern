@@ -328,7 +328,7 @@ gridster-item:has(.ai-modal-checkbox:checked) {{
 .ai-modal-footer {{
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
+    justify-content: flex-end !important;
     border-top: 1px solid #e2e8f0 !important;
     padding-top: 16px !important;
     flex-wrap: wrap !important;
@@ -817,10 +817,6 @@ def build_modern_guidance_modal_html() -> str:
       </div>
 
       <div class="ai-modal-footer">
-        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#475569;font-weight:600;">
-          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 0 2px #bbf7d0;"></span>
-          <span>SEPLE NovaEdge AI Engine &middot; Calibrated Baseline (365-Day Window, 130 Evaluated Nodes)</span>
-        </div>
         <label for="ai-metric-modal-toggle" class="ai-modal-btn-close">Close Guidance</label>
       </div>
     </div>
