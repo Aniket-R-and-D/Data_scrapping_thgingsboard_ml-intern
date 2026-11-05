@@ -86,10 +86,19 @@ def test_guidance_html_metrics_and_thresholds():
         "Fail-Closed Gate",
         "Automated Recovery Gate",
         "3 consecutive cycles (30 min)",
+        "ai-modal-card",
+        "ai-modal-overlay",
+        "ai-metric-modal-toggle",
+        "ai-guide-fab",
     ):
         assert text in html
     assert "gradient" not in html.lower()
-    assert "height:100%" in html
+
+    # Verify that the KPI banner embeds the (!) trigger button and modal markup
+    kpi_html = build_modern_kpi_html(SUMMARY)
+    assert "ai-guide-btn" in kpi_html
+    assert "ai-metric-modal-toggle" in kpi_html
+    assert "ai-modal-card" in kpi_html
 
 
 def test_payload_follows_tb_schema_rules():
@@ -98,13 +107,11 @@ def test_payload_follows_tb_schema_rules():
         BANNER_WIDGET_ID,
         HISTOGRAM_WIDGET_ID,
         BANKS_WIDGET_ID,
-        GUIDE_WIDGET_ID,
         TABLE_WIDGET_ID,
         ALARMS_WIDGET_ID,
     }
-    assert payload["widgets"][GUIDE_WIDGET_ID]["row"] == 8
-    assert payload["widgets"][TABLE_WIDGET_ID]["row"] == 11
-    assert payload["widgets"][ALARMS_WIDGET_ID]["row"] == 21
+    assert payload["widgets"][TABLE_WIDGET_ID]["row"] == 8
+    assert payload["widgets"][ALARMS_WIDGET_ID]["row"] == 18
 
     state = payload["states"]["default"]
     assert state["name"] == "default" and state["root"] is True

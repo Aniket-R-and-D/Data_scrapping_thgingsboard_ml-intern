@@ -144,6 +144,204 @@ DASHBOARD_CSS = f"""
     box-shadow: none !important;
 }}
 ::selection {{ background: #d6e4ff; color: {INK}; }}
+
+/* --- AI Metric Guidance (!) Modal & Trigger Styles --- */
+.ai-guide-btn {{
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 3px 10px !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.16) !important;
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    color: #ffffff !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    user-select: none !important;
+}}
+.ai-guide-btn:hover {{
+    background: rgba(255, 255, 255, 0.28) !important;
+    border-color: #ffffff !important;
+}}
+.ai-guide-btn-icon {{
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    background: #ffffff !important;
+    color: #14245f !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+}}
+.ai-guide-fab {{
+    position: fixed !important;
+    bottom: 24px !important;
+    right: 24px !important;
+    z-index: 99999 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: #14245f !important;
+    color: #ffffff !important;
+    padding: 9px 16px !important;
+    border-radius: 999px !important;
+    border: 2px solid #3b6fe0 !important;
+    box-shadow: 0 4px 16px rgba(15, 27, 45, 0.28) !important;
+    cursor: pointer !important;
+    font-family: Roboto, Helvetica Neue, Arial, sans-serif !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s !important;
+    user-select: none !important;
+}}
+.ai-guide-fab:hover {{
+    background: #1f3a93 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 22px rgba(15, 27, 45, 0.38) !important;
+}}
+.ai-guide-fab-icon {{
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 18px !important;
+    height: 18px !important;
+    border-radius: 50% !important;
+    background: #ffffff !important;
+    color: #14245f !important;
+    font-weight: 800 !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+}}
+.ai-modal-checkbox {{
+    display: none !important;
+}}
+.ai-modal-overlay {{
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 2147483647 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px !important;
+    box-sizing: border-box !important;
+}}
+.ai-modal-checkbox:checked ~ .ai-modal-overlay {{
+    display: flex !important;
+}}
+gridster-item:has(.ai-modal-checkbox:checked) {{
+    transform: none !important;
+    z-index: 2147483647 !important;
+}}
+.tb-widget-container:has(.ai-modal-checkbox:checked) {{
+    overflow: visible !important;
+}}
+.ai-modal-backdrop {{
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(15, 27, 45, 0.65) !important;
+    backdrop-filter: blur(4px) !important;
+    cursor: pointer !important;
+    z-index: 1 !important;
+}}
+.ai-modal-card {{
+    position: relative !important;
+    z-index: 2 !important;
+    background: #ffffff !important;
+    border-radius: 14px !important;
+    box-shadow: 0 16px 48px rgba(15, 27, 45, 0.3) !important;
+    max-width: 980px !important;
+    width: 100% !important;
+    max-height: 88vh !important;
+    overflow-y: auto !important;
+    padding: 22px 26px !important;
+    border: 1px solid #e3e8ef !important;
+    font-family: Roboto, Helvetica Neue, Arial, sans-serif !important;
+    box-sizing: border-box !important;
+}}
+.ai-modal-header {{
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    border-bottom: 1px solid #edf1f5 !important;
+    padding-bottom: 14px !important;
+    margin-bottom: 18px !important;
+}}
+.ai-modal-badge {{
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: #eef2fc !important;
+    border: 1.5px solid #1f3a93 !important;
+    color: #14245f !important;
+    font-weight: 900 !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    flex-shrink: 0 !important;
+}}
+.ai-modal-close {{
+    cursor: pointer !important;
+    font-size: 24px !important;
+    line-height: 22px !important;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #64748b !important;
+    background: #f1f4f8 !important;
+    border: 1px solid #dfe5ec !important;
+    transition: all 0.15s !important;
+    user-select: none !important;
+}}
+.ai-modal-close:hover {{
+    background: #e2e8f0 !important;
+    color: #0f1b2d !important;
+}}
+.ai-modal-content {{
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)) !important;
+    gap: 14px !important;
+    margin-bottom: 18px !important;
+}}
+.ai-modal-footer {{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-top: 1px solid #edf1f5 !important;
+    padding-top: 14px !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+}}
+.ai-modal-btn-close {{
+    cursor: pointer !important;
+    padding: 6px 16px !important;
+    border-radius: 6px !important;
+    background: #14245f !important;
+    color: #ffffff !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    transition: background 0.15s !important;
+    user-select: none !important;
+}}
+.ai-modal-btn-close:hover {{
+    background: #1f3a93 !important;
+}}
+
 """
 
 # --- Cell renderers (each body runs standalone inside ThingsBoard) ------------------
@@ -470,8 +668,130 @@ def _format_run_time(ts: Optional[str]) -> str:
     return f"{dt.day} {dt:%b %Y}, {dt:%H:%M} IST"
 
 
+def build_modern_guidance_modal_html() -> str:
+    """Card modal dialog containing 4-pillar reference guidance for AI anomaly scoring, outage risk, and operational gates."""
+    card = f"box-sizing:border-box;border-radius:10px;background:{SURFACE};border:1px solid {HAIRLINE};box-shadow:0 1px 3px rgba(15,27,45,0.04);overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;justify-content:space-between;"
+
+    pillar1 = f"""
+    <div style="{card}border-top:3px solid {BRAND};">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:{BRAND_DEEP};">AI Anomaly Score Meter</span>
+        <code style="font-size:10.5px;font-family:monospace;background:{BRAND_TINT};color:{BRAND_DEEP};padding:2px 6px;border-radius:4px;border:1px solid #d3e0f5;">S(x) = -dec_func(x)</code>
+      </div>
+      <div style="font-size:11.5px;line-height:16px;color:{INK_2};margin-bottom:8px;">
+        Measures multi-variate sensor deviation. Negative scores indicate healthy baseline inliers; positive scores reflect outlier severity:
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;">
+        <div style="background:#e8f7f0;border:1px solid #b9e5d2;color:#0f7a55;padding:4px 8px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;">
+          <span><strong>Normal</strong> (&lt; -0.0137)</span><span style="font-size:10px;opacity:0.85;">85.4% fleet</span>
+        </div>
+        <div style="background:#eef4ff;border:1px solid #c9dafc;color:#1d4ed8;padding:4px 8px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;">
+          <span><strong>Elevated</strong> (-0.0137 to +0.0106)</span><span style="font-size:10px;opacity:0.85;">Sensor drift</span>
+        </div>
+        <div style="background:#fff4e5;border:1px solid #f7d7a8;color:#9a4d00;padding:4px 8px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;">
+          <span><strong>High Risk</strong> (+0.0106 to +0.0475)</span><span style="font-size:10px;opacity:0.85;">Anomalous</span>
+        </div>
+        <div style="background:#fdecec;border:1px solid #f5c2c4;color:#b4232c;padding:4px 8px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;">
+          <span><strong>Critical Fault</strong> (&ge; +0.0475)</span><span style="font-size:10px;opacity:0.85;">Top 0.5%</span>
+        </div>
+      </div>
+    </div>"""
+
+    pillar2 = f"""
+    <div style="{card}border-top:3px solid #ea8a0c;">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#9a4d00;">24 h Outage Risk</span>
+          <span style="font-size:10.5px;font-weight:600;background:#fff4e5;color:#9a4d00;padding:2px 8px;border-radius:4px;border:1px solid #f7d7a8;">Predictive Horizon</span>
+        </div>
+        <div style="font-size:12px;line-height:16px;color:{INK_2};">
+          Calibrated supervised probability (0% to 100%) predicting impending site blackout, battery collapse, or power failure within 24 hours based on 544 historical telemetry features.
+        </div>
+      </div>
+      <div style="font-size:10.5px;color:{INK_3};margin-top:8px;border-top:1px dashed {DIVIDER};padding-top:6px;">
+        Identifies high risk before physical equipment failure occurs.
+      </div>
+    </div>"""
+
+    pillar3 = f"""
+    <div style="{card}border-top:3px solid #dc2626;">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#b4232c;">Fail-Closed Gate</span>
+          <span style="font-size:10.5px;font-weight:600;background:#fdecec;color:#b4232c;padding:2px 8px;border-radius:4px;border:1px solid #f5c2c4;">Offline Policy</span>
+        </div>
+        <div style="font-size:12px;line-height:16px;color:{INK_2};">
+          Real-time status tracks IoT cellular telemetry. Disconnected gateways silent for &ge; 48 hours fail-closed directly to <strong>Critical Fault (P1)</strong> to prevent blindspots.
+        </div>
+      </div>
+      <div style="font-size:10.5px;color:{INK_3};margin-top:8px;border-top:1px dashed {DIVIDER};padding-top:6px;">
+        Overrides raw scores when hardware telemetry is absent.
+      </div>
+    </div>"""
+
+    pillar4 = f"""
+    <div style="{card}border-top:3px solid #16a36f;">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0f7a55;">Automated Recovery Gate</span>
+          <span style="font-size:10.5px;font-weight:600;background:#e8f7f0;color:#0f7a55;padding:2px 8px;border-radius:4px;border:1px solid #b9e5d2;">Debounce Filter</span>
+        </div>
+        <div style="font-size:12px;line-height:16px;color:{INK_2};">
+          Active alarms automatically de-escalate and clear after <strong>3 consecutive cycles (30 min)</strong> of verified healthy 14V battery and 220V grid telemetry.
+        </div>
+      </div>
+      <div style="font-size:10.5px;color:{INK_3};margin-top:8px;border-top:1px dashed {DIVIDER};padding-top:6px;">
+        Prevents transient oscillation during grid restoration.
+      </div>
+    </div>"""
+
+    return f"""
+  <!-- Persistent Floating (!) Button for quick access anywhere on dashboard -->
+  <label for="ai-metric-modal-toggle" class="ai-guide-fab" title="Click for AI Metric & Anomaly Guidance (!)">
+    <span class="ai-guide-fab-icon">!</span>
+    <span>AI Guidance</span>
+  </label>
+
+  <!-- Hidden Checkbox Controller for Modal -->
+  <input type="checkbox" id="ai-metric-modal-toggle" class="ai-modal-checkbox" style="display:none;" />
+
+  <!-- Interactive Card Modal Dialog -->
+  <div class="ai-modal-overlay">
+    <label for="ai-metric-modal-toggle" class="ai-modal-backdrop" title="Click anywhere outside to close"></label>
+    <div class="ai-modal-card">
+      <div class="ai-modal-header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="ai-modal-badge">!</span>
+          <div>
+            <div style="font-size:17px;font-weight:700;color:{BRAND_DEEP};">AI Metric &amp; Operational Guidance</div>
+            <div style="font-size:12px;color:{INK_3};margin-top:2px;">Reference standards for anomaly scoring thresholds, 24 h outage risk, and operational recovery gates</div>
+          </div>
+        </div>
+        <label for="ai-metric-modal-toggle" class="ai-modal-close" title="Close guidance">&times;</label>
+      </div>
+
+      <div class="ai-modal-content">
+        {pillar1}
+        {pillar2}
+        {pillar3}
+        {pillar4}
+      </div>
+
+      <div class="ai-modal-footer">
+        <span style="font-size:11px;color:{INK_3};">SEPLE NovaEdge AI Engine &middot; Operating Thresholds Calibrated to 365-Day Fleet Baseline</span>
+        <label for="ai-metric-modal-toggle" class="ai-modal-btn-close">Close Guide</label>
+      </div>
+    </div>
+  </div>"""
+
+
+def build_modern_guidance_html() -> str:
+    """Public helper returning the full interactive guidance modal markup."""
+    return build_modern_guidance_modal_html()
+
+
 def build_modern_kpi_html(summary: Dict[str, Any]) -> str:
-    """KPI deck: navy fleet-health panel plus one tinted card per actionable tier."""
+    """KPI deck: navy fleet-health panel with (!) trigger plus one tinted card per actionable tier and embedded modal."""
     total = int(summary.get("total_monitored_branches", 130)) or 1
     health = float(summary.get("fleet_health_score_pct", 55.0))
     counts = {
@@ -513,9 +833,17 @@ def build_modern_kpi_html(summary: Dict[str, Any]) -> str:
     <span style="font-size:12px;line-height:16px;color:{fg};">{n / total * 100:.1f}% of {total} branches</span>
   </div>"""
 
+    modal_html = build_modern_guidance_modal_html()
+
     return f"""<div style="box-sizing:border-box;height:100%;display:flex;flex-wrap:wrap;gap:12px;align-items:stretch;font-family:{FONT};color:{INK};">
   <div style="{card}flex:1.7 1 320px;min-width:300px;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:14px 24px;background:{BRAND_DEEP};color:#ffffff;">
-    <span style="font-size:13px;font-weight:600;color:#c7d2fe;">Fleet health index</span>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <span style="font-size:13px;font-weight:600;color:#c7d2fe;">Fleet health index</span>
+      <label for="ai-metric-modal-toggle" class="ai-guide-btn" title="Click to view AI Metric & Anomaly Score Guidance">
+        <span class="ai-guide-btn-icon">!</span>
+        <span>AI Guidance</span>
+      </label>
+    </div>
     <span style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;">
       <span style="font-size:42px;font-weight:600;line-height:46px;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;">{health:.1f}%</span>
       <span style="font-size:13px;color:#dbe3ff;">{healthy} of {total} branches nominal or restored</span>
@@ -524,88 +852,8 @@ def build_modern_kpi_html(summary: Dict[str, Any]) -> str:
     <span style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:#dbe3ff;">{legend}</span>
     <span style="font-size:11px;color:#a5b4fc;">{footer}</span>
   </div>{tiles}
+  {modal_html}
 </div>"""
-
-
-def build_modern_guidance_html() -> str:
-    """Compact 4-pillar reference guidance card for AI anomaly scoring, outage risk, and operational gates."""
-    card = f"box-sizing:border-box;border-radius:10px;background:{SURFACE};border:1px solid {HAIRLINE};box-shadow:0 1px 3px rgba(15,27,45,0.04);overflow:hidden;padding:10px 14px;display:flex;flex-direction:column;justify-content:space-between;"
-
-    pillar1 = f"""
-  <div style="{card}flex:1.4 1 310px;border-top:3px solid {BRAND};">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:{BRAND_DEEP};">AI Anomaly Score Meter</span>
-      <code style="font-size:10px;font-family:monospace;background:{BRAND_TINT};color:{BRAND_DEEP};padding:1px 5px;border-radius:4px;border:1px solid #d3e0f5;">S(x) = -dec_func(x)</code>
-    </div>
-    <div style="font-size:11px;line-height:14px;color:{INK_2};margin-bottom:6px;">
-      Measures multi-variate sensor deviation. Negative scores indicate healthy baseline inliers; positive scores reflect outlier severity:
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:10.5px;">
-      <div style="background:#e8f7f0;border:1px solid #b9e5d2;color:#0f7a55;padding:3px 6px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;">
-        <span><strong>Normal</strong> (&lt; -0.0137)</span><span style="font-size:9.5px;opacity:0.85;">85.4% fleet</span>
-      </div>
-      <div style="background:#eef4ff;border:1px solid #c9dafc;color:#1d4ed8;padding:3px 6px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;">
-        <span><strong>Elevated</strong> (-0.0137 to +0.0106)</span><span style="font-size:9.5px;opacity:0.85;">Sensor drift</span>
-      </div>
-      <div style="background:#fff4e5;border:1px solid #f7d7a8;color:#9a4d00;padding:3px 6px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;">
-        <span><strong>High Risk</strong> (+0.0106 to +0.0475)</span><span style="font-size:9.5px;opacity:0.85;">Anomalous</span>
-      </div>
-      <div style="background:#fdecec;border:1px solid #f5c2c4;color:#b4232c;padding:3px 6px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;">
-        <span><strong>Critical Fault</strong> (&ge; +0.0475)</span><span style="font-size:9.5px;opacity:0.85;">Top 0.5%</span>
-      </div>
-    </div>
-  </div>"""
-
-    pillar2 = f"""
-  <div style="{card}flex:1 1 230px;border-top:3px solid #ea8a0c;">
-    <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#9a4d00;">24 h Outage Risk</span>
-        <span style="font-size:10px;font-weight:600;background:#fff4e5;color:#9a4d00;padding:1px 6px;border-radius:4px;border:1px solid #f7d7a8;">Predictive Horizon</span>
-      </div>
-      <div style="font-size:11.5px;line-height:15px;color:{INK_2};">
-        Calibrated supervised probability (0% to 100%) predicting impending site blackout or power failure within 24 hours based on 544 historical telemetry features.
-      </div>
-    </div>
-    <div style="font-size:10px;color:{INK_3};margin-top:6px;border-top:1px dashed {DIVIDER};padding-top:4px;">
-      Identifies high risk before physical equipment failure occurs.
-    </div>
-  </div>"""
-
-    pillar3 = f"""
-  <div style="{card}flex:1 1 230px;border-top:3px solid #dc2626;">
-    <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#b4232c;">Fail-Closed Gate</span>
-        <span style="font-size:10px;font-weight:600;background:#fdecec;color:#b4232c;padding:1px 6px;border-radius:4px;border:1px solid #f5c2c4;">Offline Policy</span>
-      </div>
-      <div style="font-size:11.5px;line-height:15px;color:{INK_2};">
-        Real-time status tracks IoT cellular telemetry. Disconnected gateways silent for &ge; 48 hours fail-closed directly to <strong>Critical Fault (P1)</strong> to prevent blindspots.
-      </div>
-    </div>
-    <div style="font-size:10px;color:{INK_3};margin-top:6px;border-top:1px dashed {DIVIDER};padding-top:4px;">
-      Overrides raw scores when hardware telemetry is absent.
-    </div>
-  </div>"""
-
-    pillar4 = f"""
-  <div style="{card}flex:1 1 230px;border-top:3px solid #16a36f;">
-    <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0f7a55;">Automated Recovery Gate</span>
-        <span style="font-size:10px;font-weight:600;background:#e8f7f0;color:#0f7a55;padding:1px 6px;border-radius:4px;border:1px solid #b9e5d2;">Debounce Filter</span>
-      </div>
-      <div style="font-size:11.5px;line-height:15px;color:{INK_2};">
-        Active alarms automatically de-escalate and clear after <strong>3 consecutive cycles (30 min)</strong> of verified healthy 14V battery and 220V grid telemetry.
-      </div>
-    </div>
-    <div style="font-size:10px;color:{INK_3};margin-top:6px;border-top:1px dashed {DIVIDER};padding-top:4px;">
-      Prevents transient oscillation during grid restoration.
-    </div>
-  </div>"""
-
-    return f'<div style="box-sizing:border-box;height:100%;display:flex;flex-wrap:wrap;gap:12px;align-items:stretch;font-family:{FONT};color:{INK};">{pillar1}{pillar2}{pillar3}{pillar4}</div>'
-
 
 
 def _key(name: str, key_type: str, label: str, width: str, js: str) -> Dict[str, Any]:
@@ -665,46 +913,6 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
         }
     }
 
-    guide_widget = {
-        "id": GUIDE_WIDGET_ID,
-        "typeFullFqn": "system.cards.html_card",
-        "type": "static",
-        "title": "AI Metric & Operational Guidance",
-        "sizeX": 24,
-        "sizeY": 3,
-        "row": 8,
-        "col": 0,
-        "config": {
-            "showTitle": False,
-            "backgroundColor": "transparent",
-            "color": INK,
-            "padding": "0px",
-            "dropShadow": False,
-            "enableFullscreen": False,
-            "mobileHeight": 6,
-            "datasources": [
-                {
-                    "type": "static",
-                    "name": "function",
-                    "dataKeys": [
-                        {
-                            "name": "f(x)",
-                            "type": "function",
-                            "label": "guide",
-                            "color": INK,
-                            "settings": {},
-                            "funcBody": "return true;"
-                        }
-                    ]
-                }
-            ],
-            "settings": {
-                "cardHtml": build_modern_guidance_html(),
-                "cardCss": ""
-            }
-        }
-    }
-
     table_widget = {
         "id": TABLE_WIDGET_ID,
         "typeFullFqn": "system.cards.entities_table",
@@ -712,7 +920,7 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
         "title": "Monitored branches · ranked by 24 h outage risk",
         "sizeX": 24,
         "sizeY": 10,
-        "row": 11,
+        "row": 8,
         "col": 0,
         "config": {
             **TITLE_CONFIG,
@@ -784,7 +992,7 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
         "title": "Active AI incidents",
         "sizeX": 24,
         "sizeY": 9,
-        "row": 21,
+        "row": 18,
         "col": 0,
         "config": {
             "timewindow": {
@@ -872,7 +1080,6 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
             BANNER_WIDGET_ID: banner_widget,
             HISTOGRAM_WIDGET_ID: _analytics_widget(HISTOGRAM_WIDGET_ID, "24 h outage risk distribution", 0, RISK_HISTOGRAM_JS),
             BANKS_WIDGET_ID: _analytics_widget(BANKS_WIDGET_ID, "Risk by bank", 12, BANK_BREAKDOWN_JS),
-            GUIDE_WIDGET_ID: guide_widget,
             TABLE_WIDGET_ID: table_widget,
             ALARMS_WIDGET_ID: alarms_widget,
         },
@@ -886,9 +1093,8 @@ def build_modern_dashboard_payload(summary: Dict[str, Any]) -> Dict[str, Any]:
                             BANNER_WIDGET_ID: {"sizeX": 24, "sizeY": 3, "row": 0, "col": 0, "mobileHeight": 7},
                             HISTOGRAM_WIDGET_ID: {"sizeX": 12, "sizeY": 5, "row": 3, "col": 0, "mobileHeight": 6},
                             BANKS_WIDGET_ID: {"sizeX": 12, "sizeY": 5, "row": 3, "col": 12, "mobileHeight": 6},
-                            GUIDE_WIDGET_ID: {"sizeX": 24, "sizeY": 3, "row": 8, "col": 0, "mobileHeight": 6},
-                            TABLE_WIDGET_ID: {"sizeX": 24, "sizeY": 10, "row": 11, "col": 0},
-                            ALARMS_WIDGET_ID: {"sizeX": 24, "sizeY": 9, "row": 21, "col": 0}
+                            TABLE_WIDGET_ID: {"sizeX": 24, "sizeY": 10, "row": 8, "col": 0},
+                            ALARMS_WIDGET_ID: {"sizeX": 24, "sizeY": 9, "row": 18, "col": 0}
                         },
                         "gridSettings": {
                             "layoutType": "default",
