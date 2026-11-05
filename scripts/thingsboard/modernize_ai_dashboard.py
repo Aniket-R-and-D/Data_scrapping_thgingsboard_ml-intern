@@ -47,27 +47,27 @@ GUIDE_WIDGET_ID = "f7e8a910-b1c2-4d3e-8f5a-6b7c8d9e0f11"
 
 IST = timezone(timedelta(hours=5, minutes=30))
 
-# Palette: cool neutrals tinted toward ink navy; tier colors tuned for >=4.5:1 text on their tint.
-INK = "#0f1b2d"
-INK_2 = "#475569"
-INK_3 = "#64748b"
-MUTED = "#94a3b8"
-CANVAS = "#eef2f8"
-BRAND = "#1f3a93"  # SEPLE royal blue
-BRAND_DEEP = "#14245f"
-BRAND_TINT = "#eef2fc"
+# Impeccable high-contrast enterprise palette (WCAG AAA compliant, zero washed-out tones)
+INK = "#0f172a"        # Deep Slate 900 (authoritative obsidian)
+INK_2 = "#1e293b"      # High-contrast Slate 800 for primary body text
+INK_3 = "#334155"      # Crisp Slate 700 for secondary text
+MUTED = "#64748b"      # Clear Slate 500 for captions (never muddy)
+CANVAS = "#f1f5f9"     # Clean slate canvas
+BRAND = "#1d4ed8"      # SEPLE Cobalt Blue
+BRAND_DEEP = "#0f172a" # Obsidian Navy
+BRAND_TINT = "#eff6ff" # Icy Blue tint
 SURFACE = "#ffffff"
-HAIRLINE = "#e3e8ef"
-DIVIDER = "#edf1f5"
-FONT = "Roboto, Helvetica Neue, Arial, sans-serif"  # unquoted: also embedded in JS strings
+HAIRLINE = "#cbd5e1"   # Slate 300 sharp border
+DIVIDER = "#e2e8f0"    # Slate 200 crisp divider
+FONT = "system-ui, -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, Arial, sans-serif"
 
 # key -> (label, action horizon, fg, bg, border, dot)
 TIERS: Dict[str, tuple] = {
-    "CRITICAL_FAULT": ("Critical fault", "Dispatch now", "#b4232c", "#fdecec", "#f5c2c4", "#dc2626"),
-    "HIGH_RISK": ("High risk", "Within 24 h", "#9a4d00", "#fff4e5", "#f7d7a8", "#ea8a0c"),
-    "ELEVATED": ("Elevated drift", "Within 7 days", "#1d4ed8", "#eef4ff", "#c9dafc", "#3b6fe0"),
-    "SERVICED_RECOVERED": ("Serviced", "Verified restored", "#0f7a55", "#e8f7f0", "#b9e5d2", "#16a36f"),
-    "NOMINAL": ("Nominal", "No action", "#475569", "#f1f4f8", "#dfe5ec", "#94a3b8"),
+    "CRITICAL_FAULT": ("Critical Fault", "Immediate Dispatch", "#991b1b", "#fef2f2", "#fecaca", "#dc2626"),
+    "HIGH_RISK": ("High Risk", "Within 24 h", "#9a3412", "#fff7ed", "#fed7aa", "#ea580c"),
+    "ELEVATED": ("Elevated Drift", "Within 7 Days", "#1e40af", "#eff6ff", "#bfdbfe", "#2563eb"),
+    "SERVICED_RECOVERED": ("Serviced & Restored", "Verified Nominal", "#065f46", "#ecfdf5", "#a7f3d0", "#10b981"),
+    "NOMINAL": ("Nominal Baseline", "Healthy", "#334155", "#f8fafc", "#e2e8f0", "#64748b"),
 }
 TIER_KEYS_CSV = ",".join(TIERS)
 
@@ -101,29 +101,30 @@ DASHBOARD_CSS = f"""
     width: max-content !important;
 }}
 .mat-mdc-header-row, .mat-mdc-header-cell {{
-    background: {BRAND_TINT} !important;
+    background: #f1f5f9 !important;
 }}
 .mat-mdc-header-cell {{
-    color: {BRAND_DEEP} !important;
+    color: #0f172a !important;
     font-size: 12px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.01em;
-    border-bottom: 1px solid {HAIRLINE} !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.03em !important;
+    border-bottom: 2px solid #cbd5e1 !important;
     white-space: nowrap !important;
+    padding: 12px 14px !important;
 }}
 .mat-mdc-row, .mat-mdc-row:nth-child(even), .mat-mdc-row:nth-child(odd) {{
     background: {SURFACE} !important;
 }}
 .mat-mdc-row:hover {{
-    background: #f4f7fe !important;
+    background: #f8fafc !important;
 }}
 .mat-mdc-cell {{
-    color: {INK} !important;
+    color: #0f172a !important;
     font-size: 13px !important;
-    border-bottom: 1px solid {DIVIDER} !important;
+    font-weight: 500 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
     font-variant-numeric: tabular-nums;
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
+    padding: 12px 14px !important;
 }}
 .mat-mdc-paginator {{
     background: {SURFACE} !important;
@@ -132,51 +133,54 @@ DASHBOARD_CSS = f"""
 }}
 * {{
     scrollbar-width: thin;
-    scrollbar-color: #c3ccd8 transparent;
+    scrollbar-color: #cbd5e1 transparent;
 }}
 ::-webkit-scrollbar {{ width: 8px; height: 8px; }}
 ::-webkit-scrollbar-track {{ background: transparent; }}
-::-webkit-scrollbar-thumb {{ background: #c3ccd8; border-radius: 4px; }}
-::-webkit-scrollbar-thumb:hover {{ background: #a5b1c2; }}
+::-webkit-scrollbar-thumb {{ background: #cbd5e1; border-radius: 4px; }}
+::-webkit-scrollbar-thumb:hover {{ background: #94a3b8; }}
 .widget-type-system-cards-markdown_card, .widget-type-system-cards-markdown_card .tb-absolute-fill {{
     background: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
 }}
-::selection {{ background: #d6e4ff; color: {INK}; }}
+::selection {{ background: #bfdbfe; color: {INK}; }}
 
-/* --- AI Metric Guidance (!) Modal & Trigger Styles --- */
+/* --- Impeccable AI Metric Guidance Modal & Triggers --- */
 .ai-guide-btn {{
     cursor: pointer !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 6px !important;
-    padding: 3px 10px !important;
+    gap: 7px !important;
+    padding: 4px 13px !important;
     border-radius: 999px !important;
-    background: rgba(255, 255, 255, 0.16) !important;
-    border: 1px solid rgba(255, 255, 255, 0.28) !important;
-    color: #ffffff !important;
-    font-size: 11.5px !important;
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
+    background: #ffffff !important;
+    border: 1px solid #ffffff !important;
+    color: #0f172a !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16) !important;
+    transition: all 0.18s ease !important;
     user-select: none !important;
 }}
 .ai-guide-btn:hover {{
-    background: rgba(255, 255, 255, 0.28) !important;
-    border-color: #ffffff !important;
+    background: #f8fafc !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important;
 }}
 .ai-guide-btn-icon {{
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 16px !important;
-    height: 16px !important;
+    width: 17px !important;
+    height: 17px !important;
     border-radius: 50% !important;
-    background: #ffffff !important;
-    color: #14245f !important;
-    font-weight: 800 !important;
+    background: #1d4ed8 !important;
+    color: #ffffff !important;
+    font-weight: 900 !important;
     font-size: 11px !important;
     line-height: 1 !important;
+    font-family: ui-sans-serif, system-ui, sans-serif !important;
 }}
 .ai-guide-fab {{
     position: fixed !important;
@@ -185,35 +189,37 @@ DASHBOARD_CSS = f"""
     z-index: 99999 !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 8px !important;
-    background: #14245f !important;
+    gap: 9px !important;
+    background: #0f172a !important;
     color: #ffffff !important;
-    padding: 9px 16px !important;
+    padding: 10px 18px !important;
     border-radius: 999px !important;
-    border: 2px solid #3b6fe0 !important;
-    box-shadow: 0 4px 16px rgba(15, 27, 45, 0.28) !important;
+    border: 1.5px solid #3b82f6 !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.32) !important;
     cursor: pointer !important;
-    font-family: Roboto, Helvetica Neue, Arial, sans-serif !important;
-    font-size: 12.5px !important;
-    font-weight: 600 !important;
-    transition: transform 0.15s, box-shadow 0.15s, background 0.15s !important;
+    font-family: {FONT} !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.01em !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease !important;
     user-select: none !important;
 }}
 .ai-guide-fab:hover {{
-    background: #1f3a93 !important;
+    background: #1e293b !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 6px 22px rgba(15, 27, 45, 0.38) !important;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.42) !important;
+    border-color: #60a5fa !important;
 }}
 .ai-guide-fab-icon {{
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 18px !important;
-    height: 18px !important;
+    width: 20px !important;
+    height: 20px !important;
     border-radius: 50% !important;
-    background: #ffffff !important;
-    color: #14245f !important;
-    font-weight: 800 !important;
+    background: #3b82f6 !important;
+    color: #ffffff !important;
+    font-weight: 900 !important;
     font-size: 12px !important;
     line-height: 1 !important;
 }}
@@ -249,8 +255,8 @@ gridster-item:has(.ai-modal-checkbox:checked) {{
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: rgba(15, 27, 45, 0.65) !important;
-    backdrop-filter: blur(4px) !important;
+    background: rgba(15, 23, 42, 0.65) !important;
+    backdrop-filter: blur(5px) !important;
     cursor: pointer !important;
     z-index: 1 !important;
 }}
@@ -258,91 +264,94 @@ gridster-item:has(.ai-modal-checkbox:checked) {{
     position: relative !important;
     z-index: 2 !important;
     background: #ffffff !important;
-    border-radius: 14px !important;
-    box-shadow: 0 16px 48px rgba(15, 27, 45, 0.3) !important;
-    max-width: 980px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 25px 60px -12px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(15, 23, 42, 0.08) !important;
+    max-width: 1020px !important;
     width: 100% !important;
     max-height: 88vh !important;
     overflow-y: auto !important;
-    padding: 22px 26px !important;
-    border: 1px solid #e3e8ef !important;
-    font-family: Roboto, Helvetica Neue, Arial, sans-serif !important;
+    padding: 26px 30px !important;
+    border: 1px solid #cbd5e1 !important;
+    font-family: {FONT} !important;
     box-sizing: border-box !important;
 }}
 .ai-modal-header {{
     display: flex !important;
     align-items: flex-start !important;
     justify-content: space-between !important;
-    border-bottom: 1px solid #edf1f5 !important;
-    padding-bottom: 14px !important;
-    margin-bottom: 18px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding-bottom: 16px !important;
+    margin-bottom: 20px !important;
 }}
 .ai-modal-badge {{
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 34px !important;
-    height: 34px !important;
-    border-radius: 50% !important;
-    background: #eef2fc !important;
-    border: 1.5px solid #1f3a93 !important;
-    color: #14245f !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    background: #0f172a !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2) !important;
+    color: #38bdf8 !important;
     font-weight: 900 !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
     line-height: 1 !important;
     flex-shrink: 0 !important;
 }}
 .ai-modal-close {{
     cursor: pointer !important;
-    font-size: 24px !important;
-    line-height: 22px !important;
-    width: 30px !important;
-    height: 30px !important;
+    font-size: 20px !important;
+    line-height: 20px !important;
+    width: 34px !important;
+    height: 34px !important;
     border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    color: #64748b !important;
-    background: #f1f4f8 !important;
-    border: 1px solid #dfe5ec !important;
-    transition: all 0.15s !important;
+    color: #334155 !important;
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    transition: all 0.15s ease !important;
     user-select: none !important;
 }}
 .ai-modal-close:hover {{
     background: #e2e8f0 !important;
-    color: #0f1b2d !important;
+    color: #0f172a !important;
+    transform: scale(1.05) !important;
 }}
-.ai-modal-content {{
+.ai-modal-grid {{
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)) !important;
-    gap: 14px !important;
-    margin-bottom: 18px !important;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)) !important;
+    gap: 16px !important;
+    margin-bottom: 20px !important;
 }}
 .ai-modal-footer {{
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    border-top: 1px solid #edf1f5 !important;
-    padding-top: 14px !important;
+    border-top: 1px solid #e2e8f0 !important;
+    padding-top: 16px !important;
     flex-wrap: wrap !important;
-    gap: 10px !important;
+    gap: 12px !important;
 }}
 .ai-modal-btn-close {{
     cursor: pointer !important;
-    padding: 6px 16px !important;
-    border-radius: 6px !important;
-    background: #14245f !important;
+    padding: 8px 22px !important;
+    border-radius: 8px !important;
+    background: #0f172a !important;
     color: #ffffff !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    transition: background 0.15s !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.01em !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25) !important;
+    transition: all 0.15s ease !important;
     user-select: none !important;
 }}
 .ai-modal-btn-close:hover {{
-    background: #1f3a93 !important;
-}}
-
-"""
+    background: #1e293b !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.35) !important;
+}}"""
 
 # --- Cell renderers (each body runs standalone inside ThingsBoard) ------------------
 
@@ -669,79 +678,109 @@ def _format_run_time(ts: Optional[str]) -> str:
 
 
 def build_modern_guidance_modal_html() -> str:
-    """Card modal dialog containing 4-pillar reference guidance for AI anomaly scoring, outage risk, and operational gates."""
-    card = f"box-sizing:border-box;border-radius:10px;background:{SURFACE};border:1px solid {HAIRLINE};box-shadow:0 1px 3px rgba(15,27,45,0.04);overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;justify-content:space-between;"
+    """Impeccable card modal dialog with high-contrast calibration meters and executive clarity."""
+    card = f"box-sizing:border-box;border-radius:12px;background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 2px 6px rgba(15,23,42,0.03);overflow:hidden;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;"
 
     pillar1 = f"""
-    <div style="{card}border-top:3px solid {BRAND};">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-        <span style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:{BRAND_DEEP};">AI Anomaly Score Meter</span>
-        <code style="font-size:10.5px;font-family:monospace;background:{BRAND_TINT};color:{BRAND_DEEP};padding:2px 6px;border-radius:4px;border:1px solid #d3e0f5;">S(x) = -dec_func(x)</code>
-      </div>
-      <div style="font-size:11.5px;line-height:16px;color:{INK_2};margin-bottom:8px;">
-        Measures multi-variate sensor deviation. Negative scores indicate healthy baseline inliers; positive scores reflect outlier severity:
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;">
-        <div style="background:#e8f7f0;border:1px solid #b9e5d2;color:#0f7a55;padding:4px 8px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;">
-          <span><strong>Normal</strong> (&lt; -0.0137)</span><span style="font-size:10px;opacity:0.85;">85.4% fleet</span>
+    <div style="{card}border-top:4px solid #1d4ed8;">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;color:#1e3a8a;">AI Anomaly Score Meter</span>
+          <code style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;font-weight:700;background:#eff6ff;color:#1d4ed8;padding:2px 8px;border-radius:6px;border:1px solid #bfdbfe;">S(x) = -dec_func(x)</code>
         </div>
-        <div style="background:#eef4ff;border:1px solid #c9dafc;color:#1d4ed8;padding:4px 8px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;">
-          <span><strong>Elevated</strong> (-0.0137 to +0.0106)</span><span style="font-size:10px;opacity:0.85;">Sensor drift</span>
+        <div style="font-size:12.5px;line-height:18px;color:#1e293b;margin-bottom:12px;font-weight:500;">
+          Multi-variate isolation metric across 544 sensor dimensions. Negative scores signify healthy baseline inliers; positive values represent escalating outlier severity:
         </div>
-        <div style="background:#fff4e5;border:1px solid #f7d7a8;color:#9a4d00;padding:4px 8px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;">
-          <span><strong>High Risk</strong> (+0.0106 to +0.0475)</span><span style="font-size:10px;opacity:0.85;">Anomalous</span>
-        </div>
-        <div style="background:#fdecec;border:1px solid #f5c2c4;color:#b4232c;padding:4px 8px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;">
-          <span><strong>Critical Fault</strong> (&ge; +0.0475)</span><span style="font-size:10px;opacity:0.85;">Top 0.5%</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-weight:800;color:#14532d;font-size:12px;">Normal (Inlier)</div>
+              <div style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:#15803d;margin-top:2px;">Score &lt; -0.0137</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:10.5px;font-weight:700;color:#166534;background:#dcfce7;padding:2px 6px;border-radius:999px;">85.4% Fleet</span>
+              <div style="font-size:10px;color:#15803d;margin-top:2px;font-weight:600;">Deep Baseline</div>
+            </div>
+          </div>
+          <div style="background:#eff6ff;border:1.5px solid #93c5fd;border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-weight:800;color:#1e3a8a;font-size:12px;">Elevated (Drift)</div>
+              <div style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:#1d4ed8;margin-top:2px;">-0.0137 to +0.0106</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:10.5px;font-weight:700;color:#1e40af;background:#dbeafe;padding:2px 6px;border-radius:999px;">Sensor Drift</span>
+              <div style="font-size:10px;color:#2563eb;margin-top:2px;font-weight:600;">Early Variance</div>
+            </div>
+          </div>
+          <div style="background:#fffbeb;border:1.5px solid #fcd34d;border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-weight:800;color:#78350f;font-size:12px;">High Risk (Outlier)</div>
+              <div style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:#b45309;margin-top:2px;">+0.0106 to +0.0475</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:10.5px;font-weight:700;color:#92400e;background:#fef3c7;padding:2px 6px;border-radius:999px;">Anomalous</span>
+              <div style="font-size:10px;color:#b45309;margin-top:2px;font-weight:600;">98th - 99.5th %</div>
+            </div>
+          </div>
+          <div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-weight:800;color:#7f1d1d;font-size:12px;">Critical Fault</div>
+              <div style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:#b91c1c;margin-top:2px;">Score &ge; +0.0475</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:10.5px;font-weight:700;color:#991b1b;background:#fee2e2;padding:2px 6px;border-radius:999px;">Top 0.5%</span>
+              <div style="font-size:10px;color:#dc2626;margin-top:2px;font-weight:600;">Extreme Risk</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>"""
 
     pillar2 = f"""
-    <div style="{card}border-top:3px solid #ea8a0c;">
+    <div style="{card}border-top:4px solid #ea580c;">
       <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <span style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#9a4d00;">24 h Outage Risk</span>
-          <span style="font-size:10.5px;font-weight:600;background:#fff4e5;color:#9a4d00;padding:2px 8px;border-radius:4px;border:1px solid #f7d7a8;">Predictive Horizon</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;color:#9a3412;">24 h Outage Risk</span>
+          <span style="font-size:11px;font-weight:700;background:#fff7ed;color:#c2410c;padding:3px 9px;border-radius:6px;border:1px solid #fed7aa;">Predictive Horizon</span>
         </div>
-        <div style="font-size:12px;line-height:16px;color:{INK_2};">
-          Calibrated supervised probability (0% to 100%) predicting impending site blackout, battery collapse, or power failure within 24 hours based on 544 historical telemetry features.
+        <div style="font-size:12.5px;line-height:19px;color:#1e293b;font-weight:500;">
+          Calibrated supervised LightGBM probability (0% to 100%) forecasting impending branch blackout, battery exhaustion, or phase failure within 24 hours based on 544 historical telemetry features.
         </div>
       </div>
-      <div style="font-size:10.5px;color:{INK_3};margin-top:8px;border-top:1px dashed {DIVIDER};padding-top:6px;">
-        Identifies high risk before physical equipment failure occurs.
+      <div style="margin-top:14px;padding:9px 12px;background:#fff7ed;border-left:3px solid #ea580c;border-radius:4px;font-size:11.5px;line-height:16px;color:#9a3412;font-weight:600;">
+        ⚡ Flags impending site electrical collapse before hardware disconnects.
       </div>
     </div>"""
 
     pillar3 = f"""
-    <div style="{card}border-top:3px solid #dc2626;">
+    <div style="{card}border-top:4px solid #dc2626;">
       <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <span style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#b4232c;">Fail-Closed Gate</span>
-          <span style="font-size:10.5px;font-weight:600;background:#fdecec;color:#b4232c;padding:2px 8px;border-radius:4px;border:1px solid #f5c2c4;">Offline Policy</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;color:#991b1b;">Fail-Closed Gate</span>
+          <span style="font-size:11px;font-weight:700;background:#fef2f2;color:#b91c1c;padding:3px 9px;border-radius:6px;border:1px solid #fecaca;">Safety Policy</span>
         </div>
-        <div style="font-size:12px;line-height:16px;color:{INK_2};">
-          Real-time status tracks IoT cellular telemetry. Disconnected gateways silent for &ge; 48 hours fail-closed directly to <strong>Critical Fault (P1)</strong> to prevent blindspots.
+        <div style="font-size:12.5px;line-height:19px;color:#1e293b;font-weight:500;">
+          Real-time status reflects active cellular MQTT heartbeat. Disconnected gateways silent for &ge; 48 hours fail-closed directly to <strong>Critical Fault (P1)</strong> to prevent unmonitored blindspots.
         </div>
       </div>
-      <div style="font-size:10.5px;color:{INK_3};margin-top:8px;border-top:1px dashed {DIVIDER};padding-top:6px;">
-        Overrides raw scores when hardware telemetry is absent.
+      <div style="margin-top:14px;padding:9px 12px;background:#fef2f2;border-left:3px solid #dc2626;border-radius:4px;font-size:11.5px;line-height:16px;color:#991b1b;font-weight:600;">
+        🛡️ Overrides raw mathematical scores when telemetry feed is absent.
       </div>
     </div>"""
 
     pillar4 = f"""
-    <div style="{card}border-top:3px solid #16a36f;">
+    <div style="{card}border-top:4px solid #10b981;">
       <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <span style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0f7a55;">Automated Recovery Gate</span>
-          <span style="font-size:10.5px;font-weight:600;background:#e8f7f0;color:#0f7a55;padding:2px 8px;border-radius:4px;border:1px solid #b9e5d2;">Debounce Filter</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;color:#065f46;">Automated Recovery Gate</span>
+          <span style="font-size:11px;font-weight:700;background:#ecfdf5;color:#047857;padding:3px 9px;border-radius:6px;border:1px solid #a7f3d0;">Debounce Filter</span>
         </div>
-        <div style="font-size:12px;line-height:16px;color:{INK_2};">
-          Active alarms automatically de-escalate and clear after <strong>3 consecutive cycles (30 min)</strong> of verified healthy 14V battery and 220V grid telemetry.
+        <div style="font-size:12.5px;line-height:19px;color:#1e293b;font-weight:500;">
+          Active alarms and incidents automatically de-escalate and clear after <strong>3 consecutive cycles (30 min)</strong> of verified healthy 14V battery reserve and 220V grid supply.
         </div>
       </div>
-      <div style="font-size:10.5px;color:{INK_3};margin-top:8px;border-top:1px dashed {DIVIDER};padding-top:6px;">
-        Prevents transient oscillation during grid restoration.
+      <div style="margin-top:14px;padding:9px 12px;background:#ecfdf5;border-left:3px solid #10b981;border-radius:4px;font-size:11.5px;line-height:16px;color:#065f46;font-weight:600;">
+        🔄 Eliminates alarm flapping and transient voltage sag during restoration.
       </div>
     </div>"""
 
@@ -749,7 +788,7 @@ def build_modern_guidance_modal_html() -> str:
   <!-- Persistent Floating (!) Button for quick access anywhere on dashboard -->
   <label for="ai-metric-modal-toggle" class="ai-guide-fab" title="Click for AI Metric & Anomaly Guidance (!)">
     <span class="ai-guide-fab-icon">!</span>
-    <span>AI Guidance</span>
+    <span>AI Guidance &amp; Thresholds</span>
   </label>
 
   <!-- Hidden Checkbox Controller for Modal -->
@@ -760,17 +799,17 @@ def build_modern_guidance_modal_html() -> str:
     <label for="ai-metric-modal-toggle" class="ai-modal-backdrop" title="Click anywhere outside to close"></label>
     <div class="ai-modal-card">
       <div class="ai-modal-header">
-        <div style="display:flex;align-items:center;gap:12px;">
+        <div style="display:flex;align-items:center;gap:14px;">
           <span class="ai-modal-badge">!</span>
           <div>
-            <div style="font-size:17px;font-weight:700;color:{BRAND_DEEP};">AI Metric &amp; Operational Guidance</div>
-            <div style="font-size:12px;color:{INK_3};margin-top:2px;">Reference standards for anomaly scoring thresholds, 24 h outage risk, and operational recovery gates</div>
+            <div style="font-size:19px;font-weight:800;color:#0f172a;letter-spacing:-0.02em;">AI Metric &amp; Operational Guidance</div>
+            <div style="font-size:13px;color:#475569;margin-top:3px;font-weight:500;">Authoritative standards for multivariate anomaly scoring, predictive outage horizons, and operational recovery gates</div>
           </div>
         </div>
         <label for="ai-metric-modal-toggle" class="ai-modal-close" title="Close guidance">&times;</label>
       </div>
 
-      <div class="ai-modal-content">
+      <div class="ai-modal-grid">
         {pillar1}
         {pillar2}
         {pillar3}
@@ -778,8 +817,11 @@ def build_modern_guidance_modal_html() -> str:
       </div>
 
       <div class="ai-modal-footer">
-        <span style="font-size:11px;color:{INK_3};">SEPLE NovaEdge AI Engine &middot; Operating Thresholds Calibrated to 365-Day Fleet Baseline</span>
-        <label for="ai-metric-modal-toggle" class="ai-modal-btn-close">Close Guide</label>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#475569;font-weight:600;">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 0 2px #bbf7d0;"></span>
+          <span>SEPLE NovaEdge AI Engine &middot; Calibrated Baseline (365-Day Window, 130 Evaluated Nodes)</span>
+        </div>
+        <label for="ai-metric-modal-toggle" class="ai-modal-btn-close">Close Guidance</label>
       </div>
     </div>
   </div>"""
@@ -791,7 +833,7 @@ def build_modern_guidance_html() -> str:
 
 
 def build_modern_kpi_html(summary: Dict[str, Any]) -> str:
-    """KPI deck: navy fleet-health panel with (!) trigger plus one tinted card per actionable tier and embedded modal."""
+    """KPI deck: navy fleet-health panel with high-contrast (!) trigger plus one tinted card per actionable tier and embedded modal."""
     total = int(summary.get("total_monitored_branches", 130)) or 1
     health = float(summary.get("fleet_health_score_pct", 55.0))
     counts = {
@@ -810,7 +852,7 @@ def build_modern_kpi_html(summary: Dict[str, Any]) -> str:
         for k, n in counts.items() if n
     )
     legend = "".join(
-        f'<span style="display:inline-flex;align-items:center;gap:5px;white-space:nowrap;">'
+        f'<span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-weight:600;">'
         f'<span style="width:8px;height:8px;border-radius:2px;background:{TIERS[k][5]};"></span>{TIERS[k][0]} {n}</span>'
         for k, n in counts.items()
     )
@@ -818,39 +860,39 @@ def build_modern_kpi_html(summary: Dict[str, Any]) -> str:
     if risk_50 is not None:
         footer += f" &middot; {int(risk_50)} branches at or above 50% 24 h outage risk"
 
-    card = "box-sizing:border-box;border-radius:12px;box-shadow:0 1px 2px rgba(15,27,45,0.05),0 6px 16px rgba(15,27,45,0.06);overflow:hidden;"
+    card = "box-sizing:border-box;border-radius:14px;box-shadow:0 1px 3px rgba(15,23,42,0.06),0 4px 12px rgba(15,23,42,0.04);overflow:hidden;"
     tiles = ""
     for k in ("CRITICAL_FAULT", "HIGH_RISK", "ELEVATED", "SERVICED_RECOVERED"):
         label, horizon, fg, bg, border, dot = TIERS[k]
         n = counts[k]
         tiles += f"""
-  <div style="{card}flex:1 1 160px;min-width:160px;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:14px 20px;background:{bg};border:1px solid {border};border-top:4px solid {dot};">
+  <div style="{card}flex:1 1 160px;min-width:160px;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:16px 20px;background:{bg};border:1.5px solid {border};border-top:4px solid {dot};">
     <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-      <span style="font-size:13px;font-weight:600;color:{fg};">{label}</span>
-      <span style="padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;color:{fg};background:{SURFACE};border:1px solid {border};white-space:nowrap;">{horizon}</span>
+      <span style="font-size:13px;font-weight:800;color:{fg};letter-spacing:-0.01em;">{label}</span>
+      <span style="padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;color:{fg};background:{SURFACE};border:1px solid {border};white-space:nowrap;">{horizon}</span>
     </span>
-    <span style="font-size:38px;font-weight:600;line-height:44px;letter-spacing:-0.02em;color:{fg};font-variant-numeric:tabular-nums;">{n}</span>
-    <span style="font-size:12px;line-height:16px;color:{fg};">{n / total * 100:.1f}% of {total} branches</span>
+    <span style="font-size:40px;font-weight:800;line-height:44px;letter-spacing:-0.03em;color:{fg};font-variant-numeric:tabular-nums;">{n}</span>
+    <span style="font-size:12px;line-height:16px;color:{fg};font-weight:600;">{n / total * 100:.1f}% of {total} branches</span>
   </div>"""
 
     modal_html = build_modern_guidance_modal_html()
 
     return f"""<div style="box-sizing:border-box;height:100%;display:flex;flex-wrap:wrap;gap:12px;align-items:stretch;font-family:{FONT};color:{INK};">
-  <div style="{card}flex:1.7 1 320px;min-width:300px;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:14px 24px;background:{BRAND_DEEP};color:#ffffff;">
+  <div style="{card}flex:1.7 1 320px;min-width:300px;display:flex;flex-direction:column;justify-content:center;gap:9px;padding:16px 24px;background:#0f172a;color:#ffffff;border:1px solid #1e293b;">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-      <span style="font-size:13px;font-weight:600;color:#c7d2fe;">Fleet health index</span>
+      <span style="font-size:13.5px;font-weight:700;color:#93c5fd;letter-spacing:0.01em;">Fleet Health Index</span>
       <label for="ai-metric-modal-toggle" class="ai-guide-btn" title="Click to view AI Metric & Anomaly Score Guidance">
         <span class="ai-guide-btn-icon">!</span>
-        <span>AI Guidance</span>
+        <span style="font-weight:700;">AI Guidance</span>
       </label>
     </div>
     <span style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;">
-      <span style="font-size:42px;font-weight:600;line-height:46px;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;">{health:.1f}%</span>
-      <span style="font-size:13px;color:#dbe3ff;">{healthy} of {total} branches nominal or restored</span>
+      <span style="font-size:44px;font-weight:800;line-height:46px;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;color:#ffffff;">{health:.1f}%</span>
+      <span style="font-size:13px;color:#e2e8f0;font-weight:600;">{healthy} of {total} branches nominal or restored</span>
     </span>
-    <span style="display:flex;gap:2px;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.15);">{bar}</span>
-    <span style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:#dbe3ff;">{legend}</span>
-    <span style="font-size:11px;color:#a5b4fc;">{footer}</span>
+    <span style="display:flex;gap:2px;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.18);">{bar}</span>
+    <span style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:#cbd5e1;">{legend}</span>
+    <span style="font-size:11px;color:#94a3b8;font-weight:500;">{footer}</span>
   </div>{tiles}
   {modal_html}
 </div>"""
